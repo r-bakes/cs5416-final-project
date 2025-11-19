@@ -37,11 +37,15 @@ Batch=5: 0.8 + 0.323 + \~(2.873 × 5) = 15.0 GB -> (exceeds limit)
 
 ## Experiment 2: Initial split of monolith across 3 nodes
 
-In this experiment we achieve the passing grade critera:
+In this experiment we achieve the lowest tier requirements:
 
 1. Modify the pipeline to run across 3 nodes.
 2. Opportunistic batching (low hanging fruit!)
-3. Evolution of our benchmarking in experiment 1 to capture latency and throughput.
+3. Evolution of our benchmarking code in experiment 1 to capture latency and throughput.
+
+We will use this data for the third experiment's configurations and to guide initial microservice decomposition strategy.
+
+###
 
 ### Functional Requirements
 
@@ -52,5 +56,3 @@ In this experiment we achieve the passing grade critera:
 ### Adhoc Benchmark
 
 ## Experiment 3: Initial Split of monolith into microservices
-
-## Experiment 4: Caching and Opportunistic Batching Additions

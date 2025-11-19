@@ -47,14 +47,16 @@ def profile_with_timing(func):
 
 # Read environment variables
 MAX_BATCH_SIZE = 3
-MIN_BATCH_SIZE = 1
 TOTAL_NODES = int(os.environ.get("TOTAL_NODES", 1))
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
-NODE_0_IP = os.environ.get("NODE_0_IP", "localhost:8000")
-NODE_1_IP = os.environ.get("NODE_1_IP", "localhost:8000")
-NODE_2_IP = os.environ.get("NODE_2_IP", "localhost:8000")
+NODE_0_IP = os.environ["NODE_0_IP"]
+NODE_1_IP = os.environ["NODE_1_IP"]
+NODE_2_IP = os.environ["NODE_2_IP"]
 FAISS_INDEX_PATH = os.environ.get("FAISS_INDEX_PATH", "faiss_index.bin")
 DOCUMENTS_DIR = os.environ.get("DOCUMENTS_DIR", "documents/")
+
+# Backend port for Node 0 (runs on same machine as load balancer)
+NODE_0_BACKEND_PORT = 9000
 
 # Configuration
 CONFIG = {
@@ -394,15 +396,13 @@ def process_requests_worker():
                 break
             batch.append(first_request)
 
-            for _ in range(MIN_BATCH_SIZE - 1):
+            for _ in range(MAX_BATCH_SIZE - 1):
                 try:
                     batch.append(request_queue.get(timeout=MAX_TIMEOUT))
                 except Empty:
-                    break
+                    break  # NOTE: Fire off the request even if we don't have min batch size.
 
-            print(
-                f"Processing batch of {len(batch)} requests (queue had {queue_size} waiting)"
-            )
+            print(f"Processing batch of {len(batch)} requests.")
             # Convert to PipelineRequest objects
             requests = [
                 PipelineRequest(
@@ -500,10 +500,18 @@ def main():
     print("Worker thread started!")
 
     # Start Flask server
-    print(f"\nStarting Flask server")
-    hostname = NODE_0_IP.split(":")[0]
-    port = int(NODE_0_IP.split(":")[1]) if ":" in NODE_0_IP else 8000
-    app.run(host=hostname, port=port, threaded=True)
+    if NODE_NUMBER == 0:
+        hostname, port = NODE_0_IP.split(":")
+        print("Starting Flask server (Node 0)")
+    elif NODE_NUMBER == 1:
+        hostname, port = NODE_1_IP.split(":")
+        print("Starting Flask server (Node 1)")
+    else:  # NODE_NUMBER == 2
+        hostname, port = NODE_2_IP.split(":")
+        print("Starting Flask server (Node 2)")
+
+    print(f"Listening on: {hostname}:{port}")
+    app.run(host=hostname, port=int(port), threaded=True)
 
 
 if __name__ == "__main__":

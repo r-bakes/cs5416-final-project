@@ -5,5 +5,4 @@
 
 echo "Starting pipeline on Node $NODE_NUMBER..."
 source ../.venv/bin/activate
-# python3 pipeline.py >>memory_profile.log
-python3 pipeline.py
+python3 pipeline.py >>memory_profile.log
