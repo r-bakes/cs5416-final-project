@@ -55,9 +55,6 @@ NODE_2_IP = os.environ["NODE_2_IP"]
 FAISS_INDEX_PATH = os.environ.get("FAISS_INDEX_PATH", "faiss_index.bin")
 DOCUMENTS_DIR = os.environ.get("DOCUMENTS_DIR", "documents/")
 
-# Backend port for Node 0 (runs on same machine as load balancer)
-NODE_0_BACKEND_PORT = 9000
-
 # Configuration
 CONFIG = {
     "faiss_index_path": FAISS_INDEX_PATH,

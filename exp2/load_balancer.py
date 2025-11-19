@@ -15,7 +15,6 @@ NODE_0_IP = os.environ["NODE_0_IP"]
 NODE_1_IP = os.environ["NODE_1_IP"]
 NODE_2_IP = os.environ["NODE_2_IP"]
 
-# Backend port for Node 0 (runs on same machine as load balancer)
 
 app = Flask(__name__)
 
