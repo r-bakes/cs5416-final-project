@@ -18,7 +18,7 @@ from transformers import pipeline as hf_pipeline
 import warnings
 from sentence_transformers import SentenceTransformer
 from flask import Flask, request, jsonify
-from queue import Queue
+from queue import Empty, Queue
 import threading
 
 from memory_profiler import profile
@@ -46,6 +46,8 @@ def profile_with_timing(func):
 
 
 # Read environment variables
+MAX_BATCH_SIZE = 3
+MIN_BATCH_SIZE = 1
 TOTAL_NODES = int(os.environ.get("TOTAL_NODES", 1))
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 NODE_0_IP = os.environ.get("NODE_0_IP", "localhost:8000")
@@ -373,38 +375,58 @@ class MonolithicPipeline:
 pipeline = None
 
 
-def process_requests_worker():
-    """Worker thread that processes requests from the queue"""
+def _process_batch_helper(batch_data):
+    """Convert request data to PipelineRequest objects and process"""
     global pipeline
+
+
+def process_requests_worker():
+    """Worker with adaptive batching"""
+    MAX_TIMEOUT = 0.1  # 100ms under high load
+
     while True:
         try:
-            request_data = request_queue.get()
-            if request_data is None:  # Shutdown signal
+            batch = []
+
+            # Get first request
+            first_request = request_queue.get()
+            if first_request is None:
                 break
+            batch.append(first_request)
 
-            # Create request object
-            req = PipelineRequest(
-                request_id=request_data["request_id"],
-                query=request_data["query"],
-                timestamp=time.time(),
+            for _ in range(MIN_BATCH_SIZE - 1):
+                try:
+                    batch.append(request_queue.get(timeout=MAX_TIMEOUT))
+                except Empty:
+                    break
+
+            print(
+                f"Processing batch of {len(batch)} requests (queue had {queue_size} waiting)"
             )
+            # Convert to PipelineRequest objects
+            requests = [
+                PipelineRequest(
+                    request_id=data["request_id"],
+                    query=data["query"],
+                    timestamp=time.time(),
+                )
+                for data in batch
+            ]
 
-            # Process request
-            response = pipeline.process_request(req)
+            # Process batch
+            responses = pipeline.process_batch(requests)
 
-            # Store result
+            # Store results
             with results_lock:
-                results[request_data["request_id"]] = {
-                    "request_id": response.request_id,
-                    "generated_response": response.generated_response,
-                    "sentiment": response.sentiment,
-                    "is_toxic": response.is_toxic,
-                }
-
-            request_queue.task_done()
+                for response in responses:
+                    results[response.request_id] = {
+                        "request_id": response.request_id,
+                        "generated_response": response.generated_response,
+                        "sentiment": response.sentiment,
+                        "is_toxic": response.is_toxic,
+                    }
         except Exception as e:
             print(f"Error processing request: {e}")
-            request_queue.task_done()
 
 
 @app.route("/query", methods=["POST"])

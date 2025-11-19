@@ -1,0 +1,2055 @@
+============================================================
+MONOLITHIC CUSTOMER SUPPORT PIPELINE
+============================================================
+
+Running on Node 0 of 1 nodes
+Node IPs: 0=localhost:8000, 1=localhost:8000, 2=localhost:8000
+
+NOTE: This implementation is deliberately inefficient.
+Your task is to optimize this for a 3-node cluster.
+
+Initializing pipeline...
+Initializing pipeline on cpu
+Node 0/1
+FAISS index path: faiss_index.bin
+Documents path: documents/
+Pipeline initialized!
+Worker thread started!
+
+Starting Flask server
+ * Serving Flask app 'pipeline'
+ * Debug mode: off
+queueing request req_1763355042_0
+
+[TIMING] process_batch - START
+
+============================================================
+Processing batch of 1 requests
+============================================================
+- req_1763355042_0: How do I return a defective product?...
+
+[Step 1/7] Generating embeddings for batch...
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   185    443.2 MiB    443.2 MiB           1       @profile_with_timing
+   186                                             @profile
+   187                                             def _generate_embeddings_batch(self, texts: List[str]) -> np.ndarray:
+   188                                                 """Step 2: Generate embeddings for a batch of queries"""
+   189    466.9 MiB     23.7 MiB           1           model = SentenceTransformer(self.embedding_model_name).to(self.device)
+   190    842.4 MiB    375.5 MiB           2           embeddings = model.encode(
+   191    466.9 MiB      0.0 MiB           1               texts, normalize_embeddings=True, convert_to_numpy=True
+   192                                                 )
+   193    842.4 MiB      0.0 MiB           1           del model
+   194    770.2 MiB    -72.2 MiB           1           gc.collect()
+   195    770.2 MiB      0.0 MiB           1           return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 2.88s)
+
+[Step 2/7] Performing FAISS ANN search for batch...
+
+[TIMING] _faiss_search_batch - START
+Loading FAISS index
+queueing request req_1763355052_1
+queueing request req_1763355062_2
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   197    770.2 MiB    770.2 MiB           1       @profile_with_timing
+   198                                             @profile
+   199                                             def _faiss_search_batch(self, query_embeddings: np.ndarray) -> List[List[int]]:
+   200                                                 """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+   201    770.2 MiB      0.0 MiB           1           if not os.path.exists(CONFIG["faiss_index_path"]):
+   202                                                     raise FileNotFoundError(
+   203                                                         "FAISS index not found. Please create the index before running the pipeline."
+   204                                                     )
+   205                                         
+   206    770.2 MiB      0.0 MiB           1           print("Loading FAISS index")
+   207   1093.2 MiB    323.0 MiB           1           index = faiss.read_index(CONFIG["faiss_index_path"])
+   208   1093.7 MiB      0.5 MiB           1           query_embeddings = query_embeddings.astype("float32")
+   209   3967.5 MiB   2873.8 MiB           1           _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+   210    718.5 MiB  -3249.0 MiB           1           del index
+   211    944.1 MiB    225.6 MiB           1           gc.collect()
+   212    944.1 MiB      0.0 MiB           2           return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 19.09s)
+
+[Step 3/7] Fetching documents for batch...
+
+[TIMING] _fetch_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   214    944.2 MiB    944.2 MiB           1       @profile_with_timing
+   215                                             @profile
+   216                                             def _fetch_documents_batch(
+   217                                                 self, doc_id_batches: List[List[int]]
+   218                                             ) -> List[List[Dict]]:
+   219                                                 """Step 4: Fetch documents for each query in the batch using SQLite"""
+   220    944.2 MiB      0.0 MiB           1           db_path = f"{CONFIG['documents_path']}/documents.db"
+   221    944.8 MiB      0.6 MiB           1           conn = sqlite3.connect(db_path)
+   222    944.8 MiB      0.0 MiB           1           cursor = conn.cursor()
+   223    944.8 MiB      0.0 MiB           1           documents_batch = []
+   224    945.4 MiB      0.0 MiB           2           for doc_ids in doc_id_batches:
+   225    944.8 MiB      0.0 MiB           1               documents = []
+   226    945.4 MiB      0.0 MiB          11               for doc_id in doc_ids:
+   227    945.4 MiB      0.6 MiB          20                   cursor.execute(
+   228    945.4 MiB      0.0 MiB          10                       "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+   229    945.4 MiB      0.0 MiB          10                       (doc_id,),
+   230                                                         )
+   231    945.4 MiB      0.0 MiB          10                   result = cursor.fetchone()
+   232    945.4 MiB      0.0 MiB          10                   if result:
+   233    945.4 MiB      0.0 MiB           4                       documents.append(
+   234    945.4 MiB      0.0 MiB           2                           {
+   235    945.4 MiB      0.0 MiB           2                               "doc_id": result[0],
+   236    945.4 MiB      0.0 MiB           2                               "title": result[1],
+   237    945.4 MiB      0.0 MiB           2                               "content": result[2],
+   238    945.4 MiB      0.0 MiB           2                               "category": result[3],
+   239                                                                 }
+   240                                                             )
+   241    945.4 MiB      0.0 MiB           1               documents_batch.append(documents)
+   242    945.4 MiB      0.0 MiB           1           conn.close()
+   243    945.4 MiB      0.0 MiB           1           return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.01s)
+
+[Step 4/7] Reranking documents for batch...
+
+[TIMING] _rerank_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   245    945.4 MiB    945.4 MiB           1       @profile_with_timing
+   246                                             @profile
+   247                                             def _rerank_documents_batch(
+   248                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   249                                             ) -> List[List[Dict]]:
+   250                                                 """Step 5: Rerank retrieved documents for each query in the batch"""
+   251   1285.9 MiB    340.5 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.reranker_model_name)
+   252   1293.6 MiB      7.7 MiB           3           model = AutoModelForSequenceClassification.from_pretrained(
+   253   1285.9 MiB      0.0 MiB           1               self.reranker_model_name
+   254   1293.6 MiB      0.0 MiB           1           ).to(self.device)
+   255   1293.6 MiB      0.0 MiB           1           model.eval()
+   256   1293.6 MiB      0.0 MiB           1           reranked_batches = []
+   257   1630.4 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   258   1293.6 MiB      0.0 MiB           1               if not documents:
+   259                                                         reranked_batches.append([])
+   260                                                         continue
+   261   1293.6 MiB      0.0 MiB           3               pairs = [[query, doc["content"]] for doc in documents]
+   262   1630.2 MiB      0.0 MiB           2               with torch.no_grad():
+   263   1294.3 MiB      0.7 MiB           3                   inputs = tokenizer(
+   264   1293.6 MiB      0.0 MiB           1                       pairs,
+   265   1293.6 MiB      0.0 MiB           1                       padding=True,
+   266   1293.6 MiB      0.0 MiB           1                       truncation=True,
+   267   1293.6 MiB      0.0 MiB           1                       return_tensors="pt",
+   268   1293.6 MiB      0.0 MiB           1                       max_length=CONFIG["truncate_length"],
+   269   1294.3 MiB      0.0 MiB           1                   ).to(self.device)
+   270   1630.2 MiB      0.0 MiB           1                   scores = (
+   271   1630.2 MiB    335.8 MiB           1                       model(**inputs, return_dict=True)
+   272   1630.2 MiB      0.0 MiB           2                       .logits.view(
+   273   1630.2 MiB      0.0 MiB           1                           -1,
+   274                                                             )
+   275   1630.2 MiB      0.0 MiB           1                       .float()
+   276                                                         )
+   277   1630.2 MiB      0.1 MiB           1               doc_scores = list(zip(documents, scores))
+   278   1630.4 MiB      0.1 MiB           5               doc_scores.sort(key=lambda x: x[1], reverse=True)
+   279   1630.4 MiB      0.0 MiB           3               reranked_batches.append([doc for doc, _ in doc_scores])
+   280   1120.0 MiB   -510.4 MiB           1           del model, tokenizer
+   281   1120.0 MiB      0.0 MiB           1           gc.collect()
+   282   1120.0 MiB      0.0 MiB           1           return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 1.99s)
+
+[Step 5/7] Generating LLM responses for batch...
+
+[TIMING] _generate_responses_batch - START
+queueing request req_1763355072_3
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   284   1119.0 MiB   1119.0 MiB           1       @profile_with_timing
+   285                                             @profile
+   286                                             def _generate_responses_batch(
+   287                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   288                                             ) -> List[str]:
+   289                                                 """Step 6: Generate LLM responses for each query in the batch"""
+   290   1977.9 MiB    858.9 MiB           3           model = AutoModelForCausalLM.from_pretrained(
+   291   1119.0 MiB      0.0 MiB           1               self.llm_model_name,
+   292   1119.0 MiB      0.0 MiB           1               dtype=torch.float16,
+   293   1977.9 MiB      0.0 MiB           1           ).to(self.device)
+   294   2053.1 MiB     75.2 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.llm_model_name)
+   295   2053.1 MiB      0.0 MiB           1           responses = []
+   296   2073.5 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   297   2053.1 MiB      0.0 MiB           2               context = "\n".join(
+   298   2053.1 MiB      0.0 MiB           3                   [f"- {doc['title']}: {doc['content'][:200]}" for doc in documents[:3]]
+   299                                                     )
+   300   2053.1 MiB      0.0 MiB           1               messages = [
+   301   2053.1 MiB      0.0 MiB           1                   {
+   302   2053.1 MiB      0.0 MiB           1                       "role": "system",
+   303   2053.1 MiB      0.0 MiB           1                       "content": "When given Context and Question, reply as 'Answer: <final answer>' only.",
+   304                                                         },
+   305   2053.1 MiB      0.0 MiB           1                   {
+   306   2053.1 MiB      0.0 MiB           1                       "role": "user",
+   307   2053.1 MiB      0.0 MiB           1                       "content": f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:",
+   308                                                         },
+   309                                                     ]
+   310   2053.5 MiB      0.4 MiB           2               text = tokenizer.apply_chat_template(
+   311   2053.1 MiB      0.0 MiB           1                   messages, tokenize=False, add_generation_prompt=True
+   312                                                     )
+   313   2053.6 MiB      0.1 MiB           1               model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+   314   2073.5 MiB     19.9 MiB           3               generated_ids = model.generate(
+   315   2053.6 MiB      0.0 MiB           1                   **model_inputs,
+   316   2053.6 MiB      0.0 MiB           1                   max_new_tokens=CONFIG["max_tokens"],
+   317   2053.6 MiB      0.0 MiB           1                   temperature=0.01,
+   318   2053.6 MiB      0.0 MiB           1                   pad_token_id=tokenizer.eos_token_id,
+   319                                                     )
+   320   2073.5 MiB      0.0 MiB           2               generated_ids = [
+   321   2073.5 MiB      0.0 MiB           1                   output_ids[len(input_ids) :]
+   322   2073.5 MiB      0.0 MiB           3                   for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+   323                                                     ]
+   324   2073.5 MiB      0.0 MiB           2               response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[
+   325   2073.5 MiB      0.0 MiB           1                   0
+   326                                                     ]
+   327   2073.5 MiB      0.0 MiB           1               responses.append(response)
+   328    750.9 MiB  -1322.7 MiB           1           del model, tokenizer
+   329    750.9 MiB      0.0 MiB           1           gc.collect()
+   330    750.9 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] _generate_responses_batch - END (took 9.42s)
+
+[Step 6/7] Analyzing sentiment for batch...
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   332    750.9 MiB    750.9 MiB           1       @profile_with_timing
+   333                                             @profile
+   334                                             def _analyze_sentiment_batch(self, texts: List[str]) -> List[str]:
+   335                                                 """Step 7: Analyze sentiment for each generated response"""
+   336    760.0 MiB      9.1 MiB           2           classifier = hf_pipeline(
+   337    750.9 MiB      0.0 MiB           1               "sentiment-analysis", model=self.sentiment_model_name, device=self.device
+   338                                                 )
+   339    760.0 MiB      0.0 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   340   1088.2 MiB    328.2 MiB           1           raw_results = classifier(truncated_texts)
+   341   1088.2 MiB      0.0 MiB           1           sentiment_map = {
+   342   1088.2 MiB      0.0 MiB           1               "1 star": "very negative",
+   343   1088.2 MiB      0.0 MiB           1               "2 stars": "negative",
+   344   1088.2 MiB      0.0 MiB           1               "3 stars": "neutral",
+   345   1088.2 MiB      0.0 MiB           1               "4 stars": "positive",
+   346   1088.2 MiB      0.0 MiB           1               "5 stars": "very positive",
+   347                                                 }
+   348   1088.2 MiB      0.0 MiB           1           sentiments = []
+   349   1088.2 MiB      0.0 MiB           2           for result in raw_results:
+   350   1088.2 MiB      0.0 MiB           1               sentiments.append(sentiment_map.get(result["label"], "neutral"))
+   351    759.9 MiB   -328.3 MiB           1           del classifier
+   352    759.9 MiB      0.0 MiB           1           gc.collect()
+   353    759.9 MiB      0.0 MiB           1           return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.70s)
+
+[Step 7/7] Applying safety filter to batch...
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   355    759.9 MiB    759.9 MiB           1       @profile_with_timing
+   356                                             @profile
+   357                                             def _filter_response_safety_batch(self, texts: List[str]) -> List[bool]:
+   358                                                 """Step 8: Filter responses for safety for each entry in the batch"""
+   359    759.9 MiB     -6.3 MiB           2           classifier = hf_pipeline(
+   360    759.9 MiB      0.0 MiB           1               "text-classification", model=self.safety_model_name, device=self.device
+   361                                                 )
+   362    753.6 MiB     -6.3 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   363   1080.2 MiB    326.6 MiB           1           raw_results = classifier(truncated_texts)
+   364   1080.2 MiB      0.0 MiB           1           toxicity_flags = []
+   365   1080.2 MiB      0.0 MiB           2           for result in raw_results:
+   366   1080.2 MiB      0.0 MiB           1               toxicity_flags.append(result["score"] > 0.5)
+   367    752.0 MiB   -328.2 MiB           1           del classifier
+   368    752.0 MiB      0.0 MiB           1           gc.collect()
+   369    752.0 MiB      0.0 MiB           1           return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.39s)
+
+✓ Request req_1763355042_0 processed in 36.47 seconds
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   119    443.1 MiB    443.1 MiB           1       @profile_with_timing
+   120                                             @profile
+   121                                             def process_batch(self, requests: List[PipelineRequest]) -> List[PipelineResponse]:
+   122                                                 """
+   123                                                 Main pipeline execution for a batch of requests.
+   124                                                 """
+   125    443.1 MiB      0.0 MiB           1           if not requests:
+   126                                                     return []
+   127                                         
+   128    443.1 MiB      0.0 MiB           1           batch_size = len(requests)
+   129    443.2 MiB      0.0 MiB           2           start_times = [time.time() for _ in requests]
+   130    443.2 MiB      0.0 MiB           2           queries = [req.query for req in requests]
+   131                                         
+   132    443.2 MiB      0.0 MiB           1           print("\n" + "=" * 60)
+   133    443.2 MiB      0.0 MiB           1           print(f"Processing batch of {batch_size} requests")
+   134    443.2 MiB      0.0 MiB           1           print("=" * 60)
+   135    443.2 MiB      0.0 MiB           2           for request in requests:
+   136    443.2 MiB      0.0 MiB           1               print(f"- {request.request_id}: {request.query[:50]}...")
+   137                                         
+   138                                                 # Step 1: Generate embeddings
+   139    443.2 MiB      0.0 MiB           1           print("\n[Step 1/7] Generating embeddings for batch...")
+   140    770.2 MiB    327.0 MiB           1           query_embeddings = self._generate_embeddings_batch(queries)
+   141                                         
+   142                                                 # Step 2: FAISS ANN search
+   143    770.2 MiB      0.0 MiB           1           print("\n[Step 2/7] Performing FAISS ANN search for batch...")
+   144    944.1 MiB    174.0 MiB           1           doc_id_batches = self._faiss_search_batch(query_embeddings)
+   145                                         
+   146                                                 # Step 3: Fetch documents from disk
+   147    944.1 MiB      0.0 MiB           1           print("\n[Step 3/7] Fetching documents for batch...")
+   148    945.4 MiB      1.3 MiB           1           documents_batch = self._fetch_documents_batch(doc_id_batches)
+   149                                         
+   150                                                 # Step 4: Rerank documents
+   151    945.4 MiB      0.0 MiB           1           print("\n[Step 4/7] Reranking documents for batch...")
+   152   1119.0 MiB    173.6 MiB           1           reranked_docs_batch = self._rerank_documents_batch(queries, documents_batch)
+   153                                         
+   154                                                 # Step 5: Generate LLM responses
+   155   1119.0 MiB      0.0 MiB           1           print("\n[Step 5/7] Generating LLM responses for batch...")
+   156    750.9 MiB   -368.1 MiB           1           responses_text = self._generate_responses_batch(queries, reranked_docs_batch)
+   157                                         
+   158                                                 # Step 6: Sentiment analysis
+   159    750.9 MiB      0.0 MiB           1           print("\n[Step 6/7] Analyzing sentiment for batch...")
+   160    759.9 MiB      9.0 MiB           1           sentiments = self._analyze_sentiment_batch(responses_text)
+   161                                         
+   162                                                 # Step 7: Safety filter on responses
+   163    759.9 MiB      0.0 MiB           1           print("\n[Step 7/7] Applying safety filter to batch...")
+   164    752.0 MiB     -7.8 MiB           1           toxicity_flags = self._filter_response_safety_batch(responses_text)
+   165                                         
+   166    752.0 MiB      0.0 MiB           1           responses = []
+   167    752.0 MiB      0.0 MiB           2           for idx, request in enumerate(requests):
+   168    752.0 MiB      0.0 MiB           1               processing_time = time.time() - start_times[idx]
+   169    752.0 MiB      0.0 MiB           2               print(
+   170    752.0 MiB      0.0 MiB           1                   f"\n✓ Request {request.request_id} processed in {processing_time:.2f} seconds"
+   171                                                     )
+   172    752.0 MiB      0.0 MiB           1               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   173    752.0 MiB      0.0 MiB           2               responses.append(
+   174    752.0 MiB      0.0 MiB           2                   PipelineResponse(
+   175    752.0 MiB      0.0 MiB           1                       request_id=request.request_id,
+   176    752.0 MiB      0.0 MiB           1                       generated_response=responses_text[idx],
+   177    752.0 MiB      0.0 MiB           1                       sentiment=sentiments[idx],
+   178    752.0 MiB      0.0 MiB           1                       is_toxic=sensitivity_result,
+   179    752.0 MiB      0.0 MiB           1                       processing_time=processing_time,
+   180                                                         )
+   181                                                     )
+   182                                         
+   183    752.0 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] process_batch - END (took 36.47s)
+
+[TIMING] process_batch - START
+
+============================================================
+Processing batch of 1 requests
+============================================================
+- req_1763355052_1: What is your refund policy?...
+
+[Step 1/7] Generating embeddings for batch...
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   185    752.0 MiB    752.0 MiB           1       @profile_with_timing
+   186                                             @profile
+   187                                             def _generate_embeddings_batch(self, texts: List[str]) -> np.ndarray:
+   188                                                 """Step 2: Generate embeddings for a batch of queries"""
+   189    745.9 MiB     -6.1 MiB           1           model = SentenceTransformer(self.embedding_model_name).to(self.device)
+   190   1020.8 MiB    274.8 MiB           2           embeddings = model.encode(
+   191    745.9 MiB      0.0 MiB           1               texts, normalize_embeddings=True, convert_to_numpy=True
+   192                                                 )
+   193   1020.8 MiB      0.0 MiB           1           del model
+   194    840.3 MiB   -180.5 MiB           1           gc.collect()
+   195    840.3 MiB      0.0 MiB           1           return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 3.08s)
+
+[Step 2/7] Performing FAISS ANN search for batch...
+
+[TIMING] _faiss_search_batch - START
+Loading FAISS index
+queueing request req_1763355082_4
+queueing request req_1763355092_5
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   197    840.3 MiB    840.3 MiB           1       @profile_with_timing
+   198                                             @profile
+   199                                             def _faiss_search_batch(self, query_embeddings: np.ndarray) -> List[List[int]]:
+   200                                                 """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+   201    840.3 MiB      0.0 MiB           1           if not os.path.exists(CONFIG["faiss_index_path"]):
+   202                                                     raise FileNotFoundError(
+   203                                                         "FAISS index not found. Please create the index before running the pipeline."
+   204                                                     )
+   205                                         
+   206    840.3 MiB      0.0 MiB           1           print("Loading FAISS index")
+   207   1241.2 MiB    400.9 MiB           1           index = faiss.read_index(CONFIG["faiss_index_path"])
+   208   1242.2 MiB      1.0 MiB           1           query_embeddings = query_embeddings.astype("float32")
+   209   4685.5 MiB   3443.3 MiB           1           _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+   210    704.6 MiB  -3980.9 MiB           1           del index
+   211    939.2 MiB    234.6 MiB           1           gc.collect()
+   212    939.2 MiB      0.0 MiB           2           return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 17.68s)
+
+[Step 3/7] Fetching documents for batch...
+
+[TIMING] _fetch_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   214    939.3 MiB    939.3 MiB           1       @profile_with_timing
+   215                                             @profile
+   216                                             def _fetch_documents_batch(
+   217                                                 self, doc_id_batches: List[List[int]]
+   218                                             ) -> List[List[Dict]]:
+   219                                                 """Step 4: Fetch documents for each query in the batch using SQLite"""
+   220    939.3 MiB      0.0 MiB           1           db_path = f"{CONFIG['documents_path']}/documents.db"
+   221    939.5 MiB      0.2 MiB           1           conn = sqlite3.connect(db_path)
+   222    939.5 MiB      0.0 MiB           1           cursor = conn.cursor()
+   223    939.5 MiB      0.0 MiB           1           documents_batch = []
+   224    939.5 MiB      0.0 MiB           2           for doc_ids in doc_id_batches:
+   225    939.5 MiB      0.0 MiB           1               documents = []
+   226    939.5 MiB      0.0 MiB          11               for doc_id in doc_ids:
+   227    939.5 MiB      0.0 MiB          20                   cursor.execute(
+   228    939.5 MiB      0.0 MiB          10                       "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+   229    939.5 MiB      0.0 MiB          10                       (doc_id,),
+   230                                                         )
+   231    939.5 MiB      0.0 MiB          10                   result = cursor.fetchone()
+   232    939.5 MiB      0.0 MiB          10                   if result:
+   233    939.5 MiB      0.0 MiB           8                       documents.append(
+   234    939.5 MiB      0.0 MiB           4                           {
+   235    939.5 MiB      0.0 MiB           4                               "doc_id": result[0],
+   236    939.5 MiB      0.0 MiB           4                               "title": result[1],
+   237    939.5 MiB      0.0 MiB           4                               "content": result[2],
+   238    939.5 MiB      0.0 MiB           4                               "category": result[3],
+   239                                                                 }
+   240                                                             )
+   241    939.5 MiB      0.0 MiB           1               documents_batch.append(documents)
+   242    939.5 MiB      0.0 MiB           1           conn.close()
+   243    939.5 MiB      0.0 MiB           1           return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.01s)
+
+[Step 4/7] Reranking documents for batch...
+
+[TIMING] _rerank_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   245    939.5 MiB    939.5 MiB           1       @profile_with_timing
+   246                                             @profile
+   247                                             def _rerank_documents_batch(
+   248                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   249                                             ) -> List[List[Dict]]:
+   250                                                 """Step 5: Rerank retrieved documents for each query in the batch"""
+   251   1278.2 MiB    338.7 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.reranker_model_name)
+   252   1283.9 MiB      5.7 MiB           3           model = AutoModelForSequenceClassification.from_pretrained(
+   253   1278.2 MiB      0.0 MiB           1               self.reranker_model_name
+   254   1283.9 MiB      0.0 MiB           1           ).to(self.device)
+   255   1283.9 MiB      0.0 MiB           1           model.eval()
+   256   1283.9 MiB      0.0 MiB           1           reranked_batches = []
+   257   1630.8 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   258   1283.9 MiB      0.0 MiB           1               if not documents:
+   259                                                         reranked_batches.append([])
+   260                                                         continue
+   261   1283.9 MiB      0.0 MiB           5               pairs = [[query, doc["content"]] for doc in documents]
+   262   1630.6 MiB      0.0 MiB           2               with torch.no_grad():
+   263   1284.3 MiB      0.4 MiB           3                   inputs = tokenizer(
+   264   1283.9 MiB      0.0 MiB           1                       pairs,
+   265   1283.9 MiB      0.0 MiB           1                       padding=True,
+   266   1283.9 MiB      0.0 MiB           1                       truncation=True,
+   267   1283.9 MiB      0.0 MiB           1                       return_tensors="pt",
+   268   1283.9 MiB      0.0 MiB           1                       max_length=CONFIG["truncate_length"],
+   269   1284.3 MiB      0.0 MiB           1                   ).to(self.device)
+   270   1630.6 MiB      0.0 MiB           1                   scores = (
+   271   1630.6 MiB    346.3 MiB           1                       model(**inputs, return_dict=True)
+   272   1630.6 MiB      0.0 MiB           2                       .logits.view(
+   273   1630.6 MiB      0.0 MiB           1                           -1,
+   274                                                             )
+   275   1630.6 MiB      0.0 MiB           1                       .float()
+   276                                                         )
+   277   1630.7 MiB      0.1 MiB           1               doc_scores = list(zip(documents, scores))
+   278   1630.8 MiB      0.1 MiB           9               doc_scores.sort(key=lambda x: x[1], reverse=True)
+   279   1630.8 MiB      0.0 MiB           5               reranked_batches.append([doc for doc, _ in doc_scores])
+   280   1118.1 MiB   -512.7 MiB           1           del model, tokenizer
+   281   1118.1 MiB      0.0 MiB           1           gc.collect()
+   282   1118.1 MiB      0.0 MiB           1           return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 1.88s)
+
+[Step 5/7] Generating LLM responses for batch...
+
+[TIMING] _generate_responses_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   284   1118.1 MiB   1118.1 MiB           1       @profile_with_timing
+   285                                             @profile
+   286                                             def _generate_responses_batch(
+   287                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   288                                             ) -> List[str]:
+   289                                                 """Step 6: Generate LLM responses for each query in the batch"""
+   290   1955.3 MiB    837.2 MiB           3           model = AutoModelForCausalLM.from_pretrained(
+   291   1118.1 MiB      0.0 MiB           1               self.llm_model_name,
+   292   1118.1 MiB      0.0 MiB           1               dtype=torch.float16,
+   293   1955.3 MiB      0.0 MiB           1           ).to(self.device)
+   294   2019.2 MiB     63.8 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.llm_model_name)
+   295   2019.2 MiB      0.0 MiB           1           responses = []
+   296   2039.4 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   297   2019.2 MiB      0.0 MiB           2               context = "\n".join(
+   298   2019.2 MiB      0.0 MiB           4                   [f"- {doc['title']}: {doc['content'][:200]}" for doc in documents[:3]]
+   299                                                     )
+   300   2019.2 MiB      0.0 MiB           1               messages = [
+   301   2019.2 MiB      0.0 MiB           1                   {
+   302   2019.2 MiB      0.0 MiB           1                       "role": "system",
+   303   2019.2 MiB      0.0 MiB           1                       "content": "When given Context and Question, reply as 'Answer: <final answer>' only.",
+   304                                                         },
+   305   2019.2 MiB      0.0 MiB           1                   {
+   306   2019.2 MiB      0.0 MiB           1                       "role": "user",
+   307   2019.2 MiB      0.0 MiB           1                       "content": f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:",
+   308                                                         },
+   309                                                     ]
+   310   2019.2 MiB      0.0 MiB           2               text = tokenizer.apply_chat_template(
+   311   2019.2 MiB      0.0 MiB           1                   messages, tokenize=False, add_generation_prompt=True
+   312                                                     )
+   313   2019.4 MiB      0.2 MiB           1               model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+   314   2039.4 MiB     20.1 MiB           3               generated_ids = model.generate(
+   315   2019.4 MiB      0.0 MiB           1                   **model_inputs,
+   316   2019.4 MiB      0.0 MiB           1                   max_new_tokens=CONFIG["max_tokens"],
+   317   2019.4 MiB      0.0 MiB           1                   temperature=0.01,
+   318   2019.4 MiB      0.0 MiB           1                   pad_token_id=tokenizer.eos_token_id,
+   319                                                     )
+   320   2039.4 MiB      0.0 MiB           2               generated_ids = [
+   321   2039.4 MiB      0.0 MiB           1                   output_ids[len(input_ids) :]
+   322   2039.4 MiB      0.0 MiB           3                   for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+   323                                                     ]
+   324   2039.4 MiB      0.0 MiB           2               response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[
+   325   2039.4 MiB      0.0 MiB           1                   0
+   326                                                     ]
+   327   2039.4 MiB      0.0 MiB           1               responses.append(response)
+   328    716.8 MiB  -1322.7 MiB           1           del model, tokenizer
+   329    716.8 MiB      0.0 MiB           1           gc.collect()
+   330    716.8 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] _generate_responses_batch - END (took 5.54s)
+
+[Step 6/7] Analyzing sentiment for batch...
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   332    716.8 MiB    716.8 MiB           1       @profile_with_timing
+   333                                             @profile
+   334                                             def _analyze_sentiment_batch(self, texts: List[str]) -> List[str]:
+   335                                                 """Step 7: Analyze sentiment for each generated response"""
+   336    718.9 MiB      2.2 MiB           2           classifier = hf_pipeline(
+   337    716.8 MiB      0.0 MiB           1               "sentiment-analysis", model=self.sentiment_model_name, device=self.device
+   338                                                 )
+   339    718.9 MiB      0.0 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   340   1046.3 MiB    327.4 MiB           1           raw_results = classifier(truncated_texts)
+   341   1046.3 MiB      0.0 MiB           1           sentiment_map = {
+   342   1046.3 MiB      0.0 MiB           1               "1 star": "very negative",
+   343   1046.3 MiB      0.0 MiB           1               "2 stars": "negative",
+   344   1046.3 MiB      0.0 MiB           1               "3 stars": "neutral",
+   345   1046.3 MiB      0.0 MiB           1               "4 stars": "positive",
+   346   1046.3 MiB      0.0 MiB           1               "5 stars": "very positive",
+   347                                                 }
+   348   1046.3 MiB      0.0 MiB           1           sentiments = []
+   349   1046.3 MiB      0.0 MiB           2           for result in raw_results:
+   350   1046.3 MiB      0.0 MiB           1               sentiments.append(sentiment_map.get(result["label"], "neutral"))
+   351    718.8 MiB   -327.5 MiB           1           del classifier
+   352    718.8 MiB      0.0 MiB           1           gc.collect()
+   353    718.8 MiB      0.0 MiB           1           return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.71s)
+
+[Step 7/7] Applying safety filter to batch...
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   355    718.8 MiB    718.8 MiB           1       @profile_with_timing
+   356                                             @profile
+   357                                             def _filter_response_safety_batch(self, texts: List[str]) -> List[bool]:
+   358                                                 """Step 8: Filter responses for safety for each entry in the batch"""
+   359    718.8 MiB     -5.5 MiB           2           classifier = hf_pipeline(
+   360    718.8 MiB      0.0 MiB           1               "text-classification", model=self.safety_model_name, device=self.device
+   361                                                 )
+   362    713.3 MiB     -5.5 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   363   1039.2 MiB    326.0 MiB           1           raw_results = classifier(truncated_texts)
+   364   1039.2 MiB      0.0 MiB           1           toxicity_flags = []
+   365   1039.2 MiB      0.0 MiB           2           for result in raw_results:
+   366   1039.2 MiB      0.0 MiB           1               toxicity_flags.append(result["score"] > 0.5)
+   367    711.7 MiB   -327.5 MiB           1           del classifier
+   368    711.7 MiB      0.0 MiB           1           gc.collect()
+   369    711.7 MiB      0.0 MiB           1           return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.41s)
+
+✓ Request req_1763355052_1 processed in 31.30 seconds
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   119    752.0 MiB    752.0 MiB           1       @profile_with_timing
+   120                                             @profile
+   121                                             def process_batch(self, requests: List[PipelineRequest]) -> List[PipelineResponse]:
+   122                                                 """
+   123                                                 Main pipeline execution for a batch of requests.
+   124                                                 """
+   125    752.0 MiB      0.0 MiB           1           if not requests:
+   126                                                     return []
+   127                                         
+   128    752.0 MiB      0.0 MiB           1           batch_size = len(requests)
+   129    752.0 MiB      0.0 MiB           2           start_times = [time.time() for _ in requests]
+   130    752.0 MiB      0.0 MiB           2           queries = [req.query for req in requests]
+   131                                         
+   132    752.0 MiB      0.0 MiB           1           print("\n" + "=" * 60)
+   133    752.0 MiB      0.0 MiB           1           print(f"Processing batch of {batch_size} requests")
+   134    752.0 MiB      0.0 MiB           1           print("=" * 60)
+   135    752.0 MiB      0.0 MiB           2           for request in requests:
+   136    752.0 MiB      0.0 MiB           1               print(f"- {request.request_id}: {request.query[:50]}...")
+   137                                         
+   138                                                 # Step 1: Generate embeddings
+   139    752.0 MiB      0.0 MiB           1           print("\n[Step 1/7] Generating embeddings for batch...")
+   140    840.3 MiB     88.3 MiB           1           query_embeddings = self._generate_embeddings_batch(queries)
+   141                                         
+   142                                                 # Step 2: FAISS ANN search
+   143    840.3 MiB      0.0 MiB           1           print("\n[Step 2/7] Performing FAISS ANN search for batch...")
+   144    939.2 MiB     98.9 MiB           1           doc_id_batches = self._faiss_search_batch(query_embeddings)
+   145                                         
+   146                                                 # Step 3: Fetch documents from disk
+   147    939.2 MiB      0.0 MiB           1           print("\n[Step 3/7] Fetching documents for batch...")
+   148    939.5 MiB      0.2 MiB           1           documents_batch = self._fetch_documents_batch(doc_id_batches)
+   149                                         
+   150                                                 # Step 4: Rerank documents
+   151    939.5 MiB      0.0 MiB           1           print("\n[Step 4/7] Reranking documents for batch...")
+   152   1118.1 MiB    178.6 MiB           1           reranked_docs_batch = self._rerank_documents_batch(queries, documents_batch)
+   153                                         
+   154                                                 # Step 5: Generate LLM responses
+   155   1118.1 MiB      0.0 MiB           1           print("\n[Step 5/7] Generating LLM responses for batch...")
+   156    716.8 MiB   -401.4 MiB           1           responses_text = self._generate_responses_batch(queries, reranked_docs_batch)
+   157                                         
+   158                                                 # Step 6: Sentiment analysis
+   159    716.8 MiB      0.0 MiB           1           print("\n[Step 6/7] Analyzing sentiment for batch...")
+   160    718.8 MiB      2.0 MiB           1           sentiments = self._analyze_sentiment_batch(responses_text)
+   161                                         
+   162                                                 # Step 7: Safety filter on responses
+   163    718.8 MiB      0.0 MiB           1           print("\n[Step 7/7] Applying safety filter to batch...")
+   164    711.7 MiB     -7.1 MiB           1           toxicity_flags = self._filter_response_safety_batch(responses_text)
+   165                                         
+   166    711.7 MiB      0.0 MiB           1           responses = []
+   167    711.7 MiB      0.0 MiB           2           for idx, request in enumerate(requests):
+   168    711.7 MiB      0.0 MiB           1               processing_time = time.time() - start_times[idx]
+   169    711.7 MiB      0.0 MiB           2               print(
+   170    711.7 MiB      0.0 MiB           1                   f"\n✓ Request {request.request_id} processed in {processing_time:.2f} seconds"
+   171                                                     )
+   172    711.7 MiB      0.0 MiB           1               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   173    711.7 MiB      0.0 MiB           2               responses.append(
+   174    711.7 MiB      0.0 MiB           2                   PipelineResponse(
+   175    711.7 MiB      0.0 MiB           1                       request_id=request.request_id,
+   176    711.7 MiB      0.0 MiB           1                       generated_response=responses_text[idx],
+   177    711.7 MiB      0.0 MiB           1                       sentiment=sentiments[idx],
+   178    711.7 MiB      0.0 MiB           1                       is_toxic=sensitivity_result,
+   179    711.7 MiB      0.0 MiB           1                       processing_time=processing_time,
+   180                                                         )
+   181                                                     )
+   182                                         
+   183    711.7 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] process_batch - END (took 31.30s)
+
+[TIMING] process_batch - START
+
+============================================================
+Processing batch of 1 requests
+============================================================
+- req_1763355062_2: My order hasn't arrived yet, tracking number is AB...
+
+[Step 1/7] Generating embeddings for batch...
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   185    711.7 MiB    711.7 MiB           1       @profile_with_timing
+   186                                             @profile
+   187                                             def _generate_embeddings_batch(self, texts: List[str]) -> np.ndarray:
+   188                                                 """Step 2: Generate embeddings for a batch of queries"""
+   189    708.1 MiB     -3.5 MiB           1           model = SentenceTransformer(self.embedding_model_name).to(self.device)
+   190    994.5 MiB    286.4 MiB           2           embeddings = model.encode(
+   191    708.1 MiB      0.0 MiB           1               texts, normalize_embeddings=True, convert_to_numpy=True
+   192                                                 )
+   193    994.5 MiB      0.0 MiB           1           del model
+   194    814.0 MiB   -180.6 MiB           1           gc.collect()
+   195    814.0 MiB      0.0 MiB           1           return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 3.49s)
+
+[Step 2/7] Performing FAISS ANN search for batch...
+
+[TIMING] _faiss_search_batch - START
+Loading FAISS index
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   197    814.0 MiB    814.0 MiB           1       @profile_with_timing
+   198                                             @profile
+   199                                             def _faiss_search_batch(self, query_embeddings: np.ndarray) -> List[List[int]]:
+   200                                                 """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+   201    814.0 MiB      0.0 MiB           1           if not os.path.exists(CONFIG["faiss_index_path"]):
+   202                                                     raise FileNotFoundError(
+   203                                                         "FAISS index not found. Please create the index before running the pipeline."
+   204                                                     )
+   205                                         
+   206    814.0 MiB      0.0 MiB           1           print("Loading FAISS index")
+   207   1402.7 MiB    588.8 MiB           1           index = faiss.read_index(CONFIG["faiss_index_path"])
+   208   1403.4 MiB      0.7 MiB           1           query_embeddings = query_embeddings.astype("float32")
+   209   3061.2 MiB   1657.8 MiB           1           _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+   210    696.6 MiB  -2364.6 MiB           1           del index
+   211    933.3 MiB    236.7 MiB           1           gc.collect()
+   212    933.5 MiB      0.2 MiB           2           return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 22.01s)
+
+[Step 3/7] Fetching documents for batch...
+
+[TIMING] _fetch_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   214    934.1 MiB    934.1 MiB           1       @profile_with_timing
+   215                                             @profile
+   216                                             def _fetch_documents_batch(
+   217                                                 self, doc_id_batches: List[List[int]]
+   218                                             ) -> List[List[Dict]]:
+   219                                                 """Step 4: Fetch documents for each query in the batch using SQLite"""
+   220    934.1 MiB      0.0 MiB           1           db_path = f"{CONFIG['documents_path']}/documents.db"
+   221    935.0 MiB      0.9 MiB           1           conn = sqlite3.connect(db_path)
+   222    935.0 MiB      0.0 MiB           1           cursor = conn.cursor()
+   223    935.0 MiB      0.0 MiB           1           documents_batch = []
+   224    935.7 MiB      0.0 MiB           2           for doc_ids in doc_id_batches:
+   225    935.0 MiB      0.0 MiB           1               documents = []
+   226    935.7 MiB      0.0 MiB          11               for doc_id in doc_ids:
+   227    935.7 MiB      0.7 MiB          20                   cursor.execute(
+   228    935.7 MiB      0.0 MiB          10                       "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+   229    935.7 MiB      0.0 MiB          10                       (doc_id,),
+   230                                                         )
+   231    935.7 MiB      0.0 MiB          10                   result = cursor.fetchone()
+   232    935.7 MiB      0.0 MiB          10                   if result:
+   233    935.7 MiB      0.0 MiB           4                       documents.append(
+   234    935.7 MiB      0.0 MiB           2                           {
+   235    935.7 MiB      0.0 MiB           2                               "doc_id": result[0],
+   236    935.7 MiB      0.0 MiB           2                               "title": result[1],
+   237    935.7 MiB      0.0 MiB           2                               "content": result[2],
+   238    935.7 MiB      0.0 MiB           2                               "category": result[3],
+   239                                                                 }
+   240                                                             )
+   241    935.7 MiB      0.0 MiB           1               documents_batch.append(documents)
+   242    935.7 MiB      0.0 MiB           1           conn.close()
+   243    935.7 MiB      0.0 MiB           1           return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.01s)
+
+[Step 4/7] Reranking documents for batch...
+
+[TIMING] _rerank_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   245    935.7 MiB    935.7 MiB           1       @profile_with_timing
+   246                                             @profile
+   247                                             def _rerank_documents_batch(
+   248                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   249                                             ) -> List[List[Dict]]:
+   250                                                 """Step 5: Rerank retrieved documents for each query in the batch"""
+   251   1268.0 MiB    332.2 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.reranker_model_name)
+   252   1273.8 MiB      5.7 MiB           3           model = AutoModelForSequenceClassification.from_pretrained(
+   253   1268.0 MiB      0.0 MiB           1               self.reranker_model_name
+   254   1273.8 MiB      0.1 MiB           1           ).to(self.device)
+   255   1273.8 MiB      0.0 MiB           1           model.eval()
+   256   1273.8 MiB      0.0 MiB           1           reranked_batches = []
+   257   1609.4 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   258   1273.8 MiB      0.0 MiB           1               if not documents:
+   259                                                         reranked_batches.append([])
+   260                                                         continue
+   261   1273.8 MiB      0.0 MiB           3               pairs = [[query, doc["content"]] for doc in documents]
+   262   1609.2 MiB      0.0 MiB           2               with torch.no_grad():
+   263   1274.1 MiB      0.3 MiB           3                   inputs = tokenizer(
+   264   1273.8 MiB      0.0 MiB           1                       pairs,
+   265   1273.8 MiB      0.0 MiB           1                       padding=True,
+   266   1273.8 MiB      0.0 MiB           1                       truncation=True,
+   267   1273.8 MiB      0.0 MiB           1                       return_tensors="pt",
+   268   1273.8 MiB      0.0 MiB           1                       max_length=CONFIG["truncate_length"],
+   269   1274.1 MiB      0.0 MiB           1                   ).to(self.device)
+   270   1609.2 MiB      0.0 MiB           1                   scores = (
+   271   1609.2 MiB    335.2 MiB           1                       model(**inputs, return_dict=True)
+   272   1609.2 MiB      0.0 MiB           2                       .logits.view(
+   273   1609.2 MiB      0.0 MiB           1                           -1,
+   274                                                             )
+   275   1609.2 MiB      0.0 MiB           1                       .float()
+   276                                                         )
+   277   1609.3 MiB      0.1 MiB           1               doc_scores = list(zip(documents, scores))
+   278   1609.4 MiB      0.1 MiB           5               doc_scores.sort(key=lambda x: x[1], reverse=True)
+   279   1609.4 MiB      0.0 MiB           3               reranked_batches.append([doc for doc, _ in doc_scores])
+   280   1087.8 MiB   -521.6 MiB           1           del model, tokenizer
+   281   1087.8 MiB      0.0 MiB           1           gc.collect()
+   282   1087.8 MiB      0.0 MiB           1           return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 1.92s)
+
+[Step 5/7] Generating LLM responses for batch...
+
+[TIMING] _generate_responses_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   284   1086.8 MiB   1086.8 MiB           1       @profile_with_timing
+   285                                             @profile
+   286                                             def _generate_responses_batch(
+   287                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   288                                             ) -> List[str]:
+   289                                                 """Step 6: Generate LLM responses for each query in the batch"""
+   290   1931.7 MiB    844.8 MiB           3           model = AutoModelForCausalLM.from_pretrained(
+   291   1086.8 MiB      0.0 MiB           1               self.llm_model_name,
+   292   1086.8 MiB      0.0 MiB           1               dtype=torch.float16,
+   293   1931.7 MiB      0.0 MiB           1           ).to(self.device)
+   294   2008.7 MiB     77.0 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.llm_model_name)
+   295   2008.7 MiB      0.0 MiB           1           responses = []
+   296   2025.0 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   297   2008.7 MiB      0.0 MiB           2               context = "\n".join(
+   298   2008.7 MiB      0.0 MiB           3                   [f"- {doc['title']}: {doc['content'][:200]}" for doc in documents[:3]]
+   299                                                     )
+   300   2008.7 MiB      0.0 MiB           1               messages = [
+   301   2008.7 MiB      0.0 MiB           1                   {
+   302   2008.7 MiB      0.0 MiB           1                       "role": "system",
+   303   2008.7 MiB      0.0 MiB           1                       "content": "When given Context and Question, reply as 'Answer: <final answer>' only.",
+   304                                                         },
+   305   2008.7 MiB      0.0 MiB           1                   {
+   306   2008.7 MiB      0.0 MiB           1                       "role": "user",
+   307   2008.7 MiB      0.0 MiB           1                       "content": f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:",
+   308                                                         },
+   309                                                     ]
+   310   2008.7 MiB      0.0 MiB           2               text = tokenizer.apply_chat_template(
+   311   2008.7 MiB      0.0 MiB           1                   messages, tokenize=False, add_generation_prompt=True
+   312                                                     )
+   313   2008.8 MiB      0.1 MiB           1               model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+   314   2025.0 MiB     16.2 MiB           3               generated_ids = model.generate(
+   315   2008.8 MiB      0.0 MiB           1                   **model_inputs,
+   316   2008.8 MiB      0.0 MiB           1                   max_new_tokens=CONFIG["max_tokens"],
+   317   2008.8 MiB      0.0 MiB           1                   temperature=0.01,
+   318   2008.8 MiB      0.0 MiB           1                   pad_token_id=tokenizer.eos_token_id,
+   319                                                     )
+   320   2025.0 MiB      0.0 MiB           2               generated_ids = [
+   321   2025.0 MiB      0.0 MiB           1                   output_ids[len(input_ids) :]
+   322   2025.0 MiB      0.0 MiB           3                   for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+   323                                                     ]
+   324   2025.0 MiB      0.0 MiB           2               response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[
+   325   2025.0 MiB      0.0 MiB           1                   0
+   326                                                     ]
+   327   2025.0 MiB      0.0 MiB           1               responses.append(response)
+   328    702.3 MiB  -1322.7 MiB           1           del model, tokenizer
+   329    702.3 MiB      0.0 MiB           1           gc.collect()
+   330    702.3 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] _generate_responses_batch - END (took 5.38s)
+
+[Step 6/7] Analyzing sentiment for batch...
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   332    702.4 MiB    702.4 MiB           1       @profile_with_timing
+   333                                             @profile
+   334                                             def _analyze_sentiment_batch(self, texts: List[str]) -> List[str]:
+   335                                                 """Step 7: Analyze sentiment for each generated response"""
+   336    707.5 MiB      5.2 MiB           2           classifier = hf_pipeline(
+   337    702.4 MiB      0.0 MiB           1               "sentiment-analysis", model=self.sentiment_model_name, device=self.device
+   338                                                 )
+   339    707.5 MiB      0.0 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   340   1035.1 MiB    327.6 MiB           1           raw_results = classifier(truncated_texts)
+   341   1035.1 MiB      0.0 MiB           1           sentiment_map = {
+   342   1035.1 MiB      0.0 MiB           1               "1 star": "very negative",
+   343   1035.1 MiB      0.0 MiB           1               "2 stars": "negative",
+   344   1035.1 MiB      0.0 MiB           1               "3 stars": "neutral",
+   345   1035.1 MiB      0.0 MiB           1               "4 stars": "positive",
+   346   1035.1 MiB      0.0 MiB           1               "5 stars": "very positive",
+   347                                                 }
+   348   1035.1 MiB      0.0 MiB           1           sentiments = []
+   349   1035.1 MiB      0.0 MiB           2           for result in raw_results:
+   350   1035.1 MiB      0.0 MiB           1               sentiments.append(sentiment_map.get(result["label"], "neutral"))
+   351    707.4 MiB   -327.8 MiB           1           del classifier
+   352    707.4 MiB      0.0 MiB           1           gc.collect()
+   353    707.4 MiB      0.0 MiB           1           return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.70s)
+
+[Step 7/7] Applying safety filter to batch...
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   355    707.4 MiB    707.4 MiB           1       @profile_with_timing
+   356                                             @profile
+   357                                             def _filter_response_safety_batch(self, texts: List[str]) -> List[bool]:
+   358                                                 """Step 8: Filter responses for safety for each entry in the batch"""
+   359    707.4 MiB     -6.5 MiB           2           classifier = hf_pipeline(
+   360    707.4 MiB      0.0 MiB           1               "text-classification", model=self.safety_model_name, device=self.device
+   361                                                 )
+   362    700.9 MiB     -6.5 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   363   1027.1 MiB    326.2 MiB           1           raw_results = classifier(truncated_texts)
+   364   1027.1 MiB      0.0 MiB           1           toxicity_flags = []
+   365   1027.1 MiB      0.0 MiB           2           for result in raw_results:
+   366   1027.1 MiB      0.0 MiB           1               toxicity_flags.append(result["score"] > 0.5)
+   367    699.3 MiB   -327.7 MiB           1           del classifier
+   368    699.3 MiB      0.0 MiB           1           gc.collect()
+   369    699.3 MiB      0.0 MiB           1           return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.39s)
+
+✓ Request req_1763355062_2 processed in 35.89 seconds
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   119    711.7 MiB    711.7 MiB           1       @profile_with_timing
+   120                                             @profile
+   121                                             def process_batch(self, requests: List[PipelineRequest]) -> List[PipelineResponse]:
+   122                                                 """
+   123                                                 Main pipeline execution for a batch of requests.
+   124                                                 """
+   125    711.7 MiB      0.0 MiB           1           if not requests:
+   126                                                     return []
+   127                                         
+   128    711.7 MiB      0.0 MiB           1           batch_size = len(requests)
+   129    711.7 MiB      0.0 MiB           2           start_times = [time.time() for _ in requests]
+   130    711.7 MiB      0.0 MiB           2           queries = [req.query for req in requests]
+   131                                         
+   132    711.7 MiB      0.0 MiB           1           print("\n" + "=" * 60)
+   133    711.7 MiB      0.0 MiB           1           print(f"Processing batch of {batch_size} requests")
+   134    711.7 MiB      0.0 MiB           1           print("=" * 60)
+   135    711.7 MiB      0.0 MiB           2           for request in requests:
+   136    711.7 MiB      0.0 MiB           1               print(f"- {request.request_id}: {request.query[:50]}...")
+   137                                         
+   138                                                 # Step 1: Generate embeddings
+   139    711.7 MiB      0.0 MiB           1           print("\n[Step 1/7] Generating embeddings for batch...")
+   140    814.0 MiB    102.3 MiB           1           query_embeddings = self._generate_embeddings_batch(queries)
+   141                                         
+   142                                                 # Step 2: FAISS ANN search
+   143    814.0 MiB      0.0 MiB           1           print("\n[Step 2/7] Performing FAISS ANN search for batch...")
+   144    933.8 MiB    119.9 MiB           1           doc_id_batches = self._faiss_search_batch(query_embeddings)
+   145                                         
+   146                                                 # Step 3: Fetch documents from disk
+   147    933.8 MiB      0.0 MiB           1           print("\n[Step 3/7] Fetching documents for batch...")
+   148    935.7 MiB      1.9 MiB           1           documents_batch = self._fetch_documents_batch(doc_id_batches)
+   149                                         
+   150                                                 # Step 4: Rerank documents
+   151    935.7 MiB      0.0 MiB           1           print("\n[Step 4/7] Reranking documents for batch...")
+   152   1086.8 MiB    151.1 MiB           1           reranked_docs_batch = self._rerank_documents_batch(queries, documents_batch)
+   153                                         
+   154                                                 # Step 5: Generate LLM responses
+   155   1086.8 MiB      0.0 MiB           1           print("\n[Step 5/7] Generating LLM responses for batch...")
+   156    702.3 MiB   -384.5 MiB           1           responses_text = self._generate_responses_batch(queries, reranked_docs_batch)
+   157                                         
+   158                                                 # Step 6: Sentiment analysis
+   159    702.3 MiB      0.0 MiB           1           print("\n[Step 6/7] Analyzing sentiment for batch...")
+   160    707.4 MiB      5.0 MiB           1           sentiments = self._analyze_sentiment_batch(responses_text)
+   161                                         
+   162                                                 # Step 7: Safety filter on responses
+   163    707.4 MiB      0.0 MiB           1           print("\n[Step 7/7] Applying safety filter to batch...")
+   164    699.3 MiB     -8.0 MiB           1           toxicity_flags = self._filter_response_safety_batch(responses_text)
+   165                                         
+   166    699.3 MiB      0.0 MiB           1           responses = []
+   167    699.3 MiB      0.0 MiB           2           for idx, request in enumerate(requests):
+   168    699.3 MiB      0.0 MiB           1               processing_time = time.time() - start_times[idx]
+   169    699.3 MiB      0.0 MiB           2               print(
+   170    699.3 MiB      0.0 MiB           1                   f"\n✓ Request {request.request_id} processed in {processing_time:.2f} seconds"
+   171                                                     )
+   172    699.3 MiB      0.0 MiB           1               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   173    699.3 MiB      0.0 MiB           2               responses.append(
+   174    699.3 MiB      0.0 MiB           2                   PipelineResponse(
+   175    699.3 MiB      0.0 MiB           1                       request_id=request.request_id,
+   176    699.3 MiB      0.0 MiB           1                       generated_response=responses_text[idx],
+   177    699.3 MiB      0.0 MiB           1                       sentiment=sentiments[idx],
+   178    699.3 MiB      0.0 MiB           1                       is_toxic=sensitivity_result,
+   179    699.3 MiB      0.0 MiB           1                       processing_time=processing_time,
+   180                                                         )
+   181                                                     )
+   182                                         
+   183    699.3 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] process_batch - END (took 35.89s)
+
+[TIMING] process_batch - START
+
+============================================================
+Processing batch of 1 requests
+============================================================
+- req_1763355072_3: How do I update my billing information?...
+
+[Step 1/7] Generating embeddings for batch...
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   185    699.3 MiB    699.3 MiB           1       @profile_with_timing
+   186                                             @profile
+   187                                             def _generate_embeddings_batch(self, texts: List[str]) -> np.ndarray:
+   188                                                 """Step 2: Generate embeddings for a batch of queries"""
+   189    694.2 MiB     -5.2 MiB           1           model = SentenceTransformer(self.embedding_model_name).to(self.device)
+   190    950.6 MiB    256.5 MiB           2           embeddings = model.encode(
+   191    694.2 MiB      0.0 MiB           1               texts, normalize_embeddings=True, convert_to_numpy=True
+   192                                                 )
+   193    950.6 MiB      0.0 MiB           1           del model
+   194    770.1 MiB   -180.5 MiB           1           gc.collect()
+   195    770.1 MiB      0.0 MiB           1           return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 3.28s)
+
+[Step 2/7] Performing FAISS ANN search for batch...
+
+[TIMING] _faiss_search_batch - START
+Loading FAISS index
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   197    770.1 MiB    770.1 MiB           1       @profile_with_timing
+   198                                             @profile
+   199                                             def _faiss_search_batch(self, query_embeddings: np.ndarray) -> List[List[int]]:
+   200                                                 """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+   201    770.1 MiB      0.0 MiB           1           if not os.path.exists(CONFIG["faiss_index_path"]):
+   202                                                     raise FileNotFoundError(
+   203                                                         "FAISS index not found. Please create the index before running the pipeline."
+   204                                                     )
+   205                                         
+   206    770.1 MiB      0.0 MiB           1           print("Loading FAISS index")
+   207   1314.2 MiB    544.0 MiB           1           index = faiss.read_index(CONFIG["faiss_index_path"])
+   208   1314.9 MiB      0.8 MiB           1           query_embeddings = query_embeddings.astype("float32")
+   209   4464.8 MiB   3149.9 MiB           1           _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+   210    691.7 MiB  -3773.1 MiB           1           del index
+   211    928.3 MiB    236.6 MiB           1           gc.collect()
+   212    928.4 MiB      0.2 MiB           2           return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 17.53s)
+
+[Step 3/7] Fetching documents for batch...
+
+[TIMING] _fetch_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   214    929.1 MiB    929.1 MiB           1       @profile_with_timing
+   215                                             @profile
+   216                                             def _fetch_documents_batch(
+   217                                                 self, doc_id_batches: List[List[int]]
+   218                                             ) -> List[List[Dict]]:
+   219                                                 """Step 4: Fetch documents for each query in the batch using SQLite"""
+   220    929.1 MiB      0.0 MiB           1           db_path = f"{CONFIG['documents_path']}/documents.db"
+   221    929.9 MiB      0.8 MiB           1           conn = sqlite3.connect(db_path)
+   222    929.9 MiB      0.0 MiB           1           cursor = conn.cursor()
+   223    929.9 MiB      0.0 MiB           1           documents_batch = []
+   224    930.6 MiB      0.0 MiB           2           for doc_ids in doc_id_batches:
+   225    929.9 MiB      0.0 MiB           1               documents = []
+   226    930.6 MiB      0.0 MiB          11               for doc_id in doc_ids:
+   227    930.6 MiB      0.7 MiB          20                   cursor.execute(
+   228    930.6 MiB      0.0 MiB          10                       "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+   229    930.6 MiB      0.0 MiB          10                       (doc_id,),
+   230                                                         )
+   231    930.6 MiB      0.0 MiB          10                   result = cursor.fetchone()
+   232    930.6 MiB      0.0 MiB          10                   if result:
+   233    930.6 MiB      0.0 MiB           8                       documents.append(
+   234    930.6 MiB      0.0 MiB           4                           {
+   235    930.6 MiB      0.0 MiB           4                               "doc_id": result[0],
+   236    930.6 MiB      0.0 MiB           4                               "title": result[1],
+   237    930.6 MiB      0.0 MiB           4                               "content": result[2],
+   238    930.6 MiB      0.0 MiB           4                               "category": result[3],
+   239                                                                 }
+   240                                                             )
+   241    930.6 MiB      0.0 MiB           1               documents_batch.append(documents)
+   242    930.7 MiB      0.1 MiB           1           conn.close()
+   243    930.7 MiB      0.0 MiB           1           return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.01s)
+
+[Step 4/7] Reranking documents for batch...
+
+[TIMING] _rerank_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   245    930.7 MiB    930.7 MiB           1       @profile_with_timing
+   246                                             @profile
+   247                                             def _rerank_documents_batch(
+   248                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   249                                             ) -> List[List[Dict]]:
+   250                                                 """Step 5: Rerank retrieved documents for each query in the batch"""
+   251   1263.0 MiB    332.3 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.reranker_model_name)
+   252   1271.7 MiB      8.6 MiB           3           model = AutoModelForSequenceClassification.from_pretrained(
+   253   1263.0 MiB      0.0 MiB           1               self.reranker_model_name
+   254   1271.7 MiB      0.1 MiB           1           ).to(self.device)
+   255   1271.7 MiB      0.0 MiB           1           model.eval()
+   256   1271.7 MiB      0.0 MiB           1           reranked_batches = []
+   257   1612.5 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   258   1271.7 MiB      0.0 MiB           1               if not documents:
+   259                                                         reranked_batches.append([])
+   260                                                         continue
+   261   1271.7 MiB      0.0 MiB           5               pairs = [[query, doc["content"]] for doc in documents]
+   262   1612.4 MiB      0.0 MiB           2               with torch.no_grad():
+   263   1272.0 MiB      0.3 MiB           3                   inputs = tokenizer(
+   264   1271.7 MiB      0.0 MiB           1                       pairs,
+   265   1271.7 MiB      0.0 MiB           1                       padding=True,
+   266   1271.7 MiB      0.0 MiB           1                       truncation=True,
+   267   1271.7 MiB      0.0 MiB           1                       return_tensors="pt",
+   268   1271.7 MiB      0.0 MiB           1                       max_length=CONFIG["truncate_length"],
+   269   1272.0 MiB      0.0 MiB           1                   ).to(self.device)
+   270   1612.4 MiB      0.0 MiB           1                   scores = (
+   271   1612.4 MiB    340.3 MiB           1                       model(**inputs, return_dict=True)
+   272   1612.4 MiB      0.0 MiB           2                       .logits.view(
+   273   1612.4 MiB      0.0 MiB           1                           -1,
+   274                                                             )
+   275   1612.4 MiB      0.0 MiB           1                       .float()
+   276                                                         )
+   277   1612.4 MiB      0.1 MiB           1               doc_scores = list(zip(documents, scores))
+   278   1612.5 MiB      0.1 MiB           9               doc_scores.sort(key=lambda x: x[1], reverse=True)
+   279   1612.5 MiB      0.0 MiB           5               reranked_batches.append([doc for doc, _ in doc_scores])
+   280   1091.8 MiB   -520.7 MiB           1           del model, tokenizer
+   281   1090.8 MiB     -1.0 MiB           1           gc.collect()
+   282   1090.8 MiB      0.0 MiB           1           return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 1.89s)
+
+[Step 5/7] Generating LLM responses for batch...
+
+[TIMING] _generate_responses_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   284   1089.8 MiB   1089.8 MiB           1       @profile_with_timing
+   285                                             @profile
+   286                                             def _generate_responses_batch(
+   287                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   288                                             ) -> List[str]:
+   289                                                 """Step 6: Generate LLM responses for each query in the batch"""
+   290   1927.8 MiB    838.0 MiB           3           model = AutoModelForCausalLM.from_pretrained(
+   291   1089.8 MiB      0.0 MiB           1               self.llm_model_name,
+   292   1089.8 MiB      0.0 MiB           1               dtype=torch.float16,
+   293   1927.8 MiB      0.0 MiB           1           ).to(self.device)
+   294   1985.9 MiB     58.1 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.llm_model_name)
+   295   1985.9 MiB      0.0 MiB           1           responses = []
+   296   2007.3 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   297   1985.9 MiB      0.0 MiB           2               context = "\n".join(
+   298   1985.9 MiB      0.0 MiB           4                   [f"- {doc['title']}: {doc['content'][:200]}" for doc in documents[:3]]
+   299                                                     )
+   300   1985.9 MiB      0.0 MiB           1               messages = [
+   301   1985.9 MiB      0.0 MiB           1                   {
+   302   1985.9 MiB      0.0 MiB           1                       "role": "system",
+   303   1985.9 MiB      0.0 MiB           1                       "content": "When given Context and Question, reply as 'Answer: <final answer>' only.",
+   304                                                         },
+   305   1985.9 MiB      0.0 MiB           1                   {
+   306   1985.9 MiB      0.0 MiB           1                       "role": "user",
+   307   1985.9 MiB      0.0 MiB           1                       "content": f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:",
+   308                                                         },
+   309                                                     ]
+   310   1985.9 MiB      0.0 MiB           2               text = tokenizer.apply_chat_template(
+   311   1985.9 MiB      0.0 MiB           1                   messages, tokenize=False, add_generation_prompt=True
+   312                                                     )
+   313   1986.5 MiB      0.7 MiB           1               model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+   314   2007.3 MiB     20.8 MiB           3               generated_ids = model.generate(
+   315   1986.5 MiB      0.0 MiB           1                   **model_inputs,
+   316   1986.5 MiB      0.0 MiB           1                   max_new_tokens=CONFIG["max_tokens"],
+   317   1986.5 MiB      0.0 MiB           1                   temperature=0.01,
+   318   1986.5 MiB      0.0 MiB           1                   pad_token_id=tokenizer.eos_token_id,
+   319                                                     )
+   320   2007.3 MiB      0.0 MiB           2               generated_ids = [
+   321   2007.3 MiB      0.0 MiB           1                   output_ids[len(input_ids) :]
+   322   2007.3 MiB      0.0 MiB           3                   for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+   323                                                     ]
+   324   2007.3 MiB      0.0 MiB           2               response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[
+   325   2007.3 MiB      0.0 MiB           1                   0
+   326                                                     ]
+   327   2007.3 MiB      0.0 MiB           1               responses.append(response)
+   328    684.7 MiB  -1322.7 MiB           1           del model, tokenizer
+   329    684.7 MiB      0.0 MiB           1           gc.collect()
+   330    684.7 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] _generate_responses_batch - END (took 9.28s)
+
+[Step 6/7] Analyzing sentiment for batch...
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   332    684.7 MiB    684.7 MiB           1       @profile_with_timing
+   333                                             @profile
+   334                                             def _analyze_sentiment_batch(self, texts: List[str]) -> List[str]:
+   335                                                 """Step 7: Analyze sentiment for each generated response"""
+   336    690.9 MiB      6.2 MiB           2           classifier = hf_pipeline(
+   337    684.7 MiB      0.0 MiB           1               "sentiment-analysis", model=self.sentiment_model_name, device=self.device
+   338                                                 )
+   339    690.9 MiB      0.0 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   340   1019.0 MiB    328.1 MiB           1           raw_results = classifier(truncated_texts)
+   341   1019.0 MiB      0.0 MiB           1           sentiment_map = {
+   342   1019.0 MiB      0.0 MiB           1               "1 star": "very negative",
+   343   1019.0 MiB      0.0 MiB           1               "2 stars": "negative",
+   344   1019.0 MiB      0.0 MiB           1               "3 stars": "neutral",
+   345   1019.0 MiB      0.0 MiB           1               "4 stars": "positive",
+   346   1019.0 MiB      0.0 MiB           1               "5 stars": "very positive",
+   347                                                 }
+   348   1019.0 MiB      0.0 MiB           1           sentiments = []
+   349   1019.0 MiB      0.0 MiB           2           for result in raw_results:
+   350   1019.0 MiB      0.0 MiB           1               sentiments.append(sentiment_map.get(result["label"], "neutral"))
+   351    690.8 MiB   -328.2 MiB           1           del classifier
+   352    690.8 MiB      0.0 MiB           1           gc.collect()
+   353    690.8 MiB      0.0 MiB           1           return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.90s)
+
+[Step 7/7] Applying safety filter to batch...
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   355    690.8 MiB    690.8 MiB           1       @profile_with_timing
+   356                                             @profile
+   357                                             def _filter_response_safety_batch(self, texts: List[str]) -> List[bool]:
+   358                                                 """Step 8: Filter responses for safety for each entry in the batch"""
+   359    690.8 MiB     -6.4 MiB           2           classifier = hf_pipeline(
+   360    690.8 MiB      0.0 MiB           1               "text-classification", model=self.safety_model_name, device=self.device
+   361                                                 )
+   362    684.3 MiB     -6.4 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   363   1010.8 MiB    326.4 MiB           1           raw_results = classifier(truncated_texts)
+   364   1010.8 MiB      0.0 MiB           1           toxicity_flags = []
+   365   1010.8 MiB      0.0 MiB           2           for result in raw_results:
+   366   1010.8 MiB      0.0 MiB           1               toxicity_flags.append(result["score"] > 0.5)
+   367    682.8 MiB   -328.0 MiB           1           del classifier
+   368    682.8 MiB      0.0 MiB           1           gc.collect()
+   369    682.8 MiB      0.0 MiB           1           return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.47s)
+
+✓ Request req_1763355072_3 processed in 35.36 seconds
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   119    699.3 MiB    699.3 MiB           1       @profile_with_timing
+   120                                             @profile
+   121                                             def process_batch(self, requests: List[PipelineRequest]) -> List[PipelineResponse]:
+   122                                                 """
+   123                                                 Main pipeline execution for a batch of requests.
+   124                                                 """
+   125    699.3 MiB      0.0 MiB           1           if not requests:
+   126                                                     return []
+   127                                         
+   128    699.3 MiB      0.0 MiB           1           batch_size = len(requests)
+   129    699.3 MiB      0.0 MiB           2           start_times = [time.time() for _ in requests]
+   130    699.3 MiB      0.0 MiB           2           queries = [req.query for req in requests]
+   131                                         
+   132    699.3 MiB      0.0 MiB           1           print("\n" + "=" * 60)
+   133    699.3 MiB      0.0 MiB           1           print(f"Processing batch of {batch_size} requests")
+   134    699.3 MiB      0.0 MiB           1           print("=" * 60)
+   135    699.3 MiB      0.0 MiB           2           for request in requests:
+   136    699.3 MiB      0.0 MiB           1               print(f"- {request.request_id}: {request.query[:50]}...")
+   137                                         
+   138                                                 # Step 1: Generate embeddings
+   139    699.3 MiB      0.0 MiB           1           print("\n[Step 1/7] Generating embeddings for batch...")
+   140    770.1 MiB     70.8 MiB           1           query_embeddings = self._generate_embeddings_batch(queries)
+   141                                         
+   142                                                 # Step 2: FAISS ANN search
+   143    770.1 MiB      0.0 MiB           1           print("\n[Step 2/7] Performing FAISS ANN search for batch...")
+   144    928.8 MiB    158.6 MiB           1           doc_id_batches = self._faiss_search_batch(query_embeddings)
+   145                                         
+   146                                                 # Step 3: Fetch documents from disk
+   147    928.8 MiB      0.0 MiB           1           print("\n[Step 3/7] Fetching documents for batch...")
+   148    930.7 MiB      1.9 MiB           1           documents_batch = self._fetch_documents_batch(doc_id_batches)
+   149                                         
+   150                                                 # Step 4: Rerank documents
+   151    930.7 MiB      0.0 MiB           1           print("\n[Step 4/7] Reranking documents for batch...")
+   152   1089.8 MiB    159.1 MiB           1           reranked_docs_batch = self._rerank_documents_batch(queries, documents_batch)
+   153                                         
+   154                                                 # Step 5: Generate LLM responses
+   155   1089.8 MiB      0.0 MiB           1           print("\n[Step 5/7] Generating LLM responses for batch...")
+   156    684.7 MiB   -405.1 MiB           1           responses_text = self._generate_responses_batch(queries, reranked_docs_batch)
+   157                                         
+   158                                                 # Step 6: Sentiment analysis
+   159    684.7 MiB      0.0 MiB           1           print("\n[Step 6/7] Analyzing sentiment for batch...")
+   160    690.8 MiB      6.1 MiB           1           sentiments = self._analyze_sentiment_batch(responses_text)
+   161                                         
+   162                                                 # Step 7: Safety filter on responses
+   163    690.8 MiB      0.0 MiB           1           print("\n[Step 7/7] Applying safety filter to batch...")
+   164    682.8 MiB     -8.0 MiB           1           toxicity_flags = self._filter_response_safety_batch(responses_text)
+   165                                         
+   166    682.8 MiB      0.0 MiB           1           responses = []
+   167    682.8 MiB      0.0 MiB           2           for idx, request in enumerate(requests):
+   168    682.8 MiB      0.0 MiB           1               processing_time = time.time() - start_times[idx]
+   169    682.8 MiB      0.0 MiB           2               print(
+   170    682.8 MiB      0.0 MiB           1                   f"\n✓ Request {request.request_id} processed in {processing_time:.2f} seconds"
+   171                                                     )
+   172    682.8 MiB      0.0 MiB           1               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   173    682.8 MiB      0.0 MiB           2               responses.append(
+   174    682.8 MiB      0.0 MiB           2                   PipelineResponse(
+   175    682.8 MiB      0.0 MiB           1                       request_id=request.request_id,
+   176    682.8 MiB      0.0 MiB           1                       generated_response=responses_text[idx],
+   177    682.8 MiB      0.0 MiB           1                       sentiment=sentiments[idx],
+   178    682.8 MiB      0.0 MiB           1                       is_toxic=sensitivity_result,
+   179    682.8 MiB      0.0 MiB           1                       processing_time=processing_time,
+   180                                                         )
+   181                                                     )
+   182                                         
+   183    682.8 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] process_batch - END (took 35.36s)
+
+[TIMING] process_batch - START
+
+============================================================
+Processing batch of 1 requests
+============================================================
+- req_1763355082_4: Is there a warranty on electronic items?...
+
+[Step 1/7] Generating embeddings for batch...
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   185    682.8 MiB    682.8 MiB           1       @profile_with_timing
+   186                                             @profile
+   187                                             def _generate_embeddings_batch(self, texts: List[str]) -> np.ndarray:
+   188                                                 """Step 2: Generate embeddings for a batch of queries"""
+   189    679.8 MiB     -3.0 MiB           1           model = SentenceTransformer(self.embedding_model_name).to(self.device)
+   190    916.5 MiB    236.7 MiB           2           embeddings = model.encode(
+   191    679.8 MiB      0.0 MiB           1               texts, normalize_embeddings=True, convert_to_numpy=True
+   192                                                 )
+   193    916.5 MiB      0.0 MiB           1           del model
+   194    736.0 MiB   -180.5 MiB           1           gc.collect()
+   195    736.0 MiB      0.0 MiB           1           return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 3.33s)
+
+[Step 2/7] Performing FAISS ANN search for batch...
+
+[TIMING] _faiss_search_batch - START
+Loading FAISS index
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   197    736.0 MiB    736.0 MiB           1       @profile_with_timing
+   198                                             @profile
+   199                                             def _faiss_search_batch(self, query_embeddings: np.ndarray) -> List[List[int]]:
+   200                                                 """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+   201    736.0 MiB      0.0 MiB           1           if not os.path.exists(CONFIG["faiss_index_path"]):
+   202                                                     raise FileNotFoundError(
+   203                                                         "FAISS index not found. Please create the index before running the pipeline."
+   204                                                     )
+   205                                         
+   206    736.0 MiB      0.0 MiB           1           print("Loading FAISS index")
+   207   1395.3 MiB    659.3 MiB           1           index = faiss.read_index(CONFIG["faiss_index_path"])
+   208   1396.4 MiB      1.0 MiB           1           query_embeddings = query_embeddings.astype("float32")
+   209   4589.2 MiB   3192.9 MiB           1           _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+   210    692.2 MiB  -3897.1 MiB           1           del index
+   211    928.6 MiB    236.5 MiB           1           gc.collect()
+   212    928.8 MiB      0.2 MiB           2           return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 17.94s)
+
+[Step 3/7] Fetching documents for batch...
+
+[TIMING] _fetch_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   214    929.4 MiB    929.4 MiB           1       @profile_with_timing
+   215                                             @profile
+   216                                             def _fetch_documents_batch(
+   217                                                 self, doc_id_batches: List[List[int]]
+   218                                             ) -> List[List[Dict]]:
+   219                                                 """Step 4: Fetch documents for each query in the batch using SQLite"""
+   220    929.4 MiB      0.0 MiB           1           db_path = f"{CONFIG['documents_path']}/documents.db"
+   221    930.3 MiB      0.9 MiB           1           conn = sqlite3.connect(db_path)
+   222    930.3 MiB      0.0 MiB           1           cursor = conn.cursor()
+   223    930.3 MiB      0.0 MiB           1           documents_batch = []
+   224    931.1 MiB      0.0 MiB           2           for doc_ids in doc_id_batches:
+   225    930.3 MiB      0.0 MiB           1               documents = []
+   226    931.1 MiB      0.0 MiB          11               for doc_id in doc_ids:
+   227    931.1 MiB      0.8 MiB          20                   cursor.execute(
+   228    931.1 MiB      0.0 MiB          10                       "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+   229    931.1 MiB      0.0 MiB          10                       (doc_id,),
+   230                                                         )
+   231    931.1 MiB      0.0 MiB          10                   result = cursor.fetchone()
+   232    931.1 MiB      0.0 MiB          10                   if result:
+   233    931.1 MiB      0.0 MiB           8                       documents.append(
+   234    931.1 MiB      0.0 MiB           4                           {
+   235    931.1 MiB      0.0 MiB           4                               "doc_id": result[0],
+   236    931.1 MiB      0.0 MiB           4                               "title": result[1],
+   237    931.1 MiB      0.0 MiB           4                               "content": result[2],
+   238    931.1 MiB      0.0 MiB           4                               "category": result[3],
+   239                                                                 }
+   240                                                             )
+   241    931.1 MiB      0.0 MiB           1               documents_batch.append(documents)
+   242    931.1 MiB      0.0 MiB           1           conn.close()
+   243    931.1 MiB      0.0 MiB           1           return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.02s)
+
+[Step 4/7] Reranking documents for batch...
+
+[TIMING] _rerank_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   245    931.1 MiB    931.1 MiB           1       @profile_with_timing
+   246                                             @profile
+   247                                             def _rerank_documents_batch(
+   248                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   249                                             ) -> List[List[Dict]]:
+   250                                                 """Step 5: Rerank retrieved documents for each query in the batch"""
+   251   1281.0 MiB    349.9 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.reranker_model_name)
+   252   1289.7 MiB      8.6 MiB           3           model = AutoModelForSequenceClassification.from_pretrained(
+   253   1281.0 MiB      0.0 MiB           1               self.reranker_model_name
+   254   1289.7 MiB      0.1 MiB           1           ).to(self.device)
+   255   1289.7 MiB      0.0 MiB           1           model.eval()
+   256   1289.7 MiB      0.0 MiB           1           reranked_batches = []
+   257   1639.8 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   258   1289.7 MiB      0.0 MiB           1               if not documents:
+   259                                                         reranked_batches.append([])
+   260                                                         continue
+   261   1289.7 MiB      0.0 MiB           5               pairs = [[query, doc["content"]] for doc in documents]
+   262   1639.7 MiB      0.0 MiB           2               with torch.no_grad():
+   263   1290.4 MiB      0.7 MiB           3                   inputs = tokenizer(
+   264   1289.7 MiB      0.0 MiB           1                       pairs,
+   265   1289.7 MiB      0.0 MiB           1                       padding=True,
+   266   1289.7 MiB      0.0 MiB           1                       truncation=True,
+   267   1289.7 MiB      0.0 MiB           1                       return_tensors="pt",
+   268   1289.7 MiB      0.0 MiB           1                       max_length=CONFIG["truncate_length"],
+   269   1290.4 MiB      0.0 MiB           1                   ).to(self.device)
+   270   1639.7 MiB      0.0 MiB           1                   scores = (
+   271   1639.7 MiB    349.3 MiB           1                       model(**inputs, return_dict=True)
+   272   1639.7 MiB      0.0 MiB           2                       .logits.view(
+   273   1639.7 MiB      0.0 MiB           1                           -1,
+   274                                                             )
+   275   1639.7 MiB      0.0 MiB           1                       .float()
+   276                                                         )
+   277   1639.7 MiB      0.1 MiB           1               doc_scores = list(zip(documents, scores))
+   278   1639.8 MiB      0.1 MiB           9               doc_scores.sort(key=lambda x: x[1], reverse=True)
+   279   1639.8 MiB      0.0 MiB           5               reranked_batches.append([doc for doc, _ in doc_scores])
+   280   1122.8 MiB   -517.0 MiB           1           del model, tokenizer
+   281   1121.8 MiB     -1.0 MiB           1           gc.collect()
+   282   1121.8 MiB      0.0 MiB           1           return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 1.88s)
+
+[Step 5/7] Generating LLM responses for batch...
+
+[TIMING] _generate_responses_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   284   1118.8 MiB   1118.8 MiB           1       @profile_with_timing
+   285                                             @profile
+   286                                             def _generate_responses_batch(
+   287                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   288                                             ) -> List[str]:
+   289                                                 """Step 6: Generate LLM responses for each query in the batch"""
+   290   1969.0 MiB    850.2 MiB           3           model = AutoModelForCausalLM.from_pretrained(
+   291   1118.8 MiB      0.0 MiB           1               self.llm_model_name,
+   292   1118.8 MiB      0.0 MiB           1               dtype=torch.float16,
+   293   1969.0 MiB      0.0 MiB           1           ).to(self.device)
+   294   2032.9 MiB     63.9 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.llm_model_name)
+   295   2032.9 MiB      0.0 MiB           1           responses = []
+   296   2045.7 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   297   2032.9 MiB      0.0 MiB           2               context = "\n".join(
+   298   2032.9 MiB      0.0 MiB           4                   [f"- {doc['title']}: {doc['content'][:200]}" for doc in documents[:3]]
+   299                                                     )
+   300   2032.9 MiB      0.0 MiB           1               messages = [
+   301   2032.9 MiB      0.0 MiB           1                   {
+   302   2032.9 MiB      0.0 MiB           1                       "role": "system",
+   303   2032.9 MiB      0.0 MiB           1                       "content": "When given Context and Question, reply as 'Answer: <final answer>' only.",
+   304                                                         },
+   305   2032.9 MiB      0.0 MiB           1                   {
+   306   2032.9 MiB      0.0 MiB           1                       "role": "user",
+   307   2032.9 MiB      0.0 MiB           1                       "content": f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:",
+   308                                                         },
+   309                                                     ]
+   310   2032.9 MiB      0.0 MiB           2               text = tokenizer.apply_chat_template(
+   311   2032.9 MiB      0.0 MiB           1                   messages, tokenize=False, add_generation_prompt=True
+   312                                                     )
+   313   2033.0 MiB      0.1 MiB           1               model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+   314   2045.7 MiB     12.7 MiB           3               generated_ids = model.generate(
+   315   2033.0 MiB      0.0 MiB           1                   **model_inputs,
+   316   2033.0 MiB      0.0 MiB           1                   max_new_tokens=CONFIG["max_tokens"],
+   317   2033.0 MiB      0.0 MiB           1                   temperature=0.01,
+   318   2033.0 MiB      0.0 MiB           1                   pad_token_id=tokenizer.eos_token_id,
+   319                                                     )
+   320   2045.7 MiB      0.0 MiB           2               generated_ids = [
+   321   2045.7 MiB      0.0 MiB           1                   output_ids[len(input_ids) :]
+   322   2045.7 MiB      0.0 MiB           3                   for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+   323                                                     ]
+   324   2045.7 MiB      0.0 MiB           2               response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[
+   325   2045.7 MiB      0.0 MiB           1                   0
+   326                                                     ]
+   327   2045.7 MiB      0.0 MiB           1               responses.append(response)
+   328    723.0 MiB  -1322.7 MiB           1           del model, tokenizer
+   329    723.0 MiB      0.0 MiB           1           gc.collect()
+   330    723.0 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] _generate_responses_batch - END (took 2.62s)
+
+[Step 6/7] Analyzing sentiment for batch...
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   332    723.0 MiB    723.0 MiB           1       @profile_with_timing
+   333                                             @profile
+   334                                             def _analyze_sentiment_batch(self, texts: List[str]) -> List[str]:
+   335                                                 """Step 7: Analyze sentiment for each generated response"""
+   336    727.6 MiB      4.5 MiB           2           classifier = hf_pipeline(
+   337    723.0 MiB      0.0 MiB           1               "sentiment-analysis", model=self.sentiment_model_name, device=self.device
+   338                                                 )
+   339    727.6 MiB      0.0 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   340   1054.3 MiB    326.8 MiB           1           raw_results = classifier(truncated_texts)
+   341   1054.3 MiB      0.0 MiB           1           sentiment_map = {
+   342   1054.3 MiB      0.0 MiB           1               "1 star": "very negative",
+   343   1054.3 MiB      0.0 MiB           1               "2 stars": "negative",
+   344   1054.3 MiB      0.0 MiB           1               "3 stars": "neutral",
+   345   1054.3 MiB      0.0 MiB           1               "4 stars": "positive",
+   346   1054.3 MiB      0.0 MiB           1               "5 stars": "very positive",
+   347                                                 }
+   348   1054.3 MiB      0.0 MiB           1           sentiments = []
+   349   1054.3 MiB      0.0 MiB           2           for result in raw_results:
+   350   1054.3 MiB      0.0 MiB           1               sentiments.append(sentiment_map.get(result["label"], "neutral"))
+   351    727.5 MiB   -326.9 MiB           1           del classifier
+   352    727.5 MiB      0.0 MiB           1           gc.collect()
+   353    727.5 MiB      0.0 MiB           1           return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.82s)
+
+[Step 7/7] Applying safety filter to batch...
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   355    727.5 MiB    727.5 MiB           1       @profile_with_timing
+   356                                             @profile
+   357                                             def _filter_response_safety_batch(self, texts: List[str]) -> List[bool]:
+   358                                                 """Step 8: Filter responses for safety for each entry in the batch"""
+   359    727.5 MiB     -5.6 MiB           2           classifier = hf_pipeline(
+   360    727.5 MiB      0.0 MiB           1               "text-classification", model=self.safety_model_name, device=self.device
+   361                                                 )
+   362    721.9 MiB     -5.6 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   363   1047.2 MiB    325.3 MiB           1           raw_results = classifier(truncated_texts)
+   364   1047.2 MiB      0.0 MiB           1           toxicity_flags = []
+   365   1047.2 MiB      0.0 MiB           2           for result in raw_results:
+   366   1047.2 MiB      0.0 MiB           1               toxicity_flags.append(result["score"] > 0.5)
+   367    720.3 MiB   -326.9 MiB           1           del classifier
+   368    720.3 MiB      0.0 MiB           1           gc.collect()
+   369    720.3 MiB      0.0 MiB           1           return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.42s)
+
+✓ Request req_1763355082_4 processed in 29.05 seconds
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   119    682.8 MiB    682.8 MiB           1       @profile_with_timing
+   120                                             @profile
+   121                                             def process_batch(self, requests: List[PipelineRequest]) -> List[PipelineResponse]:
+   122                                                 """
+   123                                                 Main pipeline execution for a batch of requests.
+   124                                                 """
+   125    682.8 MiB      0.0 MiB           1           if not requests:
+   126                                                     return []
+   127                                         
+   128    682.8 MiB      0.0 MiB           1           batch_size = len(requests)
+   129    682.8 MiB      0.0 MiB           2           start_times = [time.time() for _ in requests]
+   130    682.8 MiB      0.0 MiB           2           queries = [req.query for req in requests]
+   131                                         
+   132    682.8 MiB      0.0 MiB           1           print("\n" + "=" * 60)
+   133    682.8 MiB      0.0 MiB           1           print(f"Processing batch of {batch_size} requests")
+   134    682.8 MiB      0.0 MiB           1           print("=" * 60)
+   135    682.8 MiB      0.0 MiB           2           for request in requests:
+   136    682.8 MiB      0.0 MiB           1               print(f"- {request.request_id}: {request.query[:50]}...")
+   137                                         
+   138                                                 # Step 1: Generate embeddings
+   139    682.8 MiB      0.0 MiB           1           print("\n[Step 1/7] Generating embeddings for batch...")
+   140    736.0 MiB     53.2 MiB           1           query_embeddings = self._generate_embeddings_batch(queries)
+   141                                         
+   142                                                 # Step 2: FAISS ANN search
+   143    736.0 MiB      0.0 MiB           1           print("\n[Step 2/7] Performing FAISS ANN search for batch...")
+   144    929.1 MiB    193.1 MiB           1           doc_id_batches = self._faiss_search_batch(query_embeddings)
+   145                                         
+   146                                                 # Step 3: Fetch documents from disk
+   147    929.1 MiB      0.0 MiB           1           print("\n[Step 3/7] Fetching documents for batch...")
+   148    931.1 MiB      2.0 MiB           1           documents_batch = self._fetch_documents_batch(doc_id_batches)
+   149                                         
+   150                                                 # Step 4: Rerank documents
+   151    931.1 MiB      0.0 MiB           1           print("\n[Step 4/7] Reranking documents for batch...")
+   152   1118.8 MiB    187.7 MiB           1           reranked_docs_batch = self._rerank_documents_batch(queries, documents_batch)
+   153                                         
+   154                                                 # Step 5: Generate LLM responses
+   155   1118.8 MiB      0.0 MiB           1           print("\n[Step 5/7] Generating LLM responses for batch...")
+   156    723.0 MiB   -395.8 MiB           1           responses_text = self._generate_responses_batch(queries, reranked_docs_batch)
+   157                                         
+   158                                                 # Step 6: Sentiment analysis
+   159    723.0 MiB      0.0 MiB           1           print("\n[Step 6/7] Analyzing sentiment for batch...")
+   160    727.5 MiB      4.5 MiB           1           sentiments = self._analyze_sentiment_batch(responses_text)
+   161                                         
+   162                                                 # Step 7: Safety filter on responses
+   163    727.5 MiB      0.0 MiB           1           print("\n[Step 7/7] Applying safety filter to batch...")
+   164    720.3 MiB     -7.2 MiB           1           toxicity_flags = self._filter_response_safety_batch(responses_text)
+   165                                         
+   166    720.3 MiB      0.0 MiB           1           responses = []
+   167    720.3 MiB      0.0 MiB           2           for idx, request in enumerate(requests):
+   168    720.3 MiB      0.0 MiB           1               processing_time = time.time() - start_times[idx]
+   169    720.3 MiB      0.0 MiB           2               print(
+   170    720.3 MiB      0.0 MiB           1                   f"\n✓ Request {request.request_id} processed in {processing_time:.2f} seconds"
+   171                                                     )
+   172    720.3 MiB      0.0 MiB           1               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   173    720.3 MiB      0.0 MiB           2               responses.append(
+   174    720.3 MiB      0.0 MiB           2                   PipelineResponse(
+   175    720.3 MiB      0.0 MiB           1                       request_id=request.request_id,
+   176    720.3 MiB      0.0 MiB           1                       generated_response=responses_text[idx],
+   177    720.3 MiB      0.0 MiB           1                       sentiment=sentiments[idx],
+   178    720.3 MiB      0.0 MiB           1                       is_toxic=sensitivity_result,
+   179    720.3 MiB      0.0 MiB           1                       processing_time=processing_time,
+   180                                                         )
+   181                                                     )
+   182                                         
+   183    720.3 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] process_batch - END (took 29.05s)
+
+[TIMING] process_batch - START
+
+============================================================
+Processing batch of 1 requests
+============================================================
+- req_1763355092_5: Can I change my shipping address after placing an ...
+
+[Step 1/7] Generating embeddings for batch...
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   185    719.3 MiB    719.3 MiB           1       @profile_with_timing
+   186                                             @profile
+   187                                             def _generate_embeddings_batch(self, texts: List[str]) -> np.ndarray:
+   188                                                 """Step 2: Generate embeddings for a batch of queries"""
+   189    713.1 MiB     -6.2 MiB           1           model = SentenceTransformer(self.embedding_model_name).to(self.device)
+   190    995.8 MiB    282.7 MiB           2           embeddings = model.encode(
+   191    713.1 MiB      0.0 MiB           1               texts, normalize_embeddings=True, convert_to_numpy=True
+   192                                                 )
+   193    995.8 MiB      0.0 MiB           1           del model
+   194    815.2 MiB   -180.6 MiB           1           gc.collect()
+   195    815.2 MiB      0.0 MiB           1           return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 3.23s)
+
+[Step 2/7] Performing FAISS ANN search for batch...
+
+[TIMING] _faiss_search_batch - START
+Loading FAISS index
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   197    815.2 MiB    815.2 MiB           1       @profile_with_timing
+   198                                             @profile
+   199                                             def _faiss_search_batch(self, query_embeddings: np.ndarray) -> List[List[int]]:
+   200                                                 """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+   201    815.2 MiB      0.0 MiB           1           if not os.path.exists(CONFIG["faiss_index_path"]):
+   202                                                     raise FileNotFoundError(
+   203                                                         "FAISS index not found. Please create the index before running the pipeline."
+   204                                                     )
+   205                                         
+   206    815.2 MiB      0.0 MiB           1           print("Loading FAISS index")
+   207   1498.5 MiB    683.3 MiB           1           index = faiss.read_index(CONFIG["faiss_index_path"])
+   208   1499.1 MiB      0.5 MiB           1           query_embeddings = query_embeddings.astype("float32")
+   209   4455.3 MiB   2956.2 MiB           1           _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+   210    695.3 MiB  -3760.0 MiB           1           del index
+   211    930.5 MiB    235.2 MiB           1           gc.collect()
+   212    930.8 MiB      0.2 MiB           2           return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 14.28s)
+
+[Step 3/7] Fetching documents for batch...
+
+[TIMING] _fetch_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   214    931.4 MiB    931.4 MiB           1       @profile_with_timing
+   215                                             @profile
+   216                                             def _fetch_documents_batch(
+   217                                                 self, doc_id_batches: List[List[int]]
+   218                                             ) -> List[List[Dict]]:
+   219                                                 """Step 4: Fetch documents for each query in the batch using SQLite"""
+   220    931.4 MiB      0.0 MiB           1           db_path = f"{CONFIG['documents_path']}/documents.db"
+   221    932.1 MiB      0.7 MiB           1           conn = sqlite3.connect(db_path)
+   222    932.1 MiB      0.0 MiB           1           cursor = conn.cursor()
+   223    932.1 MiB      0.0 MiB           1           documents_batch = []
+   224    932.7 MiB      0.0 MiB           2           for doc_ids in doc_id_batches:
+   225    932.1 MiB      0.0 MiB           1               documents = []
+   226    932.7 MiB      0.0 MiB          11               for doc_id in doc_ids:
+   227    932.7 MiB      0.6 MiB          20                   cursor.execute(
+   228    932.7 MiB      0.0 MiB          10                       "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+   229    932.7 MiB      0.0 MiB          10                       (doc_id,),
+   230                                                         )
+   231    932.7 MiB      0.0 MiB          10                   result = cursor.fetchone()
+   232    932.7 MiB      0.0 MiB          10                   if result:
+   233    932.7 MiB      0.0 MiB           4                       documents.append(
+   234    932.7 MiB      0.0 MiB           2                           {
+   235    932.7 MiB      0.0 MiB           2                               "doc_id": result[0],
+   236    932.7 MiB      0.0 MiB           2                               "title": result[1],
+   237    932.7 MiB      0.0 MiB           2                               "content": result[2],
+   238    932.7 MiB      0.0 MiB           2                               "category": result[3],
+   239                                                                 }
+   240                                                             )
+   241    932.7 MiB      0.0 MiB           1               documents_batch.append(documents)
+   242    932.7 MiB      0.0 MiB           1           conn.close()
+   243    932.7 MiB      0.0 MiB           1           return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.01s)
+
+[Step 4/7] Reranking documents for batch...
+
+[TIMING] _rerank_documents_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   245    932.7 MiB    932.7 MiB           1       @profile_with_timing
+   246                                             @profile
+   247                                             def _rerank_documents_batch(
+   248                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   249                                             ) -> List[List[Dict]]:
+   250                                                 """Step 5: Rerank retrieved documents for each query in the batch"""
+   251   1267.7 MiB    335.0 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.reranker_model_name)
+   252   1276.4 MiB      8.5 MiB           3           model = AutoModelForSequenceClassification.from_pretrained(
+   253   1267.7 MiB      0.0 MiB           1               self.reranker_model_name
+   254   1276.4 MiB      0.1 MiB           1           ).to(self.device)
+   255   1276.4 MiB      0.0 MiB           1           model.eval()
+   256   1276.4 MiB      0.0 MiB           1           reranked_batches = []
+   257   1621.4 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   258   1276.4 MiB      0.0 MiB           1               if not documents:
+   259                                                         reranked_batches.append([])
+   260                                                         continue
+   261   1276.4 MiB      0.0 MiB           3               pairs = [[query, doc["content"]] for doc in documents]
+   262   1621.2 MiB      0.0 MiB           2               with torch.no_grad():
+   263   1276.8 MiB      0.4 MiB           3                   inputs = tokenizer(
+   264   1276.4 MiB      0.0 MiB           1                       pairs,
+   265   1276.4 MiB      0.0 MiB           1                       padding=True,
+   266   1276.4 MiB      0.0 MiB           1                       truncation=True,
+   267   1276.4 MiB      0.0 MiB           1                       return_tensors="pt",
+   268   1276.4 MiB      0.0 MiB           1                       max_length=CONFIG["truncate_length"],
+   269   1276.8 MiB      0.0 MiB           1                   ).to(self.device)
+   270   1621.2 MiB      0.0 MiB           1                   scores = (
+   271   1621.2 MiB    344.4 MiB           1                       model(**inputs, return_dict=True)
+   272   1621.2 MiB      0.0 MiB           2                       .logits.view(
+   273   1621.2 MiB      0.0 MiB           1                           -1,
+   274                                                             )
+   275   1621.2 MiB      0.0 MiB           1                       .float()
+   276                                                         )
+   277   1621.3 MiB      0.1 MiB           1               doc_scores = list(zip(documents, scores))
+   278   1621.4 MiB      0.1 MiB           5               doc_scores.sort(key=lambda x: x[1], reverse=True)
+   279   1621.4 MiB      0.0 MiB           3               reranked_batches.append([doc for doc, _ in doc_scores])
+   280   1105.5 MiB   -515.9 MiB           1           del model, tokenizer
+   281   1105.5 MiB      0.0 MiB           1           gc.collect()
+   282   1105.5 MiB      0.0 MiB           1           return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 1.84s)
+
+[Step 5/7] Generating LLM responses for batch...
+
+[TIMING] _generate_responses_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   284   1103.6 MiB   1103.6 MiB           1       @profile_with_timing
+   285                                             @profile
+   286                                             def _generate_responses_batch(
+   287                                                 self, queries: List[str], documents_batch: List[List[Dict]]
+   288                                             ) -> List[str]:
+   289                                                 """Step 6: Generate LLM responses for each query in the batch"""
+   290   1972.9 MiB    869.3 MiB           3           model = AutoModelForCausalLM.from_pretrained(
+   291   1103.6 MiB      0.0 MiB           1               self.llm_model_name,
+   292   1103.6 MiB      0.0 MiB           1               dtype=torch.float16,
+   293   1972.9 MiB      0.0 MiB           1           ).to(self.device)
+   294   2041.7 MiB     68.8 MiB           1           tokenizer = AutoTokenizer.from_pretrained(self.llm_model_name)
+   295   2041.7 MiB      0.0 MiB           1           responses = []
+   296   2053.1 MiB      0.0 MiB           2           for query, documents in zip(queries, documents_batch):
+   297   2041.7 MiB      0.0 MiB           2               context = "\n".join(
+   298   2041.7 MiB      0.0 MiB           3                   [f"- {doc['title']}: {doc['content'][:200]}" for doc in documents[:3]]
+   299                                                     )
+   300   2041.7 MiB      0.0 MiB           1               messages = [
+   301   2041.7 MiB      0.0 MiB           1                   {
+   302   2041.7 MiB      0.0 MiB           1                       "role": "system",
+   303   2041.7 MiB      0.0 MiB           1                       "content": "When given Context and Question, reply as 'Answer: <final answer>' only.",
+   304                                                         },
+   305   2041.7 MiB      0.0 MiB           1                   {
+   306   2041.7 MiB      0.0 MiB           1                       "role": "user",
+   307   2041.7 MiB      0.0 MiB           1                       "content": f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:",
+   308                                                         },
+   309                                                     ]
+   310   2041.8 MiB      0.0 MiB           2               text = tokenizer.apply_chat_template(
+   311   2041.7 MiB      0.0 MiB           1                   messages, tokenize=False, add_generation_prompt=True
+   312                                                     )
+   313   2042.4 MiB      0.6 MiB           1               model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+   314   2053.1 MiB     10.8 MiB           3               generated_ids = model.generate(
+   315   2042.4 MiB      0.0 MiB           1                   **model_inputs,
+   316   2042.4 MiB      0.0 MiB           1                   max_new_tokens=CONFIG["max_tokens"],
+   317   2042.4 MiB      0.0 MiB           1                   temperature=0.01,
+   318   2042.4 MiB      0.0 MiB           1                   pad_token_id=tokenizer.eos_token_id,
+   319                                                     )
+   320   2053.1 MiB      0.0 MiB           2               generated_ids = [
+   321   2053.1 MiB      0.0 MiB           1                   output_ids[len(input_ids) :]
+   322   2053.1 MiB      0.0 MiB           3                   for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+   323                                                     ]
+   324   2053.1 MiB      0.0 MiB           2               response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[
+   325   2053.1 MiB      0.0 MiB           1                   0
+   326                                                     ]
+   327   2053.1 MiB      0.0 MiB           1               responses.append(response)
+   328    730.5 MiB  -1322.7 MiB           1           del model, tokenizer
+   329    730.5 MiB      0.0 MiB           1           gc.collect()
+   330    730.5 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] _generate_responses_batch - END (took 5.30s)
+
+[Step 6/7] Analyzing sentiment for batch...
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   332    730.5 MiB    730.5 MiB           1       @profile_with_timing
+   333                                             @profile
+   334                                             def _analyze_sentiment_batch(self, texts: List[str]) -> List[str]:
+   335                                                 """Step 7: Analyze sentiment for each generated response"""
+   336    755.9 MiB     25.4 MiB           2           classifier = hf_pipeline(
+   337    730.5 MiB      0.0 MiB           1               "sentiment-analysis", model=self.sentiment_model_name, device=self.device
+   338                                                 )
+   339    755.9 MiB      0.0 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   340   1086.1 MiB    330.2 MiB           1           raw_results = classifier(truncated_texts)
+   341   1086.1 MiB      0.0 MiB           1           sentiment_map = {
+   342   1086.1 MiB      0.0 MiB           1               "1 star": "very negative",
+   343   1086.1 MiB      0.0 MiB           1               "2 stars": "negative",
+   344   1086.1 MiB      0.0 MiB           1               "3 stars": "neutral",
+   345   1086.1 MiB      0.0 MiB           1               "4 stars": "positive",
+   346   1086.1 MiB      0.0 MiB           1               "5 stars": "very positive",
+   347                                                 }
+   348   1086.1 MiB      0.0 MiB           1           sentiments = []
+   349   1086.1 MiB      0.0 MiB           2           for result in raw_results:
+   350   1086.1 MiB      0.0 MiB           1               sentiments.append(sentiment_map.get(result["label"], "neutral"))
+   351    758.5 MiB   -327.6 MiB           1           del classifier
+   352    758.5 MiB      0.0 MiB           1           gc.collect()
+   353    758.5 MiB      0.0 MiB           1           return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.71s)
+
+[Step 7/7] Applying safety filter to batch...
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   355    758.5 MiB    758.5 MiB           1       @profile_with_timing
+   356                                             @profile
+   357                                             def _filter_response_safety_batch(self, texts: List[str]) -> List[bool]:
+   358                                                 """Step 8: Filter responses for safety for each entry in the batch"""
+   359    758.5 MiB     -6.5 MiB           2           classifier = hf_pipeline(
+   360    758.5 MiB      0.0 MiB           1               "text-classification", model=self.safety_model_name, device=self.device
+   361                                                 )
+   362    752.0 MiB     -6.5 MiB           2           truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+   363   1078.1 MiB    326.1 MiB           1           raw_results = classifier(truncated_texts)
+   364   1078.1 MiB      0.0 MiB           1           toxicity_flags = []
+   365   1078.1 MiB      0.0 MiB           2           for result in raw_results:
+   366   1078.1 MiB      0.0 MiB           1               toxicity_flags.append(result["score"] > 0.5)
+   367    750.5 MiB   -327.6 MiB           1           del classifier
+   368    750.5 MiB      0.0 MiB           1           gc.collect()
+   369    750.5 MiB      0.0 MiB           1           return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.40s)
+
+✓ Request req_1763355092_5 processed in 27.77 seconds
+Filename: /Users/riley/Documents/01-projects/cs-5416/repos/cs5416-final-project/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+   119    719.3 MiB    719.3 MiB           1       @profile_with_timing
+   120                                             @profile
+   121                                             def process_batch(self, requests: List[PipelineRequest]) -> List[PipelineResponse]:
+   122                                                 """
+   123                                                 Main pipeline execution for a batch of requests.
+   124                                                 """
+   125    719.3 MiB      0.0 MiB           1           if not requests:
+   126                                                     return []
+   127                                         
+   128    719.3 MiB      0.0 MiB           1           batch_size = len(requests)
+   129    719.3 MiB      0.0 MiB           2           start_times = [time.time() for _ in requests]
+   130    719.3 MiB      0.0 MiB           2           queries = [req.query for req in requests]
+   131                                         
+   132    719.3 MiB      0.0 MiB           1           print("\n" + "=" * 60)
+   133    719.3 MiB      0.0 MiB           1           print(f"Processing batch of {batch_size} requests")
+   134    719.3 MiB      0.0 MiB           1           print("=" * 60)
+   135    719.3 MiB      0.0 MiB           2           for request in requests:
+   136    719.3 MiB      0.0 MiB           1               print(f"- {request.request_id}: {request.query[:50]}...")
+   137                                         
+   138                                                 # Step 1: Generate embeddings
+   139    719.3 MiB      0.0 MiB           1           print("\n[Step 1/7] Generating embeddings for batch...")
+   140    815.2 MiB     95.9 MiB           1           query_embeddings = self._generate_embeddings_batch(queries)
+   141                                         
+   142                                                 # Step 2: FAISS ANN search
+   143    815.2 MiB      0.0 MiB           1           print("\n[Step 2/7] Performing FAISS ANN search for batch...")
+   144    931.1 MiB    115.9 MiB           1           doc_id_batches = self._faiss_search_batch(query_embeddings)
+   145                                         
+   146                                                 # Step 3: Fetch documents from disk
+   147    931.1 MiB      0.0 MiB           1           print("\n[Step 3/7] Fetching documents for batch...")
+   148    932.7 MiB      1.6 MiB           1           documents_batch = self._fetch_documents_batch(doc_id_batches)
+   149                                         
+   150                                                 # Step 4: Rerank documents
+   151    932.7 MiB      0.0 MiB           1           print("\n[Step 4/7] Reranking documents for batch...")
+   152   1103.6 MiB    170.9 MiB           1           reranked_docs_batch = self._rerank_documents_batch(queries, documents_batch)
+   153                                         
+   154                                                 # Step 5: Generate LLM responses
+   155   1103.6 MiB      0.0 MiB           1           print("\n[Step 5/7] Generating LLM responses for batch...")
+   156    730.5 MiB   -373.2 MiB           1           responses_text = self._generate_responses_batch(queries, reranked_docs_batch)
+   157                                         
+   158                                                 # Step 6: Sentiment analysis
+   159    730.5 MiB      0.0 MiB           1           print("\n[Step 6/7] Analyzing sentiment for batch...")
+   160    758.5 MiB     28.0 MiB           1           sentiments = self._analyze_sentiment_batch(responses_text)
+   161                                         
+   162                                                 # Step 7: Safety filter on responses
+   163    758.5 MiB      0.0 MiB           1           print("\n[Step 7/7] Applying safety filter to batch...")
+   164    750.5 MiB     -8.0 MiB           1           toxicity_flags = self._filter_response_safety_batch(responses_text)
+   165                                         
+   166    750.5 MiB      0.0 MiB           1           responses = []
+   167    750.5 MiB      0.0 MiB           2           for idx, request in enumerate(requests):
+   168    750.5 MiB      0.0 MiB           1               processing_time = time.time() - start_times[idx]
+   169    750.5 MiB      0.0 MiB           2               print(
+   170    750.5 MiB      0.0 MiB           1                   f"\n✓ Request {request.request_id} processed in {processing_time:.2f} seconds"
+   171                                                     )
+   172    750.5 MiB      0.0 MiB           1               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   173    750.5 MiB      0.0 MiB           2               responses.append(
+   174    750.5 MiB      0.0 MiB           2                   PipelineResponse(
+   175    750.5 MiB      0.0 MiB           1                       request_id=request.request_id,
+   176    750.5 MiB      0.0 MiB           1                       generated_response=responses_text[idx],
+   177    750.5 MiB      0.0 MiB           1                       sentiment=sentiments[idx],
+   178    750.5 MiB      0.0 MiB           1                       is_toxic=sensitivity_result,
+   179    750.5 MiB      0.0 MiB           1                       processing_time=processing_time,
+   180                                                         )
+   181                                                     )
+   182                                         
+   183    750.5 MiB      0.0 MiB           1           return responses
+
+
+[TIMING] process_batch - END (took 27.77s)
