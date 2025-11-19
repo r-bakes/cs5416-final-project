@@ -46,12 +46,12 @@ def profile_with_timing(func):
 
 
 # Read environment variables
-MAX_BATCH_SIZE = 3
+MAX_BATCH_SIZE = int(os.environ.get("MAX_BATCH_SIZE", 4))
 TOTAL_NODES = int(os.environ.get("TOTAL_NODES", 1))
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
-NODE_0_IP = os.environ["NODE_0_IP"]
-NODE_1_IP = os.environ["NODE_1_IP"]
-NODE_2_IP = os.environ["NODE_2_IP"]
+NODE_0_IP = os.environ.get("NODE_0_IP", "localhost:8001")
+NODE_1_IP = os.environ.get("NODE_1_IP", "localhost:8002")
+NODE_2_IP = os.environ.get("NODE_2_IP", "localhost:8003")
 FAISS_INDEX_PATH = os.environ.get("FAISS_INDEX_PATH", "faiss_index.bin")
 DOCUMENTS_DIR = os.environ.get("DOCUMENTS_DIR", "documents/")
 

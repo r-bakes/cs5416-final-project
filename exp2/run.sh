@@ -4,6 +4,7 @@
 [ -d "../.venv" ] && source ../.venv/bin/activate
 
 # Set defaults
+export MAX_BATCH_SIZE=1
 export TOTAL_NODES=3
 export NODE_0_LB_IP=localhost:8000
 export NODE_0_IP=localhost:8001

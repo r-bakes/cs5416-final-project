@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Load Balancer for Distributed Monolith Architecture
 Routes requests to backend monolith instances using round-robin
