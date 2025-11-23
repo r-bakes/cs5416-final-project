@@ -14,7 +14,7 @@ We then run `python3 pipeline.py >> exp1_memory_profile.log` to generate a memor
 
 From the data pulled into the raw log file we calculate the max and average max across the 6 `client.py` calls per step-function and overall. We make some immediate observations:
 
-1. `_faiss_search_batch` is the most time consuming step, and consumes by far the most memory.
+1. `_faiss_search_batch` is the most time consuming step, and consumes the most memory.
 2. ~4.5 GB is the max memory used across the 6 requests at that step.
 3. ~52% of the total processing time was for that step on average as well.
 
@@ -33,7 +33,7 @@ Batch=3: 0.8 + 0.323 + \~(2.873 × 3) = 9.74 GB
 Batch=4: 0.8 + 0.323 + \~(2.873 × 4) = 12.3 GB
 Batch=5: 0.8 + 0.323 + \~(2.873 × 5) = 15.0 GB -> (exceeds limit)
 
-\*Regarding the 85% limit set. In a production system, we would likely have autoscaling of compute nodes, triggered on some kind of resource consumption metric such as this memory utilization being hit. Technically, the naive pipeline script only has a single worker time so we could push this to 4 to maximize resource utilization and we would be guaranteed safety, however, in a production system we would not have that guarantee of a single worker. Additionally, it provides a buffer if a particular batched of requests all consume an unforseen, larger memory quantity.
+\*Regarding the 85% limit set. In a production system, we would likely have autoscaling of compute nodes, triggered on some kind of resource consumption metric such as this memory utilization being hit. Technically, the naive pipeline script only has a single worker so we could push this to 4 to maximize resource utilization and we would be guaranteed safety assuming scaling assumptions are conservative enough, however, in a production system we would not have that guarantee of a single worker. Additionally, it provides a buffer if a particular batched of requests all consume an larger memory quantity.
 
 ## Experiment 2: Initial split of monolith across 3 nodes
 
