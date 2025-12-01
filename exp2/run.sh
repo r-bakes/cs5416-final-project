@@ -4,7 +4,7 @@
 [ -d "../.venv" ] && source ../.venv/bin/activate
 
 # Set defaults
-export MAX_BATCH_SIZE=1
+export MAX_BATCH_SIZE=1 # NOTE: IF TESTING BY YOURSELF, anything above 1 will defintely exceed your system memory.
 export TOTAL_NODES=3
 export NODE_0_LB_IP=localhost:8000
 export NODE_0_IP=localhost:8001
@@ -25,11 +25,11 @@ sleep 2
 # Start 3 backend pipelines
 echo "Starting backend 1 (Node 0 - $NODE_0_IP)..."
 NODE_NUMBER=0 python3 pipeline.py &
-sleep 1
+sleep 2
 
 echo "Starting backend 2 (Node 1 - $NODE_1_IP)..."
 NODE_NUMBER=1 python3 pipeline.py &
-sleep 1
+sleep 2
 
 echo "Starting backend 3 (Node 2 - $NODE_2_IP)..."
 NODE_NUMBER=2 python3 pipeline.py &
