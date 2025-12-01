@@ -1,4 +1,5 @@
 faiss_index.bin
+.DS_Store
 documents/
 .venv/
 __pycache__/
