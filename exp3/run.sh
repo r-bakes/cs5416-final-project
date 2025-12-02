@@ -9,7 +9,10 @@
 cd "$(dirname "$0")"
 
 # Activate virtual environment if exists
-[ -d "../.venv" ] && source ../.venv/bin/activate
+[ -d "../.venv" ] && source ../.venv/Scripts/activate
+
+# Force unbuffered Python output so logs capture prints immediately
+export PYTHONUNBUFFERED=1
 
 # Set node IPs (these come from environment)
 export NODE_0_IP=${NODE_0_IP:-localhost}
@@ -35,21 +38,21 @@ if [ "$NODE_NUMBER" -eq 0 ]; then
   echo "Starting Node 0 services..."
 
   # NOTE: Embedding service - 2 instances
-  EMBEDDING_SERVICE_PORT=8001 python3 01_embedding_service.py >>memory_profile.log &
+  EMBEDDING_SERVICE_PORT=8001 python -u 01_embedding_service.py >>memory_profile_01.log 2>&1 &
   sleep 2
-  EMBEDDING_SERVICE_PORT=8002 python3 01_embedding_service.py >>memory_profile.log &
+  EMBEDDING_SERVICE_PORT=8002 python -u 01_embedding_service.py >>memory_profile_02.log 2>&1 &
   sleep 2
 
   # NOTE: Documents service - 2 instances
-  DOCUMENTS_SERVICE_PORT=8003 python3 03_documents_service.py >>memory_profile.log &
+  DOCUMENTS_SERVICE_PORT=8003 python -u 03_documents_service.py >>memory_profile_03.log 2>&1 &
   sleep 2
-  DOCUMENTS_SERVICE_PORT=8004 python3 03_documents_service.py >>memory_profile.log &
+  DOCUMENTS_SERVICE_PORT=8004 python -u 03_documents_service.py >>memory_profile_04.log 2>&1 &
   sleep 2
 
   # NOTE: Sentiment/Safety service - 2 instances
-  SENTIMENT_SAFETY_SERVICE_PORT=8005 python3 05_sentiment_and_safety_service.py >>memory_profile.log &
+  SENTIMENT_SAFETY_SERVICE_PORT=8005 python -u 05_sentiment_and_safety_service.py >>memory_profile_05.log 2>&1 &
   sleep 2
-  SENTIMENT_SAFETY_SERVICE_PORT=8006 python3 05_sentiment_and_safety_service.py >>memory_profile.log &
+  SENTIMENT_SAFETY_SERVICE_PORT=8006 python -u 05_sentiment_and_safety_service.py >>memory_profile_06.log 2>&1 &
   sleep 2
 
   # Orchestrator - points to all service instances
@@ -62,7 +65,7 @@ if [ "$NODE_NUMBER" -eq 0 ]; then
   export LLM_SERVICE_URL="http://$NODE_1_IP:8009,http://$NODE_2_IP:8012"
   export SENTIMENT_SAFETY_SERVICE_URL="http://$NODE_0_IP:8005,http://$NODE_0_IP:8006"
 
-  python3 pipeline.py >>memory_profile.log &
+  python -u pipeline.py >>memory_profile.log 2>&1 &
   sleep 5
 
   echo "Node 0 services started. Orchestrator available at http://$NODE_0_IP:8000"
@@ -71,13 +74,13 @@ elif [ "$NODE_NUMBER" -eq 1 ]; then
   echo "Starting Node 1 services..."
 
   # NOTE: FAISS service - 2 instances
-  FAISS_SERVICE_PORT=8007 python3 02_faiss_search_service.py >>memory_profile.log &
+  FAISS_SERVICE_PORT=8007 python -u 02_faiss_search_service.py >>memory_profile_07.log 2>&1 &
   sleep 2
-  FAISS_SERVICE_PORT=8008 python3 02_faiss_search_service.py >>memory_profile.log &
+  FAISS_SERVICE_PORT=8008 python -u 02_faiss_search_service.py >>memory_profile_08.log 2>&1 &
   sleep 2
 
   # NOTE: LLM service - 1 instance
-  LLM_SERVICE_PORT=8009 python3 04_llm_service.py >>memory_profile.log &
+  LLM_SERVICE_PORT=8009 python -u 04_llm_service.py >>memory_profile_09.log 2>&1 &
   sleep 2
 
   echo "Node 1 services started."
@@ -86,13 +89,13 @@ elif [ "$NODE_NUMBER" -eq 2 ]; then
   echo "Starting Node 2 services..."
 
   # NOTE: FAISS service - 2 instances
-  FAISS_SERVICE_PORT=8010 python3 02_faiss_search_service.py >>memory_profile.log &
+  FAISS_SERVICE_PORT=8010 python -u 02_faiss_search_service.py >>memory_profile_10.log 2>&1 &
   sleep 5
-  FAISS_SERVICE_PORT=8011 python3 02_faiss_search_service.py >>memory_profile.log &
+  FAISS_SERVICE_PORT=8011 python -u 02_faiss_search_service.py >>memory_profile_11.log 2>&1 &
   sleep 5
 
   # NOTE: LLM service - 1 instance
-  LLM_SERVICE_PORT=8012 python3 04_llm_service.py >>memory_profile.log &
+  LLM_SERVICE_PORT=8012 python -u 04_llm_service.py >>memory_profile_12.log 2>&1 &
   sleep 2
 
   echo "Node 2 services started."
