@@ -26,8 +26,7 @@ def _faiss_search_batch(query_embeddings: np.ndarray) -> list[list[int]]:
         raise FileNotFoundError(
             "FAISS index not found. Please create the index before running the pipeline."
         )
-
-    print("Loading FAISS index")
+    print("Loading FAISS index", flush=True)
     query_embeddings = query_embeddings.astype("float32")
     _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
     return [row.tolist() for row in indices]
@@ -63,12 +62,12 @@ def health():
 
 def main():
     """Start the FAISS search service"""
-    print("=" * 60)
-    print("FAISS SEARCH SERVICE")
-    print("=" * 60)
-    print(f"Node: {NODE_NUMBER}")
-    print(f"Port: {SERVICE_PORT}")
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    print("FAISS SEARCH SERVICE", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {SERVICE_PORT}", flush=True)
+    print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
 

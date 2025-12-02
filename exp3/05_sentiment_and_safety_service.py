@@ -79,14 +79,14 @@ def health():
 
 def main():
     """Start the sentiment and safety service"""
-    print("=" * 60)
-    print("SENTIMENT & SAFETY SERVICE")
-    print("=" * 60)
-    print(f"Node: {NODE_NUMBER}")
-    print(f"Port: {SERVICE_PORT}")
-    print(f"Sentiment Model: {SENTIMENT_MODEL_NAME}")
-    print(f"Safety Model: {SAFETY_MODEL_NAME}")
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    print("SENTIMENT & SAFETY SERVICE", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {SERVICE_PORT}", flush=True)
+    print(f"Sentiment Model: {SENTIMENT_MODEL_NAME}", flush=True)
+    print(f"Safety Model: {SAFETY_MODEL_NAME}", flush=True)
+    print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
 

@@ -123,14 +123,14 @@ def health():
 
 def main():
     """Start the documents service"""
-    print("=" * 60)
-    print("DOCUMENTS SERVICE (Fetch + Rerank)")
-    print("=" * 60)
-    print(f"Node: {NODE_NUMBER}")
-    print(f"Port: {SERVICE_PORT}")
-    print(f"DB: {CONFIG['documents_path']}/documents.db")
-    print(f"Reranker: {RERANKER_MODEL_NAME}")
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    print("DOCUMENTS SERVICE (Fetch + Rerank)", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {SERVICE_PORT}", flush=True)
+    print(f"DB: {CONFIG['documents_path']}/documents.db", flush=True)
+    print(f"Reranker: {RERANKER_MODEL_NAME}", flush=True)
+    print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
 

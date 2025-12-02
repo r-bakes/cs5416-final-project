@@ -18,13 +18,13 @@ class LLMRequest(TypedDict):
 app = Flask(__name__)
 
 # Load model once at startup
-print("Loading LLM model...")
+print("Loading LLM model...", flush=True)
 model = AutoModelForCausalLM.from_pretrained(
     LLM_MODEL_NAME,
     torch_dtype=torch.float16,
 ).to(DEVICE)
 tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL_NAME)
-print("LLM model loaded!")
+print("LLM model loaded!", flush=True)
 
 @profile_with_timing
 @profile
@@ -90,13 +90,13 @@ def health():
 
 def main():
     """Start the LLM service"""
-    print("=" * 60)
-    print("LLM SERVICE")
-    print("=" * 60)
-    print(f"Node: {NODE_NUMBER}")
-    print(f"Port: {SERVICE_PORT}")
-    print(f"Model: {LLM_MODEL_NAME}")
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    print("LLM SERVICE", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {SERVICE_PORT}", flush=True)
+    print(f"Model: {LLM_MODEL_NAME}", flush=True)
+    print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
 
