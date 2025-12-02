@@ -5,6 +5,7 @@ from sentence_transformers import SentenceTransformer
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
+from pipeline import profile, profile_with_timing
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("EMBEDDING_SERVICE_PORT", 8001))
@@ -17,7 +18,8 @@ class EmbeddingRequest(TypedDict):
 app = Flask(__name__)
 model = SentenceTransformer(EMBEDDING_MODEL_NAME).to(DEVICE)
 
-
+@profile_with_timing
+@profile
 def _generate_embeddings_batch(texts: list[str]) -> np.ndarray:
     """Step 2: Generate embeddings for a batch of queries"""
     embeddings = model.encode(texts, normalize_embeddings=True, convert_to_numpy=True)

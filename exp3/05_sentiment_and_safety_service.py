@@ -3,6 +3,7 @@ from config import CONFIG, SENTIMENT_MODEL_NAME, SAFETY_MODEL_NAME, DEVICE
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
+from pipeline import profile, profile_with_timing
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("SENTIMENT_SAFETY_SERVICE_PORT", 8004))
@@ -20,7 +21,8 @@ safety_classifier = hf_pipeline(
     "text-classification", model=SAFETY_MODEL_NAME, device=DEVICE
 )
 
-
+@profile_with_timing
+@profile
 def _analyze_sentiment_batch(texts: list[str]) -> list[str]:
     """Step 7: Analyze sentiment for each generated response"""
     truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
@@ -37,7 +39,8 @@ def _analyze_sentiment_batch(texts: list[str]) -> list[str]:
         sentiments.append(sentiment_map.get(result["label"], "neutral"))
     return sentiments
 
-
+@profile_with_timing
+@profile
 def _filter_response_safety_batch(texts: list[str]) -> list[bool]:
     """Step 8: Filter responses for safety for each entry in the batch"""
     truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]

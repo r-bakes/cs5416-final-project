@@ -5,6 +5,7 @@ import faiss
 import gc
 from flask import Flask, request, jsonify
 from typing import TypedDict
+from pipeline import profile, profile_with_timing
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("FAISS_SERVICE_PORT", 8002))
@@ -17,7 +18,8 @@ class FAISSRequest(TypedDict):
 app = Flask(__name__)
 index = faiss.read_index(CONFIG["faiss_index_path"])
 
-
+@profile_with_timing
+@profile
 def _faiss_search_batch(query_embeddings: np.ndarray) -> list[list[int]]:
     """Step 3: Perform FAISS ANN search for a batch of embeddings"""
     if not os.path.exists(CONFIG["faiss_index_path"]):

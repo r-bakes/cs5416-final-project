@@ -12,6 +12,29 @@ from queue import Queue, Empty
 import threading
 from dataclasses import dataclass
 
+from memory_profiler import profile
+import functools
+
+
+# Timing decorator for profiled functions
+def profile_with_timing(func):
+    """Decorator that adds timing to profiled functions"""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        func_name = func.__name__
+        print(f"\n[TIMING] {func_name} - START")
+        start_time = time.time()
+
+        result = func(*args, **kwargs)
+
+        elapsed = time.time() - start_time
+        print(f"[TIMING] {func_name} - END (took {elapsed:.2f}s)")
+
+        return result
+
+    return wrapper
+
 # Read environment variables
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 ORCHESTRATOR_PORT = int(os.environ.get("ORCHESTRATOR_PORT", 8000))
@@ -72,7 +95,8 @@ class PipelineResponse:
     is_toxic: str
     processing_time: float
 
-
+@profile_with_timing
+@profile
 def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
     """
     Orchestrate the full pipeline through microservices

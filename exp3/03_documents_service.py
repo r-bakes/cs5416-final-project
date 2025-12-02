@@ -8,6 +8,7 @@ import torch
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
+from pipeline import profile, profile_with_timing
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("DOCUMENTS_SERVICE_PORT", 8003))
@@ -26,7 +27,8 @@ model = AutoModelForSequenceClassification.from_pretrained(RERANKER_MODEL_NAME).
 model.eval()
 db_path = f"{CONFIG['documents_path']}/documents.db"
 
-
+@profile_with_timing
+@profile
 def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
     """Step 4: Fetch documents for each query in the batch using SQLite"""
     conn = sqlite3.connect(db_path)
@@ -53,7 +55,8 @@ def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
     conn.close()
     return documents_batch
 
-
+@profile_with_timing
+@profile
 def _rerank_documents_batch(
     queries: list[str], documents_batch: list[list[dict]]
 ) -> list[list[dict]]:
