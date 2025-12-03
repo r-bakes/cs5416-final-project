@@ -17,6 +17,33 @@ export NODE_1_IP=${NODE_1_IP:-localhost}
 export NODE_2_IP=${NODE_2_IP:-localhost}
 export NODE_NUMBER=${NODE_NUMBER:-0}
 
+# Parse NODE_0_IP to extract IP and port (format: IP:port)
+if [[ "$NODE_0_IP" == *:* ]]; then
+  NODE_0_HOST="${NODE_0_IP%:*}"
+  NODE_0_BASE_PORT="${NODE_0_IP##*:}"
+else
+  NODE_0_HOST="$NODE_0_IP"
+  NODE_0_BASE_PORT=8000
+fi
+
+# Parse NODE_1_IP and NODE_2_IP to extract just the host
+if [[ "$NODE_1_IP" == *:* ]]; then
+  NODE_1_HOST="${NODE_1_IP%:*}"
+else
+  NODE_1_HOST="$NODE_1_IP"
+fi
+
+if [[ "$NODE_2_IP" == *:* ]]; then
+  NODE_2_HOST="${NODE_2_IP%:*}"
+else
+  NODE_2_HOST="$NODE_2_IP"
+fi
+
+# Update NODE_*_IP variables to contain only the host portion
+export NODE_0_IP="$NODE_0_HOST"
+export NODE_1_IP="$NODE_1_HOST"
+export NODE_2_IP="$NODE_2_HOST"
+
 # Set defaults
 export MAX_BATCH_SIZE=${MAX_BATCH_SIZE:-1}
 export FAISS_INDEX_PATH=${FAISS_INDEX_PATH:-../faiss_index.bin}
@@ -34,38 +61,46 @@ trap 'kill $(jobs -p) 2>/dev/null' EXIT
 if [ "$NODE_NUMBER" -eq 0 ]; then
   echo "Starting Node 0 services..."
 
+  # Calculate port numbers based on NODE_0_BASE_PORT
+  EMBEDDING_PORT_1=$((NODE_0_BASE_PORT + 1))
+  EMBEDDING_PORT_2=$((NODE_0_BASE_PORT + 2))
+  DOCUMENTS_PORT_1=$((NODE_0_BASE_PORT + 3))
+  DOCUMENTS_PORT_2=$((NODE_0_BASE_PORT + 4))
+  SENTIMENT_PORT_1=$((NODE_0_BASE_PORT + 5))
+  SENTIMENT_PORT_2=$((NODE_0_BASE_PORT + 6))
+
   # NOTE: Embedding service - 2 instances
-  EMBEDDING_SERVICE_PORT=8001 python3 01_embedding_service.py &
+  EMBEDDING_SERVICE_PORT=$EMBEDDING_PORT_1 python3 01_embedding_service.py &
   sleep 2
-  EMBEDDING_SERVICE_PORT=8002 python3 01_embedding_service.py &
+  EMBEDDING_SERVICE_PORT=$EMBEDDING_PORT_2 python3 01_embedding_service.py &
   sleep 2
 
   # NOTE: Documents service - 2 instances
-  DOCUMENTS_SERVICE_PORT=8003 python3 03_documents_service.py &
+  DOCUMENTS_SERVICE_PORT=$DOCUMENTS_PORT_1 python3 03_documents_service.py &
   sleep 2
-  DOCUMENTS_SERVICE_PORT=8004 python3 03_documents_service.py &
+  DOCUMENTS_SERVICE_PORT=$DOCUMENTS_PORT_2 python3 03_documents_service.py &
   sleep 2
 
   # NOTE: Sentiment/Safety service - 2 instances
-  SENTIMENT_SAFETY_SERVICE_PORT=8005 python3 05_sentiment_and_safety_service.py &
+  SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_1 python3 05_sentiment_and_safety_service.py &
   sleep 2
-  SENTIMENT_SAFETY_SERVICE_PORT=8006 python3 05_sentiment_and_safety_service.py &
+  SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_2 python3 05_sentiment_and_safety_service.py &
   sleep 2
 
   # Orchestrator - points to all service instances
   echo "Starting orchestrator..."
-  export ORCHESTRATOR_PORT=8000
-  export EMBEDDING_SERVICE_URL="http://$NODE_0_IP:8001,http://$NODE_0_IP:8002"
+  export ORCHESTRATOR_PORT=$NODE_0_BASE_PORT
+  export EMBEDDING_SERVICE_URL="http://$NODE_0_IP:$EMBEDDING_PORT_1,http://$NODE_0_IP:$EMBEDDING_PORT_2"
   export FAISS_SERVICE_URL="http://$NODE_1_IP:8007,http://$NODE_1_IP:8008,http://$NODE_2_IP:8010,http://$NODE_2_IP:8011"
   # export FAISS_SERVICE_URL="http://$NODE_1_IP:8007,http://$NODE_2_IP:8010" # NOTE: For debugging
-  export DOCUMENTS_SERVICE_URL="http://$NODE_0_IP:8003,http://$NODE_0_IP:8004"
+  export DOCUMENTS_SERVICE_URL="http://$NODE_0_IP:$DOCUMENTS_PORT_1,http://$NODE_0_IP:$DOCUMENTS_PORT_2"
   export LLM_SERVICE_URL="http://$NODE_1_IP:8009,http://$NODE_2_IP:8012"
-  export SENTIMENT_SAFETY_SERVICE_URL="http://$NODE_0_IP:8005,http://$NODE_0_IP:8006"
+  export SENTIMENT_SAFETY_SERVICE_URL="http://$NODE_0_IP:$SENTIMENT_PORT_1,http://$NODE_0_IP:$SENTIMENT_PORT_2"
 
   python3 pipeline.py &
   sleep 5
 
-  echo "Node 0 services started. Orchestrator available at http://$NODE_0_IP:8000"
+  echo "Node 0 services started. Orchestrator available at http://$NODE_0_IP:$NODE_0_BASE_PORT"
 
 elif [ "$NODE_NUMBER" -eq 1 ]; then
   echo "Starting Node 1 services..."
