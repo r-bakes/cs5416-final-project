@@ -8,7 +8,8 @@ import torch
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
-from pipeline import profile, profile_with_timing
+from utils import profile_with_timing
+from memory_profiler import profile
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("DOCUMENTS_SERVICE_PORT", 8003))
@@ -26,6 +27,7 @@ model = AutoModelForSequenceClassification.from_pretrained(RERANKER_MODEL_NAME).
 )
 model.eval()
 db_path = f"{CONFIG['documents_path']}/documents.db"
+
 
 @profile_with_timing
 @profile
@@ -54,6 +56,7 @@ def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
         documents_batch.append(documents)
     conn.close()
     return documents_batch
+
 
 @profile_with_timing
 @profile

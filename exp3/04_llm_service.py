@@ -4,7 +4,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
-from pipeline import profile, profile_with_timing
+from utils import profile_with_timing
+from memory_profiler import profile
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("LLM_SERVICE_PORT", 8005))
@@ -25,6 +26,7 @@ model = AutoModelForCausalLM.from_pretrained(
 ).to(DEVICE)
 tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL_NAME)
 print("LLM model loaded!", flush=True)
+
 
 @profile_with_timing
 @profile

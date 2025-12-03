@@ -3,7 +3,8 @@ from config import CONFIG, SENTIMENT_MODEL_NAME, SAFETY_MODEL_NAME, DEVICE
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
-from pipeline import profile, profile_with_timing
+from utils import profile_with_timing
+from memory_profiler import profile
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("SENTIMENT_SAFETY_SERVICE_PORT", 8004))
@@ -20,6 +21,7 @@ sentiment_classifier = hf_pipeline(
 safety_classifier = hf_pipeline(
     "text-classification", model=SAFETY_MODEL_NAME, device=DEVICE
 )
+
 
 @profile_with_timing
 @profile
@@ -38,6 +40,7 @@ def _analyze_sentiment_batch(texts: list[str]) -> list[str]:
     for result in raw_results:
         sentiments.append(sentiment_map.get(result["label"], "neutral"))
     return sentiments
+
 
 @profile_with_timing
 @profile

@@ -13,30 +13,8 @@ import threading
 from dataclasses import dataclass
 
 from memory_profiler import profile
-import functools
-import sys
+from utils import profile_with_timing
 
-
-# Timing decorator for profiled functions
-def profile_with_timing(func):
-    """Decorator that adds timing to profiled functions"""
-
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        func_name = func.__name__
-        print(f"\n[TIMING] {func_name} - START")
-        sys.stdout.flush()
-        start_time = time.time()
-
-        result = func(*args, **kwargs)
-
-        elapsed = time.time() - start_time
-        print(f"[TIMING] {func_name} - END (took {elapsed:.2f}s)")
-        sys.stdout.flush()
-
-        return result
-
-    return wrapper
 
 # Read environment variables
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
@@ -97,6 +75,7 @@ class PipelineResponse:
     sentiment: str
     is_toxic: str
     processing_time: float
+
 
 @profile_with_timing
 @profile
@@ -160,7 +139,10 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         sentiment_url = get_service_url(
             "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
         )
-        print(f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...", flush=True)
+        print(
+            f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+            flush=True,
+        )
         response = requests.post(
             f"{sentiment_url}/process",
             json={"texts": llm_responses},
@@ -319,7 +301,10 @@ def main():
         f"\tEmbedding ({len(EMBEDDING_SERVICE_URLS)} instances): {EMBEDDING_SERVICE_URLS}",
         flush=True,
     )
-    print(f"\tFAISS ({len(FAISS_SERVICE_URLS)} instances): {FAISS_SERVICE_URLS}", flush=True)
+    print(
+        f"\tFAISS ({len(FAISS_SERVICE_URLS)} instances): {FAISS_SERVICE_URLS}",
+        flush=True,
+    )
     print(
         f"\tDocuments ({len(DOCUMENTS_SERVICE_URLS)} instances): {DOCUMENTS_SERVICE_URLS}",
         flush=True,

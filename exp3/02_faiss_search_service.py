@@ -5,7 +5,8 @@ import faiss
 import gc
 from flask import Flask, request, jsonify
 from typing import TypedDict
-from pipeline import profile, profile_with_timing
+from utils import profile_with_timing
+from memory_profiler import profile
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("FAISS_SERVICE_PORT", 8002))
@@ -17,6 +18,7 @@ class FAISSRequest(TypedDict):
 
 app = Flask(__name__)
 index = faiss.read_index(CONFIG["faiss_index_path"])
+
 
 @profile_with_timing
 @profile
