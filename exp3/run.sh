@@ -73,21 +73,21 @@ if [ "$NODE_NUMBER" -eq 0 ]; then
   SENTIMENT_PORT_2=$((NODE_0_BASE_PORT + 6))
 
   # NOTE: Embedding service - 2 instances
-  EMBEDDING_SERVICE_PORT=8001 python3 01_embedding_service.py >>memory_profile.log &
+  EMBEDDING_SERVICE_PORT=8001 python3 01_embedding_service.py >>memory_profile_01.log &
   sleep 2
-  EMBEDDING_SERVICE_PORT=8002 python3 01_embedding_service.py >>memory_profile.log &
+  EMBEDDING_SERVICE_PORT=8002 python3 01_embedding_service.py >>memory_profile_02.log &
   sleep 2
 
   # NOTE: Documents service - 2 instances
-  DOCUMENTS_SERVICE_PORT=8003 python3 03_documents_service.py >>memory_profile.log &
+  DOCUMENTS_SERVICE_PORT=8003 python3 03_documents_service.py >>memory_profile_03.log &
   sleep 2
-  DOCUMENTS_SERVICE_PORT=8004 python3 03_documents_service.py >>memory_profile.log &
+  DOCUMENTS_SERVICE_PORT=8004 python3 03_documents_service.py >>memory_profile_04.log &
   sleep 2
 
   # NOTE: Sentiment/Safety service - 2 instances
-  SENTIMENT_SAFETY_SERVICE_PORT=8005 python3 05_sentiment_and_safety_service.py >>memory_profile.log &
+  SENTIMENT_SAFETY_SERVICE_PORT=8005 python3 05_sentiment_and_safety_service.py >>memory_profile_05.log &
   sleep 2
-  SENTIMENT_SAFETY_SERVICE_PORT=8006 python3 05_sentiment_and_safety_service.py >>memory_profile.log &
+  SENTIMENT_SAFETY_SERVICE_PORT=8006 python3 05_sentiment_and_safety_service.py >>memory_profile_06.log &
   sleep 2
 
   # Orchestrator - points to all service instances

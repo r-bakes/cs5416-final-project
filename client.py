@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Client script for testing the ML inference pipeline.
-Sends one request every 10 seconds for 1 minute (6 requests total).
+Sends one request every 0.01 seconds for 0.2 seconds (20 requests total).
 Requests are sent at fixed intervals regardless of response time.
 """
 
@@ -112,7 +112,7 @@ def main():
     print("ML INFERENCE PIPELINE CLIENT")
     print("="*70)
     print(f"Server URL: {SERVER_URL}")
-    print(f"Sending 6 requests")
+    print(f"Sending 20 requests")
     print("="*70)
     
     # Check if server is healthy
@@ -128,10 +128,10 @@ def main():
     start_time = time.time()
     threads = []
     
-    # Send 6 requests at 10-second intervals
-    for i in range(6):
+    # Send 20 requests at 10-second intervals
+    for i in range(20):
         # Calculate when this request should be sent
-        target_send_time = start_time + (i * 10)
+        target_send_time = start_time + (i * 0.01)
         
         # Wait until the target send time
         current_time = time.time()
@@ -162,19 +162,19 @@ def main():
     # Wait for all threads to complete (with a reasonable timeout)
     print(f"\n\nWaiting for all responses (up to 5 minutes)...")
     for thread in threads:
-        thread.join(timeout=320)  # 5 min 20 sec to allow for some buffer
+        thread.join(timeout=620)  # 10 min 20 sec to allow for some buffer
     
     # Print summary
     total_time = time.time() - start_time
     print("\n" + "="*70)
     print("SUMMARY")
     print("="*70)
-    print(f"Total requests sent: 6")
+    print(f"Total requests sent: 20")
     
     with results_lock:
         successful = sum(1 for r in results.values() if r.get('success', False))
         print(f"Successful responses: {successful}")
-        print(f"Failed requests: {6 - successful}")
+        print(f"Failed requests: {20 - successful}")
     
     print(f"Total elapsed time: {total_time:.2f}s")
     

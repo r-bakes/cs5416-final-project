@@ -1,0 +1,145 @@
+============================================================
+SENTIMENT & SAFETY SERVICE
+============================================================
+Node: 0
+Port: 8005
+Sentiment Model: nlptown/bert-base-multilingual-uncased-sentiment
+Safety Model: unitary/toxic-bert
+============================================================
+ * Serving Flask app '05_sentiment_and_safety_service'
+ * Debug mode: off
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/05_sentiment_and_safety_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    26     22.1 MiB     22.1 MiB           1   @profile_with_timing
+    27                                         @profile
+    28                                         def _analyze_sentiment_batch(texts: list[str]) -> list[str]:
+    29                                             """Step 7: Analyze sentiment for each generated response"""
+    30     22.2 MiB      0.1 MiB           5       truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+    31    396.4 MiB    374.2 MiB           1       raw_results = sentiment_classifier(truncated_texts)
+    32    396.4 MiB      0.0 MiB           1       sentiment_map = {
+    33    396.4 MiB      0.0 MiB           1           "1 star": "very negative",
+    34    396.4 MiB      0.0 MiB           1           "2 stars": "negative",
+    35    396.4 MiB      0.0 MiB           1           "3 stars": "neutral",
+    36    396.4 MiB      0.0 MiB           1           "4 stars": "positive",
+    37    396.4 MiB      0.0 MiB           1           "5 stars": "very positive",
+    38                                             }
+    39    396.4 MiB      0.0 MiB           1       sentiments = []
+    40    396.4 MiB      0.0 MiB           5       for result in raw_results:
+    41    396.4 MiB      0.0 MiB           4           sentiments.append(sentiment_map.get(result["label"], "neutral"))
+    42    396.4 MiB      0.0 MiB           1       return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.30s)
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/05_sentiment_and_safety_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    45    396.5 MiB    396.5 MiB           1   @profile_with_timing
+    46                                         @profile
+    47                                         def _filter_response_safety_batch(texts: list[str]) -> list[bool]:
+    48                                             """Step 8: Filter responses for safety for each entry in the batch"""
+    49    396.5 MiB      0.0 MiB           5       truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+    50    728.8 MiB    332.3 MiB           1       raw_results = safety_classifier(truncated_texts)
+    51    728.8 MiB      0.0 MiB           1       toxicity_flags = []
+    52    728.8 MiB      0.0 MiB           5       for result in raw_results:
+    53    728.8 MiB      0.0 MiB           4           toxicity_flags.append(result["score"] > 0.5)
+    54    728.8 MiB      0.0 MiB           1       return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.37s)
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/05_sentiment_and_safety_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    26    284.1 MiB    284.1 MiB           1   @profile_with_timing
+    27                                         @profile
+    28                                         def _analyze_sentiment_batch(texts: list[str]) -> list[str]:
+    29                                             """Step 7: Analyze sentiment for each generated response"""
+    30    284.2 MiB      0.1 MiB           5       truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+    31    503.7 MiB    219.5 MiB           1       raw_results = sentiment_classifier(truncated_texts)
+    32    503.7 MiB      0.0 MiB           1       sentiment_map = {
+    33    503.7 MiB      0.0 MiB           1           "1 star": "very negative",
+    34    503.7 MiB      0.0 MiB           1           "2 stars": "negative",
+    35    503.7 MiB      0.0 MiB           1           "3 stars": "neutral",
+    36    503.7 MiB      0.0 MiB           1           "4 stars": "positive",
+    37    503.7 MiB      0.0 MiB           1           "5 stars": "very positive",
+    38                                             }
+    39    503.7 MiB      0.0 MiB           1       sentiments = []
+    40    503.7 MiB      0.0 MiB           5       for result in raw_results:
+    41    503.7 MiB      0.0 MiB           4           sentiments.append(sentiment_map.get(result["label"], "neutral"))
+    42    503.7 MiB      0.0 MiB           1       return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.29s)
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/05_sentiment_and_safety_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    45    503.8 MiB    503.8 MiB           1   @profile_with_timing
+    46                                         @profile
+    47                                         def _filter_response_safety_batch(texts: list[str]) -> list[bool]:
+    48                                             """Step 8: Filter responses for safety for each entry in the batch"""
+    49    503.8 MiB      0.0 MiB           5       truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+    50    721.5 MiB    217.7 MiB           1       raw_results = safety_classifier(truncated_texts)
+    51    721.5 MiB      0.0 MiB           1       toxicity_flags = []
+    52    721.5 MiB      0.0 MiB           5       for result in raw_results:
+    53    721.5 MiB      0.0 MiB           4           toxicity_flags.append(result["score"] > 0.5)
+    54    721.5 MiB      0.0 MiB           1       return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.41s)
+
+[TIMING] _analyze_sentiment_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/05_sentiment_and_safety_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    26     67.4 MiB     67.4 MiB           1   @profile_with_timing
+    27                                         @profile
+    28                                         def _analyze_sentiment_batch(texts: list[str]) -> list[str]:
+    29                                             """Step 7: Analyze sentiment for each generated response"""
+    30     67.5 MiB      0.1 MiB           5       truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+    31    389.5 MiB    322.0 MiB           1       raw_results = sentiment_classifier(truncated_texts)
+    32    389.5 MiB      0.0 MiB           1       sentiment_map = {
+    33    389.5 MiB      0.0 MiB           1           "1 star": "very negative",
+    34    389.5 MiB      0.0 MiB           1           "2 stars": "negative",
+    35    389.5 MiB      0.0 MiB           1           "3 stars": "neutral",
+    36    389.5 MiB      0.0 MiB           1           "4 stars": "positive",
+    37    389.5 MiB      0.0 MiB           1           "5 stars": "very positive",
+    38                                             }
+    39    389.5 MiB      0.0 MiB           1       sentiments = []
+    40    389.5 MiB      0.0 MiB           5       for result in raw_results:
+    41    389.5 MiB      0.0 MiB           4           sentiments.append(sentiment_map.get(result["label"], "neutral"))
+    42    389.5 MiB      0.0 MiB           1       return sentiments
+
+
+[TIMING] _analyze_sentiment_batch - END (took 1.31s)
+
+[TIMING] _filter_response_safety_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/05_sentiment_and_safety_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    45    389.6 MiB    389.6 MiB           1   @profile_with_timing
+    46                                         @profile
+    47                                         def _filter_response_safety_batch(texts: list[str]) -> list[bool]:
+    48                                             """Step 8: Filter responses for safety for each entry in the batch"""
+    49    389.6 MiB      0.0 MiB           5       truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
+    50    721.3 MiB    331.8 MiB           1       raw_results = safety_classifier(truncated_texts)
+    51    721.3 MiB      0.0 MiB           1       toxicity_flags = []
+    52    721.3 MiB      0.0 MiB           5       for result in raw_results:
+    53    721.3 MiB      0.0 MiB           4           toxicity_flags.append(result["score"] > 0.5)
+    54    721.3 MiB      0.0 MiB           1       return toxicity_flags
+
+
+[TIMING] _filter_response_safety_batch - END (took 1.31s)
