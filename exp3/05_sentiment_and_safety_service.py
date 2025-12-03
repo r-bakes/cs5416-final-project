@@ -3,6 +3,8 @@ from config import CONFIG, SENTIMENT_MODEL_NAME, SAFETY_MODEL_NAME, DEVICE
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
+from utils import profile_with_timing
+from memory_profiler import profile
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("SENTIMENT_SAFETY_SERVICE_PORT", 8004))
@@ -21,6 +23,8 @@ safety_classifier = hf_pipeline(
 )
 
 
+@profile_with_timing
+@profile
 def _analyze_sentiment_batch(texts: list[str]) -> list[str]:
     """Step 7: Analyze sentiment for each generated response"""
     truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
@@ -38,6 +42,8 @@ def _analyze_sentiment_batch(texts: list[str]) -> list[str]:
     return sentiments
 
 
+@profile_with_timing
+@profile
 def _filter_response_safety_batch(texts: list[str]) -> list[bool]:
     """Step 8: Filter responses for safety for each entry in the batch"""
     truncated_texts = [text[: CONFIG["truncate_length"]] for text in texts]
@@ -76,14 +82,14 @@ def health():
 
 def main():
     """Start the sentiment and safety service"""
-    print("=" * 60)
-    print("SENTIMENT & SAFETY SERVICE")
-    print("=" * 60)
-    print(f"Node: {NODE_NUMBER}")
-    print(f"Port: {SERVICE_PORT}")
-    print(f"Sentiment Model: {SENTIMENT_MODEL_NAME}")
-    print(f"Safety Model: {SAFETY_MODEL_NAME}")
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    print("SENTIMENT & SAFETY SERVICE", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {SERVICE_PORT}", flush=True)
+    print(f"Sentiment Model: {SENTIMENT_MODEL_NAME}", flush=True)
+    print(f"Safety Model: {SAFETY_MODEL_NAME}", flush=True)
+    print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
 

@@ -5,6 +5,7 @@ from sentence_transformers import SentenceTransformer
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
+from pipeline import profile, profile_with_timing
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("EMBEDDING_SERVICE_PORT", 8001))
@@ -17,7 +18,8 @@ class EmbeddingRequest(TypedDict):
 app = Flask(__name__)
 model = SentenceTransformer(EMBEDDING_MODEL_NAME).to(DEVICE)
 
-
+@profile_with_timing
+@profile
 def _generate_embeddings_batch(texts: list[str]) -> np.ndarray:
     """Step 2: Generate embeddings for a batch of queries"""
     embeddings = model.encode(texts, normalize_embeddings=True, convert_to_numpy=True)
@@ -51,13 +53,13 @@ def health():
 
 def main():
     """Start the embedding service"""
-    print("=" * 60)
-    print("EMBEDDING SERVICE")
-    print("=" * 60)
-    print(f"Node: {NODE_NUMBER}")
-    print(f"Port: {SERVICE_PORT}")
-    print(f"Model: {EMBEDDING_MODEL_NAME}")
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    print("EMBEDDING SERVICE", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {SERVICE_PORT}", flush=True)
+    print(f"Model: {EMBEDDING_MODEL_NAME}", flush=True)
+    print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
 

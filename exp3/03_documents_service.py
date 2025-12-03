@@ -8,6 +8,8 @@ import torch
 import os
 from flask import Flask, request, jsonify
 from typing import TypedDict
+from utils import profile_with_timing
+from memory_profiler import profile
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("DOCUMENTS_SERVICE_PORT", 8003))
@@ -27,6 +29,8 @@ model.eval()
 db_path = f"{CONFIG['documents_path']}/documents.db"
 
 
+@profile_with_timing
+@profile
 def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
     """Step 4: Fetch documents for each query in the batch using SQLite"""
     conn = sqlite3.connect(db_path)
@@ -54,6 +58,8 @@ def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
     return documents_batch
 
 
+@profile_with_timing
+@profile
 def _rerank_documents_batch(
     queries: list[str], documents_batch: list[list[dict]]
 ) -> list[list[dict]]:
@@ -120,14 +126,14 @@ def health():
 
 def main():
     """Start the documents service"""
-    print("=" * 60)
-    print("DOCUMENTS SERVICE (Fetch + Rerank)")
-    print("=" * 60)
-    print(f"Node: {NODE_NUMBER}")
-    print(f"Port: {SERVICE_PORT}")
-    print(f"DB: {CONFIG['documents_path']}/documents.db")
-    print(f"Reranker: {RERANKER_MODEL_NAME}")
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    print("DOCUMENTS SERVICE (Fetch + Rerank)", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {SERVICE_PORT}", flush=True)
+    print(f"DB: {CONFIG['documents_path']}/documents.db", flush=True)
+    print(f"Reranker: {RERANKER_MODEL_NAME}", flush=True)
+    print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
 

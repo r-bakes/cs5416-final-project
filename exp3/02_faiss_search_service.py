@@ -5,6 +5,8 @@ import faiss
 import gc
 from flask import Flask, request, jsonify
 from typing import TypedDict
+from utils import profile_with_timing
+from memory_profiler import profile
 
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 SERVICE_PORT = int(os.environ.get("FAISS_SERVICE_PORT", 8002))
@@ -18,14 +20,15 @@ app = Flask(__name__)
 index = faiss.read_index(CONFIG["faiss_index_path"])
 
 
+@profile_with_timing
+@profile
 def _faiss_search_batch(query_embeddings: np.ndarray) -> list[list[int]]:
     """Step 3: Perform FAISS ANN search for a batch of embeddings"""
     if not os.path.exists(CONFIG["faiss_index_path"]):
         raise FileNotFoundError(
             "FAISS index not found. Please create the index before running the pipeline."
         )
-
-    print("Loading FAISS index")
+    print("Loading FAISS index", flush=True)
     query_embeddings = query_embeddings.astype("float32")
     _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
     return [row.tolist() for row in indices]
@@ -61,12 +64,12 @@ def health():
 
 def main():
     """Start the FAISS search service"""
-    print("=" * 60)
-    print("FAISS SEARCH SERVICE")
-    print("=" * 60)
-    print(f"Node: {NODE_NUMBER}")
-    print(f"Port: {SERVICE_PORT}")
-    print("=" * 60)
+    print("=" * 60, flush=True)
+    print("FAISS SEARCH SERVICE", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {SERVICE_PORT}", flush=True)
+    print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
 

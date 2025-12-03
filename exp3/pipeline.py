@@ -12,6 +12,10 @@ from queue import Queue, Empty
 import threading
 from dataclasses import dataclass
 
+from memory_profiler import profile
+from utils import profile_with_timing
+
+
 # Read environment variables
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 ORCHESTRATOR_PORT = int(os.environ.get("ORCHESTRATOR_PORT", 8000))
@@ -73,6 +77,8 @@ class PipelineResponse:
     processing_time: float
 
 
+@profile_with_timing
+@profile
 def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
     """
     Orchestrate the full pipeline through microservices
@@ -82,16 +88,16 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
     start_times = [time.time() for _ in reqs]
     queries = [req.query for req in reqs]
 
-    print("\n" + "=" * 60)
-    print(f"Processing batch of {batch_size} requests")
-    print("=" * 60)
+    print("\n" + "=" * 60, flush=True)
+    print(f"Processing batch of {batch_size} requests", flush=True)
+    print("=" * 60, flush=True)
     for req in reqs:
-        print(f"- {req.request_id}: {req.query[:50]}...")
+        print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
 
     try:
         # Step 1: Generate embeddings
         embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
-        print(f"[Step 1/5] Calling embedding service at {embedding_url}...")
+        print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
         response = requests.post(
             f"{embedding_url}/process", json={"texts": queries}, timeout=120
         )
@@ -100,7 +106,7 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
 
         # Step 2: FAISS search
         faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
-        print(f"[Step 2/5] Calling FAISS service at {faiss_url}...")
+        print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
         response = requests.post(
             f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=120
         )
@@ -109,7 +115,7 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
 
         # Step 3: Fetch and rerank documents
         documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
-        print(f"[Step 3/5] Calling documents service at {documents_url}...")
+        print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
         response = requests.post(
             f"{documents_url}/process",
             json={"queries": queries, "doc_id_batches": doc_ids},
@@ -120,7 +126,7 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
 
         # Step 4: Generate LLM response
         llm_url = get_service_url("llm", LLM_SERVICE_URLS)
-        print(f"[Step 4/5] Calling LLM service at {llm_url}...")
+        print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
         response = requests.post(
             f"{llm_url}/process",
             json={"queries": queries, "documents_batch": reranked_documents},
@@ -133,7 +139,10 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         sentiment_url = get_service_url(
             "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
         )
-        print(f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...")
+        print(
+            f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+            flush=True,
+        )
         response = requests.post(
             f"{sentiment_url}/process",
             json={"texts": llm_responses},
@@ -148,7 +157,8 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         for idx, req in enumerate(reqs):
             processing_time = time.time() - start_times[idx]
             print(
-                f"Request {req.request_id} processed in {processing_time:.2f} seconds"
+                f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+                flush=True,
             )
             sensitivity_result = "true" if toxicity_flags[idx] else "false"
             responses.append(
@@ -164,10 +174,10 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         return responses
 
     except requests.exceptions.RequestException as e:
-        print(f"Batch processing failed: {e}")
+        print(f"Batch processing failed: {e}", flush=True)
         raise
     except Exception as e:
-        print(f"Batch processing error: {e}")
+        print(f"Batch processing error: {e}", flush=True)
         raise
 
 
@@ -191,7 +201,7 @@ def process_requests_worker():
                 except Empty:
                     break  # NOTE: Fire off the request even if we don't have max batch size.
 
-            print(f"Processing batch of {len(batch)} requests.")
+            print(f"Processing batch of {len(batch)} requests.", flush=True)
 
             requests = [
                 PipelineRequest(
@@ -215,7 +225,7 @@ def process_requests_worker():
                         "is_toxic": response.is_toxic,
                     }
         except Exception as e:
-            print(f"Error processing request: {e}")
+            print(f"Error processing request: {e}", flush=True)
 
 
 @app.route("/query", methods=["POST"])
@@ -234,7 +244,7 @@ def handle_query():
             if request_id in results:
                 return jsonify(results[request_id]), 200
 
-        print(f"[Orchestrator] Queueing request {request_id}")
+        print(f"[Orchestrator] Queueing request {request_id}", flush=True)
         # Add to queue
         request_queue.put({"request_id": request_id, "query": query})
 
@@ -281,32 +291,38 @@ def main():
     """
     Main execution function
     """
-    print("=" * 60)
-    print("MICROSERVICES ORCHESTRATOR")
-    print("=" * 60)
-    print(f"Orchestrator Node: {NODE_NUMBER}")
-    print(f"Port: {ORCHESTRATOR_PORT}")
-    print("\nService URLs:")
+    print("=" * 60, flush=True)
+    print("MICROSERVICES ORCHESTRATOR", flush=True)
+    print("=" * 60, flush=True)
+    print(f"Orchestrator Node: {NODE_NUMBER}", flush=True)
+    print(f"Port: {ORCHESTRATOR_PORT}", flush=True)
+    print("\nService URLs:", flush=True)
     print(
-        f"\tEmbedding ({len(EMBEDDING_SERVICE_URLS)} instances): {EMBEDDING_SERVICE_URLS}"
+        f"\tEmbedding ({len(EMBEDDING_SERVICE_URLS)} instances): {EMBEDDING_SERVICE_URLS}",
+        flush=True,
     )
-    print(f"\tFAISS ({len(FAISS_SERVICE_URLS)} instances): {FAISS_SERVICE_URLS}")
     print(
-        f"\tDocuments ({len(DOCUMENTS_SERVICE_URLS)} instances): {DOCUMENTS_SERVICE_URLS}"
+        f"\tFAISS ({len(FAISS_SERVICE_URLS)} instances): {FAISS_SERVICE_URLS}",
+        flush=True,
     )
-    print(f"\tLLM ({len(LLM_SERVICE_URLS)} instances): {LLM_SERVICE_URLS}")
     print(
-        f"\tSentiment/Safety ({len(SENTIMENT_SAFETY_SERVICE_URLS)} instances): {SENTIMENT_SAFETY_SERVICE_URLS}"
+        f"\tDocuments ({len(DOCUMENTS_SERVICE_URLS)} instances): {DOCUMENTS_SERVICE_URLS}",
+        flush=True,
     )
-    print("=" * 60)
+    print(f"\tLLM ({len(LLM_SERVICE_URLS)} instances): {LLM_SERVICE_URLS}", flush=True)
+    print(
+        f"\tSentiment/Safety ({len(SENTIMENT_SAFETY_SERVICE_URLS)} instances): {SENTIMENT_SAFETY_SERVICE_URLS}",
+        flush=True,
+    )
+    print("=" * 60, flush=True)
 
     # Start worker thread
     worker_thread = threading.Thread(target=process_requests_worker, daemon=True)
     worker_thread.start()
-    print("Worker thread started!")
+    print("Worker thread started!", flush=True)
 
     # Start Flask server
-    print(f"\nStarting Flask orchestrator on 0.0.0.0:{ORCHESTRATOR_PORT}")
+    print(f"\nStarting Flask orchestrator on 0.0.0.0:{ORCHESTRATOR_PORT}", flush=True)
     app.run(host="0.0.0.0", port=ORCHESTRATOR_PORT, threaded=True)
 
 

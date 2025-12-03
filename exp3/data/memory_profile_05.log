@@ -1,0 +1,10 @@
+============================================================
+SENTIMENT & SAFETY SERVICE
+============================================================
+Node: 0
+Port: 8005
+Sentiment Model: nlptown/bert-base-multilingual-uncased-sentiment
+Safety Model: unitary/toxic-bert
+============================================================
+ * Serving Flask app '05_sentiment_and_safety_service'
+ * Debug mode: off

@@ -11,6 +11,9 @@ cd "$(dirname "$0")"
 # Activate virtual environment if exists
 [ -d "../.venv" ] && source ../.venv/bin/activate
 
+# Force unbuffered Python output so logs capture prints immediately
+export PYTHONUNBUFFERED=1
+
 # Set node IPs (these come from environment)
 export NODE_0_IP=${NODE_0_IP:-localhost}
 export NODE_1_IP=${NODE_1_IP:-localhost}
@@ -97,7 +100,7 @@ if [ "$NODE_NUMBER" -eq 0 ]; then
   export LLM_SERVICE_URL="http://$NODE_1_IP:8009,http://$NODE_2_IP:8012"
   export SENTIMENT_SAFETY_SERVICE_URL="http://$NODE_0_IP:$SENTIMENT_PORT_1,http://$NODE_0_IP:$SENTIMENT_PORT_2"
 
-  python3 pipeline.py &
+  python -u pipeline.py >>memory_profile.log 2>&1 &
   sleep 5
 
   echo "Node 0 services started. Orchestrator available at http://$NODE_0_IP:$NODE_0_BASE_PORT"
@@ -106,13 +109,13 @@ elif [ "$NODE_NUMBER" -eq 1 ]; then
   echo "Starting Node 1 services..."
 
   # NOTE: FAISS service - 2 instances
-  FAISS_SERVICE_PORT=8007 python3 02_faiss_search_service.py &
+  FAISS_SERVICE_PORT=8007 python3 02_faiss_search_service.py >>memory_profile.log &
   sleep 2
-  FAISS_SERVICE_PORT=8008 python3 02_faiss_search_service.py &
+  FAISS_SERVICE_PORT=8008 python3 02_faiss_search_service.py >>memory_profile.log &
   sleep 2
 
   # NOTE: LLM service - 1 instance
-  LLM_SERVICE_PORT=8009 python3 04_llm_service.py &
+  LLM_SERVICE_PORT=8009 python3 04_llm_service.py >>memory_profile.log &
   sleep 2
 
   echo "Node 1 services started."
@@ -121,13 +124,13 @@ elif [ "$NODE_NUMBER" -eq 2 ]; then
   echo "Starting Node 2 services..."
 
   # NOTE: FAISS service - 2 instances
-  FAISS_SERVICE_PORT=8010 python3 02_faiss_search_service.py &
+  FAISS_SERVICE_PORT=8010 python3 02_faiss_search_service.py >>memory_profile.log &
   sleep 5
-  FAISS_SERVICE_PORT=8011 python3 02_faiss_search_service.py &
+  FAISS_SERVICE_PORT=8011 python3 02_faiss_search_service.py >>memory_profile.log &
   sleep 5
 
   # NOTE: LLM service - 1 instance
-  LLM_SERVICE_PORT=8012 python3 04_llm_service.py &
+  LLM_SERVICE_PORT=8012 python3 04_llm_service.py >>memory_profile.log &
   sleep 2
 
   echo "Node 2 services started."
