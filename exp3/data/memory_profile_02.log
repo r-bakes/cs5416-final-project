@@ -1,0 +1,57 @@
+============================================================
+EMBEDDING SERVICE
+============================================================
+Node: 0
+Port: 8002
+Model: BAAI/bge-base-en-v1.5
+============================================================
+ * Serving Flask app '01_embedding_service'
+ * Debug mode: off
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/01_embedding_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    21     23.1 MiB     23.1 MiB           1   @profile_with_timing
+    22                                         @profile
+    23                                         def _generate_embeddings_batch(texts: list[str]) -> np.ndarray:
+    24                                             """Step 2: Generate embeddings for a batch of queries"""
+    25    387.0 MiB    363.9 MiB           1       embeddings = model.encode(texts, normalize_embeddings=True, convert_to_numpy=True)
+    26    625.4 MiB    238.4 MiB           1       gc.collect()
+    27    625.4 MiB      0.0 MiB           1       return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 2.25s)
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/01_embedding_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    21     32.2 MiB     32.2 MiB           1   @profile_with_timing
+    22                                         @profile
+    23                                         def _generate_embeddings_batch(texts: list[str]) -> np.ndarray:
+    24                                             """Step 2: Generate embeddings for a batch of queries"""
+    25    387.2 MiB    355.0 MiB           1       embeddings = model.encode(texts, normalize_embeddings=True, convert_to_numpy=True)
+    26    623.7 MiB    236.5 MiB           1       gc.collect()
+    27    623.7 MiB      0.0 MiB           1       return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 0.40s)
+
+[TIMING] _generate_embeddings_batch - START
+Filename: /Users/laurence/Documents/Cornell/CS5416/cs5416-final-project/exp3/01_embedding_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    21     29.1 MiB     29.1 MiB           1   @profile_with_timing
+    22                                         @profile
+    23                                         def _generate_embeddings_batch(texts: list[str]) -> np.ndarray:
+    24                                             """Step 2: Generate embeddings for a batch of queries"""
+    25    381.6 MiB    352.5 MiB           1       embeddings = model.encode(texts, normalize_embeddings=True, convert_to_numpy=True)
+    26    620.7 MiB    239.1 MiB           1       gc.collect()
+    27    620.7 MiB      0.0 MiB           1       return embeddings
+
+
+[TIMING] _generate_embeddings_batch - END (took 0.39s)
