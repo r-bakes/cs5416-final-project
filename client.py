@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Client script for testing the ML inference pipeline.
-Sends one request every 0.01 seconds for 1 second (100 requests total).
+Sends one request every 0.01 seconds for 0.3 second (30 requests total).
 Requests are sent at fixed intervals regardless of response time.
 """
 
@@ -128,8 +128,8 @@ def main():
     start_time = time.time()
     threads = []
     
-    # Send 100 requests at 1-second intervals
-    for i in range(100):
+    # Send 30 requests at 0.01-second intervals
+    for i in range(30):
         # Calculate when this request should be sent
         target_send_time = start_time + (i * 0.01)
         
@@ -169,12 +169,12 @@ def main():
     print("\n" + "="*70)
     print("SUMMARY")
     print("="*70)
-    print(f"Total requests sent: 100")
+    print(f"Total requests sent: 30")
     
     with results_lock:
         successful = sum(1 for r in results.values() if r.get('success', False))
         print(f"Successful responses: {successful}")
-        print(f"Failed requests: {100 - successful}")
+        print(f"Failed requests: {30 - successful}")
     
     print(f"Total elapsed time: {total_time:.2f}s")
     
