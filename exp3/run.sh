@@ -99,15 +99,14 @@ if [ "$NODE_NUMBER" -eq 0 ]; then
   SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_2 python3 05_sentiment_and_safety_service.py >>memory_profile_06.log &
   sleep 2
 
-  # FAISS_SERVICE_PORT=$FAISS_PORT_3 python3 02_faiss_search_service.py >>memory_profile_11.log &
-  # sleep 2
+  FAISS_SERVICE_PORT=$FAISS_PORT_3 python3 02_faiss_search_service.py >>memory_profile_11.log &
+  sleep 2
 
   # Orchestrator - points to all service instances
   echo "Starting orchestrator..."
   export ORCHESTRATOR_PORT=$NODE_0_BASE_PORT
   export EMBEDDING_SERVICE_URL="http://$NODE_0_IP:$EMBEDDING_PORT_1,http://$NODE_0_IP:$EMBEDDING_PORT_2"
-  export FAISS_SERVICE_URL="http://$NODE_1_IP:$FAISS_PORT_1,http://$NODE_2_IP:$FAISS_PORT_2"
-  # export FAISS_SERVICE_URL="http://$NODE_1_IP:$FAISS_PORT_1,http://$NODE_2_IP:$FAISS_PORT_2,http://$NODE_0_IP:$FAISS_PORT_3"
+  export FAISS_SERVICE_URL="http://$NODE_1_IP:$FAISS_PORT_1,http://$NODE_2_IP:$FAISS_PORT_2,http://$NODE_0_IP:$FAISS_PORT_3"
   export DOCUMENTS_SERVICE_URL="http://$NODE_0_IP:$DOCUMENTS_PORT_1,http://$NODE_0_IP:$DOCUMENTS_PORT_2"
   export LLM_SERVICE_URL="http://$NODE_1_IP:$LLM_PORT_1,http://$NODE_2_IP:$LLM_PORT_2"
   export SENTIMENT_SAFETY_SERVICE_URL="http://$NODE_0_IP:$SENTIMENT_PORT_1,http://$NODE_0_IP:$SENTIMENT_PORT_2"
