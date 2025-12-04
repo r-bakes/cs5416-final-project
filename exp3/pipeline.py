@@ -317,8 +317,12 @@ def main():
     print("=" * 60, flush=True)
 
     # Start worker thread
-    worker_thread = threading.Thread(target=process_requests_worker, daemon=True)
-    worker_thread.start()
+    worker_thread_1 = threading.Thread(target=process_requests_worker, daemon=True)
+    worker_thread_1.start()
+    print("Worker thread started!", flush=True)
+
+    worker_thread_2 = threading.Thread(target=process_requests_worker, daemon=True)
+    worker_thread_2.start()
     print("Worker thread started!", flush=True)
 
     # Start Flask server

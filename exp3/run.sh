@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Distribution plan:
-# node 0 -> pipeline.py entrypoint + 2 instances of 01, 2 instances of 03, 2 instances of 05
-# node 1 -> 2 instances of 02, 1 instance of 04
-# node 2 -> 2 instances of 02, 1 instance of 04
+# node 0 -> pipeline.py entrypoint + 2 instances of 01, 2 instances of 03, 2 instances of 05, 1 instance of 02
+# node 1 -> 1 instance of 02, 1 instance of 04
+# node 2 -> 1 instance of 02, 1 instance of 04
 
 # Change to exp3 directory
 cd "$(dirname "$0")"
@@ -20,7 +20,7 @@ export NODE_1_IP=${NODE_1_IP:-localhost}
 export NODE_2_IP=${NODE_2_IP:-localhost}
 export NODE_NUMBER=${NODE_NUMBER:-0}
 
-# Parse NODE_0_IP to extract IP and port (format: IP:port)
+# Parse NODE_0_IP, NODE_1_IP and NODE_2_IP to extract IP and port (format: IP:port)
 if [[ "$NODE_0_IP" == *:* ]]; then
   NODE_0_HOST="${NODE_0_IP%:*}"
   NODE_0_BASE_PORT="${NODE_0_IP##*:}"
@@ -32,15 +32,32 @@ fi
 # Parse NODE_1_IP and NODE_2_IP to extract just the host
 if [[ "$NODE_1_IP" == *:* ]]; then
   NODE_1_HOST="${NODE_1_IP%:*}"
+  NODE_1_BASE_PORT="${NODE_1_IP##*:}"
 else
   NODE_1_HOST="$NODE_1_IP"
+  NODE_1_BASE_PORT=8000
 fi
 
 if [[ "$NODE_2_IP" == *:* ]]; then
   NODE_2_HOST="${NODE_2_IP%:*}"
+  NODE_2_BASE_PORT="${NODE_1_IP##*:}"
 else
   NODE_2_HOST="$NODE_2_IP"
+  NODE_2_BASE_PORT=8000
 fi
+
+# Calculate port numbers based on NODE_0_BASE_PORT
+EMBEDDING_PORT_1=$((NODE_0_BASE_PORT + 1))
+EMBEDDING_PORT_2=$((NODE_0_BASE_PORT + 2))
+DOCUMENTS_PORT_1=$((NODE_0_BASE_PORT + 3))
+DOCUMENTS_PORT_2=$((NODE_0_BASE_PORT + 4))
+SENTIMENT_PORT_1=$((NODE_0_BASE_PORT + 5))
+SENTIMENT_PORT_2=$((NODE_0_BASE_PORT + 6))
+FAISS_PORT_1=$((NODE_1_BASE_PORT + 7))
+LLM_PORT_1=$((NODE_1_BASE_PORT + 8))
+FAISS_PORT_2=$((NODE_2_BASE_PORT + 9))
+LLM_PORT_2=$((NODE_2_BASE_PORT + 10))
+FAISS_PORT_3=$((NODE_1_BASE_PORT + 11))
 
 # Update NODE_*_IP variables to contain only the host portion
 export NODE_0_IP="$NODE_0_HOST"
@@ -64,43 +81,38 @@ trap 'kill $(jobs -p) 2>/dev/null' EXIT
 if [ "$NODE_NUMBER" -eq 0 ]; then
   echo "Starting Node 0 services..."
 
-  # Calculate port numbers based on NODE_0_BASE_PORT
-  EMBEDDING_PORT_1=$((NODE_0_BASE_PORT + 1))
-  EMBEDDING_PORT_2=$((NODE_0_BASE_PORT + 2))
-  DOCUMENTS_PORT_1=$((NODE_0_BASE_PORT + 3))
-  DOCUMENTS_PORT_2=$((NODE_0_BASE_PORT + 4))
-  SENTIMENT_PORT_1=$((NODE_0_BASE_PORT + 5))
-  SENTIMENT_PORT_2=$((NODE_0_BASE_PORT + 6))
-
   # NOTE: Embedding service - 2 instances
-  EMBEDDING_SERVICE_PORT=8001 python3 01_embedding_service.py >>memory_profile_01.log &
+  EMBEDDING_SERVICE_PORT=$EMBEDDING_PORT_1 python3 01_embedding_service.py >>memory_profile_01.log &
   sleep 2
-  EMBEDDING_SERVICE_PORT=8002 python3 01_embedding_service.py >>memory_profile_02.log &
+  EMBEDDING_SERVICE_PORT=$EMBEDDING_PORT_2 python3 01_embedding_service.py >>memory_profile_02.log &
   sleep 2
 
   # NOTE: Documents service - 2 instances
-  DOCUMENTS_SERVICE_PORT=8003 python3 03_documents_service.py >>memory_profile_03.log &
+  DOCUMENTS_SERVICE_PORT=$DOCUMENTS_PORT_1 python3 03_documents_service.py >>memory_profile_03.log &
   sleep 2
-  DOCUMENTS_SERVICE_PORT=8004 python3 03_documents_service.py >>memory_profile_04.log &
+  DOCUMENTS_SERVICE_PORT=$DOCUMENTS_PORT_2 python3 03_documents_service.py >>memory_profile_04.log &
   sleep 2
 
   # NOTE: Sentiment/Safety service - 2 instances
-  SENTIMENT_SAFETY_SERVICE_PORT=8005 python3 05_sentiment_and_safety_service.py >>memory_profile_05.log &
+  SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_1 python3 05_sentiment_and_safety_service.py >>memory_profile_05.log &
   sleep 2
-  SENTIMENT_SAFETY_SERVICE_PORT=8006 python3 05_sentiment_and_safety_service.py >>memory_profile_06.log &
+  SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_2 python3 05_sentiment_and_safety_service.py >>memory_profile_06.log &
   sleep 2
+
+  # FAISS_SERVICE_PORT=$FAISS_PORT_3 python3 02_faiss_search_service.py >>memory_profile_11.log &
+  # sleep 2
 
   # Orchestrator - points to all service instances
   echo "Starting orchestrator..."
   export ORCHESTRATOR_PORT=$NODE_0_BASE_PORT
   export EMBEDDING_SERVICE_URL="http://$NODE_0_IP:$EMBEDDING_PORT_1,http://$NODE_0_IP:$EMBEDDING_PORT_2"
-  export FAISS_SERVICE_URL="http://$NODE_1_IP:8007,http://$NODE_1_IP:8008,http://$NODE_2_IP:8010,http://$NODE_2_IP:8011"
-  # export FAISS_SERVICE_URL="http://$NODE_1_IP:8007,http://$NODE_2_IP:8010" # NOTE: For debugging
+  export FAISS_SERVICE_URL="http://$NODE_1_IP:$FAISS_PORT_1,http://$NODE_2_IP:$FAISS_PORT_2"
+  # export FAISS_SERVICE_URL="http://$NODE_1_IP:$FAISS_PORT_1,http://$NODE_2_IP:$FAISS_PORT_2,http://$NODE_0_IP:$FAISS_PORT_3"
   export DOCUMENTS_SERVICE_URL="http://$NODE_0_IP:$DOCUMENTS_PORT_1,http://$NODE_0_IP:$DOCUMENTS_PORT_2"
-  export LLM_SERVICE_URL="http://$NODE_1_IP:8009,http://$NODE_2_IP:8012"
+  export LLM_SERVICE_URL="http://$NODE_1_IP:$LLM_PORT_1,http://$NODE_2_IP:$LLM_PORT_2"
   export SENTIMENT_SAFETY_SERVICE_URL="http://$NODE_0_IP:$SENTIMENT_PORT_1,http://$NODE_0_IP:$SENTIMENT_PORT_2"
 
-  python -u pipeline.py >>memory_profile.log 2>&1 &
+  python3 -u pipeline.py >>memory_profile.log 2>&1 &
   sleep 5
 
   echo "Node 0 services started. Orchestrator available at http://$NODE_0_IP:$NODE_0_BASE_PORT"
@@ -108,14 +120,12 @@ if [ "$NODE_NUMBER" -eq 0 ]; then
 elif [ "$NODE_NUMBER" -eq 1 ]; then
   echo "Starting Node 1 services..."
 
-  # NOTE: FAISS service - 2 instances
-  FAISS_SERVICE_PORT=8007 python3 02_faiss_search_service.py >>memory_profile_07.log &
-  sleep 2
-  FAISS_SERVICE_PORT=8008 python3 02_faiss_search_service.py >>memory_profile_08.log &
+  # NOTE: FAISS service - 1 instance
+  FAISS_SERVICE_PORT=$FAISS_PORT_1 python3 02_faiss_search_service.py >>memory_profile_07.log &
   sleep 2
 
   # NOTE: LLM service - 1 instance
-  LLM_SERVICE_PORT=8009 python3 04_llm_service.py >>memory_profile_09.log &
+  LLM_SERVICE_PORT=$LLM_PORT_1 python3 04_llm_service.py >>memory_profile_09.log &
   sleep 2
 
   echo "Node 1 services started."
@@ -123,14 +133,12 @@ elif [ "$NODE_NUMBER" -eq 1 ]; then
 elif [ "$NODE_NUMBER" -eq 2 ]; then
   echo "Starting Node 2 services..."
 
-  # NOTE: FAISS service - 2 instances
-  FAISS_SERVICE_PORT=8010 python3 02_faiss_search_service.py >>memory_profile_10.log &
-  sleep 5
-  FAISS_SERVICE_PORT=8011 python3 02_faiss_search_service.py >>memory_profile_11.log &
-  sleep 5
+  # NOTE: FAISS service - 1 instance
+  FAISS_SERVICE_PORT=$FAISS_PORT_2 python3 02_faiss_search_service.py >>memory_profile_08.log &
+  sleep 2
 
   # NOTE: LLM service - 1 instance
-  LLM_SERVICE_PORT=8012 python3 04_llm_service.py >>memory_profile_12.log &
+  LLM_SERVICE_PORT=$LLM_PORT_2 python3 04_llm_service.py >>memory_profile_10.log &
   sleep 2
 
   echo "Node 2 services started."
