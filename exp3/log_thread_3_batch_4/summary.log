@@ -1,0 +1,562 @@
+======================================================================
+ML INFERENCE PIPELINE CLIENT
+======================================================================
+Server URL: http://132.236.91.187:9000/query
+Sending 20 requests
+======================================================================
+Server is healthy: {'node': 0, 'role': 'orchestrator', 'services': {'documents': ['http://132.236.91.187:9003', 'http://132.236.91.187:9004'], 'embedding': ['http://132.236.91.187:9001', 'http://132.236.91.187:9002'], 'faiss': ['http://132.236.91.181:8007', 'http://132.236.91.183:8008', 'http://132.236.91.187:8011'], 'llm': ['http://132.236.91.181:8009', 'http://132.236.91.183:8010'], 'sentiment_safety': ['http://132.236.91.187:9005', 'http://132.236.91.187:9006']}, 'status': 'healthy'}
+
+[20:46:34] Sending request req_1764985594_0
+
+Waiting 0.01s before next request...
+Query: How do I return a defective product?
+
+[20:46:34] Sending request req_1764985594_1
+Query: What is your refund policy?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_2
+Query: My order hasn't arrived yet, tracking number is ABC123
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_3
+
+Waiting 0.01s before next request...
+Query: How do I update my billing information?
+
+[20:46:34] Sending request req_1764985594_4
+Query: Is there a warranty on electronic items?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_5
+
+Waiting 0.01s before next request...
+Query: Can I change my shipping address after placing an order?
+
+[20:46:34] Sending request req_1764985594_6
+Query: What payment methods do you accept?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_7
+Query: How long does shipping typically take?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_8
+Query: How do I return a defective product?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_9
+Query: What is your refund policy?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_10
+Query: My order hasn't arrived yet, tracking number is ABC123
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_11
+
+Waiting 0.01s before next request...
+Query: How do I update my billing information?
+
+[20:46:34] Sending request req_1764985594_12
+
+Waiting 0.01s before next request...
+Query: Is there a warranty on electronic items?
+
+[20:46:34] Sending request req_1764985594_13
+Query: Can I change my shipping address after placing an order?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_14
+
+Waiting 0.01s before next request...
+Query: What payment methods do you accept?
+
+[20:46:34] Sending request req_1764985594_15
+
+Waiting 0.01s before next request...
+Query: How long does shipping typically take?
+
+[20:46:34] Sending request req_1764985594_16
+Query: How do I return a defective product?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_17
+
+Waiting 0.01s before next request...
+Query: What is your refund policy?
+
+[20:46:34] Sending request req_1764985594_18
+
+Waiting 0.01s before next request...
+Query: My order hasn't arrived yet, tracking number is ABC123
+
+[20:46:34] Sending request req_1764985594_19
+Waiting 0.01s before next request...
+
+Query: How do I update my billing information?
+
+[20:46:34] Sending request req_1764985594_20
+
+Waiting 0.01s before next request...
+Query: Is there a warranty on electronic items?
+
+[20:46:34] Sending request req_1764985594_21
+Query: Can I change my shipping address after placing an order?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_22
+Query: What payment methods do you accept?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_23
+Query: How long does shipping typically take?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_24
+Query: How do I return a defective product?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_25
+
+Waiting 0.00s before next request...
+Query: What is your refund policy?
+
+[20:46:34] Sending request req_1764985594_26
+Query: My order hasn't arrived yet, tracking number is ABC123
+
+Waiting 0.00s before next request...
+
+[20:46:34] Sending request req_1764985594_27
+Query: How do I update my billing information?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_28
+Query: Is there a warranty on electronic items?
+
+Waiting 0.01s before next request...
+
+[20:46:34] Sending request req_1764985594_29
+Query: Can I change my shipping address after placing an order?
+
+
+Waiting for all responses (up to 20 minutes)...
+
+[20:47:55] Response received for req_1764985594_10 in 81.25s
+  Generated Response: Answer: Your order has not been received yet. Please check your tracking number (ABC123) to see if i...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:47:55] Response received for req_1764985594_1 in 81.34s
+  Generated Response: Answer: I'm sorry, but I don't have enough context to provide a specific refund policy for documents...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:47:55] Response received for req_1764985594_4 in 81.34s
+  Generated Response: Answer: No...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:47:55] Response received for req_1764985594_7 in 81.33s
+  Generated Response: Shipping typically takes around 7 to 10 business days....
+  Sentiment: neutral
+  Is Toxic: false
+
+[20:49:01] Response received for req_1764985594_12 in 146.63s
+  Generated Response: Answer: No...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:49:01] Response received for req_1764985594_14 in 146.61s
+  Generated Response: Answer: PayPal, Credit Card (Visa, Mastercard), Cash, Money Order...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:49:01] Response received for req_1764985594_13 in 146.62s
+  Generated Response: Answer: No, you cannot change your shipping address after placing an order. Once you place an order,...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:49:01] Response received for req_1764985594_15 in 146.62s
+  Generated Response: Shipping typically takes around 7 to 10 business days depending on your location....
+  Sentiment: neutral
+  Is Toxic: false
+
+[20:50:17] Response received for req_1764985594_3 in 223.14s
+  Generated Response: To update your billing information, you can follow these steps:
+
+1. Log in to your account on the we...
+  Sentiment: positive
+  Is Toxic: false
+
+[20:50:17] Response received for req_1764985594_0 in 223.17s
+  Generated Response: To return a defective product, you should follow these steps:
+
+1. **Check for Defects**: Ensure that...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:50:17] Response received for req_1764985594_9 in 223.12s
+  Generated Response: Answer: I'm sorry, but I don't have any specific information about a refund policy for documents 136...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:50:17] Response received for req_1764985594_6 in 223.15s
+  Generated Response: Answer: PayPal, Credit Card (Visa, Mastercard), Cash, Money Order...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:50:22] Response received for req_1764985594_11 in 227.56s
+  Generated Response: To update your billing information, you can follow these steps:
+
+1. Log in to your account on the we...
+  Sentiment: positive
+  Is Toxic: false
+
+[20:50:22] Response received for req_1764985594_2 in 227.66s
+  Generated Response: Answer: Your order has not been received yet. Please check your tracking number (ABC123) to see if i...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:50:22] Response received for req_1764985594_5 in 227.66s
+  Generated Response: Answer: No, you cannot change your shipping address after placing an order. Once you place an order,...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:50:22] Response received for req_1764985594_8 in 227.63s
+  Generated Response: To return a defective product, you should follow these steps:
+
+1. **Check for Defects**: Ensure that...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:51:23] Response received for req_1764985594_23 in 289.15s
+  Generated Response: Shipping typically takes around 7 to 10 business days....
+  Sentiment: neutral
+  Is Toxic: false
+
+[20:51:23] Response received for req_1764985594_22 in 289.16s
+  Generated Response: Answer: PayPal, Credit Card (Visa, Mastercard), Cash, Money Order...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:51:23] Response received for req_1764985594_20 in 289.18s
+  Generated Response: Answer: No...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:51:23] Response received for req_1764985594_21 in 289.18s
+  Generated Response: Answer: No, you cannot change your shipping address after placing an order. Once you place an order,...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:52:06] Response received for req_1764985594_28 in 331.59s
+  Generated Response: Answer: No...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:52:06] Response received for req_1764985594_29 in 331.58s
+  Generated Response: Answer: No, you cannot change your shipping address after placing an order. Once you place an order,...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:52:07] Response received for req_1764985594_19 in 332.86s
+  Generated Response: To update your billing information, you can follow these steps:
+
+1. Log in to your account on the we...
+  Sentiment: positive
+  Is Toxic: false
+
+[20:52:07] Response received for req_1764985594_16 in 332.92s
+  Generated Response: To return a defective product, you should follow these steps:
+
+1. **Check for Defects**: Ensure that...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:52:07] Response received for req_1764985594_18 in 332.90s
+  Generated Response: Answer: Your order has not been received yet. Please check your tracking number (ABC123) to see if i...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:52:07] Response received for req_1764985594_17 in 332.91s
+  Generated Response: Answer: I'm sorry, but I don't have enough context to provide a specific refund policy for documents...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:52:47] Response received for req_1764985594_25 in 372.98s
+  Generated Response: Answer: I'm sorry, but I don't have enough context to provide a specific refund policy for documents...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:52:47] Response received for req_1764985594_26 in 372.97s
+
+[20:52:47] Response received for req_1764985594_27 in 372.97s
+  Generated Response: To update your billing information, you can follow these steps:
+
+1. Log in to your account on the we...
+  Sentiment: positive
+  Is Toxic: false
+  Generated Response: Answer: Your order has not been received yet. Please check your tracking number (ABC123) to see if i...
+  Sentiment: very negative
+  Is Toxic: false
+
+[20:52:47] Response received for req_1764985594_24 in 373.01s
+  Generated Response: To return a defective product, you should follow these steps:
+
+1. **Check for Defects**: Ensure that...
+  Sentiment: very negative
+  Is Toxic: false
+
+======================================================================
+SUMMARY
+======================================================================
+Total requests sent: 30
+Successful responses: 30
+Failed requests: 0
+Total elapsed time: 373.25s
+
+Results:
+
+1. Request ID: req_1764985594_0
+   Query: How do I return a defective product?...
+   Success (took 223.17s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: To return a defective product, you should follow these steps:
+
+1. **Check for De...
+
+2. Request ID: req_1764985594_1
+   Query: What is your refund policy?...
+   Success (took 81.34s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: I'm sorry, but I don't have enough context to provide a specific refund ...
+
+3. Request ID: req_1764985594_2
+   Query: My order hasn't arrived yet, tracking number is ABC123...
+   Success (took 227.66s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: Your order has not been received yet. Please check your tracking number ...
+
+4. Request ID: req_1764985594_3
+   Query: How do I update my billing information?...
+   Success (took 223.14s)
+   Sentiment: positive
+   Is Toxic: false
+   Response: To update your billing information, you can follow these steps:
+
+1. Log in to yo...
+
+5. Request ID: req_1764985594_4
+   Query: Is there a warranty on electronic items?...
+   Success (took 81.34s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: No...
+
+6. Request ID: req_1764985594_5
+   Query: Can I change my shipping address after placing an order?...
+   Success (took 227.66s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: No, you cannot change your shipping address after placing an order. Once...
+
+7. Request ID: req_1764985594_6
+   Query: What payment methods do you accept?...
+   Success (took 223.15s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: PayPal, Credit Card (Visa, Mastercard), Cash, Money Order...
+
+8. Request ID: req_1764985594_7
+   Query: How long does shipping typically take?...
+   Success (took 81.33s)
+   Sentiment: neutral
+   Is Toxic: false
+   Response: Shipping typically takes around 7 to 10 business days....
+
+9. Request ID: req_1764985594_8
+   Query: How do I return a defective product?...
+   Success (took 227.63s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: To return a defective product, you should follow these steps:
+
+1. **Check for De...
+
+10. Request ID: req_1764985594_9
+   Query: What is your refund policy?...
+   Success (took 223.12s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: I'm sorry, but I don't have any specific information about a refund poli...
+
+11. Request ID: req_1764985594_10
+   Query: My order hasn't arrived yet, tracking number is ABC123...
+   Success (took 81.25s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: Your order has not been received yet. Please check your tracking number ...
+
+12. Request ID: req_1764985594_11
+   Query: How do I update my billing information?...
+   Success (took 227.56s)
+   Sentiment: positive
+   Is Toxic: false
+   Response: To update your billing information, you can follow these steps:
+
+1. Log in to yo...
+
+13. Request ID: req_1764985594_12
+   Query: Is there a warranty on electronic items?...
+   Success (took 146.63s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: No...
+
+14. Request ID: req_1764985594_13
+   Query: Can I change my shipping address after placing an order?...
+   Success (took 146.62s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: No, you cannot change your shipping address after placing an order. Once...
+
+15. Request ID: req_1764985594_14
+   Query: What payment methods do you accept?...
+   Success (took 146.61s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: PayPal, Credit Card (Visa, Mastercard), Cash, Money Order...
+
+16. Request ID: req_1764985594_15
+   Query: How long does shipping typically take?...
+   Success (took 146.62s)
+   Sentiment: neutral
+   Is Toxic: false
+   Response: Shipping typically takes around 7 to 10 business days depending on your location...
+
+17. Request ID: req_1764985594_16
+   Query: How do I return a defective product?...
+   Success (took 332.92s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: To return a defective product, you should follow these steps:
+
+1. **Check for De...
+
+18. Request ID: req_1764985594_17
+   Query: What is your refund policy?...
+   Success (took 332.91s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: I'm sorry, but I don't have enough context to provide a specific refund ...
+
+19. Request ID: req_1764985594_18
+   Query: My order hasn't arrived yet, tracking number is ABC123...
+   Success (took 332.90s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: Your order has not been received yet. Please check your tracking number ...
+
+20. Request ID: req_1764985594_19
+   Query: How do I update my billing information?...
+   Success (took 332.86s)
+   Sentiment: positive
+   Is Toxic: false
+   Response: To update your billing information, you can follow these steps:
+
+1. Log in to yo...
+
+21. Request ID: req_1764985594_20
+   Query: Is there a warranty on electronic items?...
+   Success (took 289.18s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: No...
+
+22. Request ID: req_1764985594_21
+   Query: Can I change my shipping address after placing an order?...
+   Success (took 289.18s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: No, you cannot change your shipping address after placing an order. Once...
+
+23. Request ID: req_1764985594_22
+   Query: What payment methods do you accept?...
+   Success (took 289.16s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: PayPal, Credit Card (Visa, Mastercard), Cash, Money Order...
+
+24. Request ID: req_1764985594_23
+   Query: How long does shipping typically take?...
+   Success (took 289.15s)
+   Sentiment: neutral
+   Is Toxic: false
+   Response: Shipping typically takes around 7 to 10 business days....
+
+25. Request ID: req_1764985594_24
+   Query: How do I return a defective product?...
+   Success (took 373.01s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: To return a defective product, you should follow these steps:
+
+1. **Check for De...
+
+26. Request ID: req_1764985594_25
+   Query: What is your refund policy?...
+   Success (took 372.98s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: I'm sorry, but I don't have enough context to provide a specific refund ...
+
+27. Request ID: req_1764985594_26
+   Query: My order hasn't arrived yet, tracking number is ABC123...
+   Success (took 372.97s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: Your order has not been received yet. Please check your tracking number ...
+
+28. Request ID: req_1764985594_27
+   Query: How do I update my billing information?...
+   Success (took 372.97s)
+   Sentiment: positive
+   Is Toxic: false
+   Response: To update your billing information, you can follow these steps:
+
+1. Log in to yo...
+
+29. Request ID: req_1764985594_28
+   Query: Is there a warranty on electronic items?...
+   Success (took 331.59s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: No...
+
+30. Request ID: req_1764985594_29
+   Query: Can I change my shipping address after placing an order?...
+   Success (took 331.58s)
+   Sentiment: very negative
+   Is Toxic: false
+   Response: Answer: No, you cannot change your shipping address after placing an order. Once...
+
+======================================================================

@@ -324,6 +324,10 @@ def main():
     worker_thread_2 = threading.Thread(target=process_requests_worker, daemon=True)
     worker_thread_2.start()
     print("Worker thread started!", flush=True)
+    
+    worker_thread_3 = threading.Thread(target=process_requests_worker, daemon=True)
+    worker_thread_3.start()
+    print("Worker thread started!", flush=True)
 
     # Start Flask server
     print(f"\nStarting Flask orchestrator on 0.0.0.0:{ORCHESTRATOR_PORT}", flush=True)

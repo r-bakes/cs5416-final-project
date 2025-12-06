@@ -1,0 +1,1180 @@
+============================================================
+MICROSERVICES ORCHESTRATOR
+============================================================
+Orchestrator Node: 0
+Port: 8000
+
+Service URLs:
+	Embedding (2 instances): ['http://132.236.91.184:8001', 'http://132.236.91.184:8002']
+	FAISS (3 instances): ['http://132.236.91.181:8007', 'http://132.236.91.183:8008', 'http://132.236.91.184:8011']
+	Documents (2 instances): ['http://132.236.91.184:8003', 'http://132.236.91.184:8004']
+	LLM (2 instances): ['http://132.236.91.181:8009', 'http://132.236.91.183:8010']
+	Sentiment/Safety (2 instances): ['http://132.236.91.184:8005', 'http://132.236.91.184:8006']
+============================================================
+Worker thread started!
+Worker thread started!
+Worker thread started!
+
+Starting Flask orchestrator on 0.0.0.0:8000
+ * Serving Flask app 'pipeline'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+============================================================
+MICROSERVICES ORCHESTRATOR
+============================================================
+Orchestrator Node: 0
+Port: 8000
+
+Service URLs:
+	Embedding (2 instances): ['http://132.236.91.187:8001', 'http://132.236.91.187:8002']
+	FAISS (3 instances): ['http://132.236.91.181:8007', 'http://132.236.91.183:8008', 'http://132.236.91.187:8011']
+	Documents (2 instances): ['http://132.236.91.187:8003', 'http://132.236.91.187:8004']
+	LLM (2 instances): ['http://132.236.91.181:8009', 'http://132.236.91.183:8010']
+	Sentiment/Safety (2 instances): ['http://132.236.91.187:8005', 'http://132.236.91.187:8006']
+============================================================
+Worker thread started!
+Worker thread started!
+Worker thread started!
+
+Starting Flask orchestrator on 0.0.0.0:8000
+ * Serving Flask app 'pipeline'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+============================================================
+MICROSERVICES ORCHESTRATOR
+============================================================
+Orchestrator Node: 0
+Port: 8000
+
+Service URLs:
+	Embedding (2 instances): ['http://132.236.91.187:8001', 'http://132.236.91.187:8002']
+	FAISS (3 instances): ['http://132.236.91.181:8007', 'http://132.236.91.183:8008', 'http://132.236.91.187:8011']
+	Documents (2 instances): ['http://132.236.91.187:8003', 'http://132.236.91.187:8004']
+	LLM (2 instances): ['http://132.236.91.181:8009', 'http://132.236.91.183:8010']
+	Sentiment/Safety (2 instances): ['http://132.236.91.187:8005', 'http://132.236.91.187:8006']
+============================================================
+Worker thread started!
+Worker thread started!
+Worker thread started!
+
+Starting Flask orchestrator on 0.0.0.0:8000
+ * Serving Flask app 'pipeline'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+============================================================
+MICROSERVICES ORCHESTRATOR
+============================================================
+Orchestrator Node: 0
+Port: 9000
+
+Service URLs:
+	Embedding (2 instances): ['http://132.236.91.187:9001', 'http://132.236.91.187:9002']
+	FAISS (3 instances): ['http://132.236.91.181:8007', 'http://132.236.91.183:8008', 'http://132.236.91.187:8011']
+	Documents (2 instances): ['http://132.236.91.187:9003', 'http://132.236.91.187:9004']
+	LLM (2 instances): ['http://132.236.91.181:8009', 'http://132.236.91.183:8010']
+	Sentiment/Safety (2 instances): ['http://132.236.91.187:9005', 'http://132.236.91.187:9006']
+============================================================
+Worker thread started!
+Worker thread started!
+Worker thread started!
+
+Starting Flask orchestrator on 0.0.0.0:9000
+ * Serving Flask app 'pipeline'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:9000
+ * Running on http://132.236.91.187:9000
+[33mPress CTRL+C to quit[0m
+132.236.91.187 - - [05/Dec/2025 20:46:34] "GET /health HTTP/1.1" 200 -
+[Orchestrator] Queueing request req_1764985594_0
+[Orchestrator] Queueing request req_1764985594_1
+[Orchestrator] Queueing request req_1764985594_2
+[Orchestrator] Queueing request req_1764985594_3
+[Orchestrator] Queueing request req_1764985594_4
+[Orchestrator] Queueing request req_1764985594_5
+[Orchestrator] Queueing request req_1764985594_6
+[Orchestrator] Queueing request req_1764985594_7
+[Orchestrator] Queueing request req_1764985594_8
+[Orchestrator] Queueing request req_1764985594_9
+Processing batch of 4 requests.
+
+[TIMING] process_pipeline - START
+
+============================================================
+Processing batch of 4 requests
+============================================================
+- req_1764985594_0: How do I return a defective product?...
+- req_1764985594_3: How do I update my billing information?...
+- req_1764985594_6: What payment methods do you accept?...
+- req_1764985594_9: What is your refund policy?...
+[Step 1/5] Calling embedding service at http://132.236.91.187:9001...
+[Orchestrator] Queueing request req_1764985594_10
+Processing batch of 4 requests.
+
+[TIMING] process_pipeline - START
+
+============================================================
+Processing batch of 4 requests
+[Orchestrator] Queueing request req_1764985594_11
+============================================================Processing batch of 4 requests.
+
+[TIMING] process_pipeline - START
+
+- req_1764985594_1: What is your refund policy?...
+- req_1764985594_4: Is there a warranty on electronic items?...
+- req_1764985594_7: How long does shipping typically take?...
+
+============================================================
+- req_1764985594_10: My order hasn't arrived yet, tracking number is AB...
+[Step 1/5] Calling embedding service at http://132.236.91.187:9002...Processing batch of 4 requests
+============================================================
+
+[Orchestrator] Queueing request req_1764985594_12
+- req_1764985594_2: My order hasn't arrived yet, tracking number is AB...
+- req_1764985594_5: Can I change my shipping address after placing an ...
+- req_1764985594_8: How do I return a defective product?...
+- req_1764985594_11: How do I update my billing information?...
+[Step 1/5] Calling embedding service at http://132.236.91.187:9001...
+[Orchestrator] Queueing request req_1764985594_13
+[Orchestrator] Queueing request req_1764985594_14
+[Orchestrator] Queueing request req_1764985594_15
+[Orchestrator] Queueing request req_1764985594_16
+[Orchestrator] Queueing request req_1764985594_17
+[Orchestrator] Queueing request req_1764985594_18
+[Orchestrator] Queueing request req_1764985594_19
+[Orchestrator] Queueing request req_1764985594_20
+[Orchestrator] Queueing request req_1764985594_21
+[Orchestrator] Queueing request req_1764985594_22
+[Orchestrator] Queueing request req_1764985594_23
+[Orchestrator] Queueing request req_1764985594_24
+[Orchestrator] Queueing request req_1764985594_25[Orchestrator] Queueing request req_1764985594_26
+
+[Orchestrator] Queueing request req_1764985594_27
+[Orchestrator] Queueing request req_1764985594_28
+[Orchestrator] Queueing request req_1764985594_29
+[Step 2/5] Calling FAISS service at http://132.236.91.181:8007...
+[Step 2/5] Calling FAISS service at http://132.236.91.183:8008...
+[Step 2/5] Calling FAISS service at http://132.236.91.187:8011...
+[Step 3/5] Calling documents service at http://132.236.91.187:9003...
+[Step 3/5] Calling documents service at http://132.236.91.187:9004...
+[Step 3/5] Calling documents service at http://132.236.91.187:9003...
+[Step 4/5] Calling LLM service at http://132.236.91.181:8009...
+[Step 4/5] Calling LLM service at http://132.236.91.183:8010...
+[Step 4/5] Calling LLM service at http://132.236.91.181:8009...
+[Step 5/5] Calling sentiment/safety service at http://132.236.91.187:9005...
+Request req_1764985594_1 processed in 81.21 seconds
+Request req_1764985594_4 processed in 81.21 seconds
+Request req_1764985594_7 processed in 81.21 seconds
+Request req_1764985594_10 processed in 81.21 seconds
+Filename: /home/yy2394/cs5416-final-project/exp3/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    80    411.9 MiB    411.9 MiB           1   @profile_with_timing
+    81                                         @profile
+    82                                         def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
+    83                                             """
+    84                                             Orchestrate the full pipeline through microservices
+    85                                             """
+    86                                         
+    87    411.9 MiB      0.0 MiB           1       batch_size = len(reqs)
+    88    411.9 MiB      0.0 MiB           7       start_times = [time.time() for _ in reqs]
+    89    411.9 MiB      0.0 MiB           7       queries = [req.query for req in reqs]
+    90                                         
+    91    411.9 MiB      0.0 MiB           1       print("\n" + "=" * 60, flush=True)
+    92    411.9 MiB      0.0 MiB           1       print(f"Processing batch of {batch_size} requests", flush=True)
+    93    411.9 MiB      0.0 MiB           1       print("=" * 60, flush=True)
+    94    411.9 MiB      0.0 MiB           5       for req in reqs:
+    95    411.9 MiB      0.0 MiB           4           print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
+    96                                         
+    97    411.9 MiB      0.0 MiB           1       try:
+    98                                                 # Step 1: Generate embeddings
+    99    411.9 MiB      0.0 MiB           1           embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
+   100    411.9 MiB      0.0 MiB           1           print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
+   101    412.4 MiB      0.6 MiB           2           response = requests.post(
+   102    411.9 MiB      0.0 MiB           1               f"{embedding_url}/process", json={"texts": queries}, timeout=200
+   103                                                 )
+   104    412.4 MiB      0.0 MiB           1           response.raise_for_status()
+   105    412.4 MiB      0.0 MiB           1           embeddings = response.json()["embeddings"]
+   106                                         
+   107                                                 # Step 2: FAISS search
+   108    412.4 MiB      0.0 MiB           1           faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
+   109    412.4 MiB      0.0 MiB           1           print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
+   110    414.0 MiB      1.5 MiB           2           response = requests.post(
+   111    412.4 MiB      0.0 MiB           1               f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
+   112                                                 )
+   113    414.0 MiB      0.0 MiB           1           response.raise_for_status()
+   114    414.0 MiB      0.0 MiB           1           doc_ids = response.json()["doc_ids"]
+   115                                         
+   116                                                 # Step 3: Fetch and rerank documents
+   117    414.0 MiB      0.0 MiB           1           documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
+   118    414.0 MiB      0.0 MiB           1           print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
+   119    414.0 MiB      0.0 MiB           2           response = requests.post(
+   120    414.0 MiB      0.0 MiB           1               f"{documents_url}/process",
+   121    414.0 MiB      0.0 MiB           1               json={"queries": queries, "doc_id_batches": doc_ids},
+   122    414.0 MiB      0.0 MiB           1               timeout=200,
+   123                                                 )
+   124    414.0 MiB      0.0 MiB           1           response.raise_for_status()
+   125    414.0 MiB      0.0 MiB           1           reranked_documents = response.json()["reranked_documents"]
+   126                                         
+   127                                                 # Step 4: Generate LLM response
+   128    414.0 MiB      0.0 MiB           1           llm_url = get_service_url("llm", LLM_SERVICE_URLS)
+   129    414.0 MiB      0.0 MiB           1           print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
+   130    414.0 MiB      0.0 MiB           2           response = requests.post(
+   131    414.0 MiB      0.0 MiB           1               f"{llm_url}/process",
+   132    414.0 MiB      0.0 MiB           1               json={"queries": queries, "documents_batch": reranked_documents},
+   133    414.0 MiB      0.0 MiB           1               timeout=200,
+   134                                                 )
+   135    414.0 MiB      0.0 MiB           1           response.raise_for_status()
+   136    414.0 MiB      0.0 MiB           1           llm_responses = response.json()["responses"]
+   137                                         
+   138                                                 # Step 5: Sentiment and safety analysis
+   139    414.0 MiB      0.0 MiB           2           sentiment_url = get_service_url(
+   140    414.0 MiB      0.0 MiB           1               "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
+   141                                                 )
+   142    414.0 MiB      0.0 MiB           2           print(
+   143    414.0 MiB      0.0 MiB           1               f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+   144    414.0 MiB      0.0 MiB           1               flush=True,
+   145                                                 )
+   146    414.0 MiB      0.0 MiB           2           response = requests.post(
+   147    414.0 MiB      0.0 MiB           1               f"{sentiment_url}/process",
+   148    414.0 MiB      0.0 MiB           1               json={"texts": llm_responses},
+   149    414.0 MiB      0.0 MiB           1               timeout=200,
+   150                                                 )
+   151    414.0 MiB      0.0 MiB           1           response.raise_for_status()
+   152    414.0 MiB      0.0 MiB           1           analysis = response.json()
+   153    414.0 MiB      0.0 MiB           1           sentiments = analysis["sentiments"]
+   154    414.0 MiB      0.0 MiB           1           toxicity_flags = analysis["toxicity_flags"]
+   155                                         
+   156    414.0 MiB      0.0 MiB           1           responses = []
+   157    414.0 MiB      0.0 MiB           5           for idx, req in enumerate(reqs):
+   158    414.0 MiB      0.0 MiB           4               processing_time = time.time() - start_times[idx]
+   159    414.0 MiB      0.0 MiB           8               print(
+   160    414.0 MiB      0.0 MiB           4                   f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+   161    414.0 MiB      0.0 MiB           4                   flush=True,
+   162                                                     )
+   163    414.0 MiB      0.0 MiB           4               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   164    414.0 MiB      0.0 MiB           8               responses.append(
+   165    414.0 MiB      0.0 MiB           8                   PipelineResponse(
+   166    414.0 MiB      0.0 MiB           4                       request_id=req.request_id,
+   167    414.0 MiB      0.0 MiB           4                       generated_response=llm_responses[idx],
+   168    414.0 MiB      0.0 MiB           4                       sentiment=sentiments[idx],
+   169    414.0 MiB      0.0 MiB           4                       is_toxic=sensitivity_result,
+   170    414.0 MiB      0.0 MiB           4                       processing_time=processing_time,
+   171                                                         )
+   172                                                     )
+   173                                         
+   174    414.0 MiB      0.0 MiB           1           return responses
+   175                                         
+   176                                             except requests.exceptions.RequestException as e:
+   177                                                 print(f"Batch processing failed: {e}", flush=True)
+   178                                                 raise
+   179                                             except Exception as e:
+   180                                                 print(f"Batch processing error: {e}", flush=True)
+   181                                                 raise
+
+
+[TIMING] process_pipeline - END (took 81.23s)
+Processing batch of 4 requests.
+
+[TIMING] process_pipeline - START
+
+============================================================
+Processing batch of 4 requests
+============================================================
+- req_1764985594_12: Is there a warranty on electronic items?...
+- req_1764985594_13: Can I change my shipping address after placing an ...
+- req_1764985594_14: What payment methods do you accept?...
+- req_1764985594_15: How long does shipping typically take?...
+[Step 1/5] Calling embedding service at http://132.236.91.187:9002...
+132.236.91.187 - - [05/Dec/2025 20:47:55] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:47:55] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:47:55] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:47:55] "POST /query HTTP/1.1" 200 -
+[Step 2/5] Calling FAISS service at http://132.236.91.181:8007...
+[Step 3/5] Calling documents service at http://132.236.91.187:9004...
+[Step 4/5] Calling LLM service at http://132.236.91.183:8010...
+[Step 5/5] Calling sentiment/safety service at http://132.236.91.187:9006...
+Request req_1764985594_12 processed in 65.39 seconds
+Request req_1764985594_13 processed in 65.39 seconds
+Request req_1764985594_14 processed in 65.39 seconds
+Request req_1764985594_15 processed in 65.39 seconds
+Filename: /home/yy2394/cs5416-final-project/exp3/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    80    414.0 MiB    414.0 MiB           1   @profile_with_timing
+    81                                         @profile
+    82                                         def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
+    83                                             """
+    84                                             Orchestrate the full pipeline through microservices
+    85                                             """
+    86                                         
+    87    414.0 MiB      0.0 MiB           1       batch_size = len(reqs)
+    88    414.0 MiB      0.0 MiB           7       start_times = [time.time() for _ in reqs]
+    89    414.0 MiB      0.0 MiB           7       queries = [req.query for req in reqs]
+    90                                         
+    91    414.0 MiB      0.0 MiB           1       print("\n" + "=" * 60, flush=True)
+    92    414.0 MiB      0.0 MiB           1       print(f"Processing batch of {batch_size} requests", flush=True)
+    93    414.0 MiB      0.0 MiB           1       print("=" * 60, flush=True)
+    94    414.0 MiB      0.0 MiB           5       for req in reqs:
+    95    414.0 MiB      0.0 MiB           4           print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
+    96                                         
+    97    414.0 MiB      0.0 MiB           1       try:
+    98                                                 # Step 1: Generate embeddings
+    99    414.0 MiB      0.0 MiB           1           embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
+   100    414.0 MiB      0.0 MiB           1           print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
+   101    414.2 MiB      0.2 MiB           2           response = requests.post(
+   102    414.0 MiB      0.0 MiB           1               f"{embedding_url}/process", json={"texts": queries}, timeout=200
+   103                                                 )
+   104    414.2 MiB      0.0 MiB           1           response.raise_for_status()
+   105    414.2 MiB      0.0 MiB           1           embeddings = response.json()["embeddings"]
+   106                                         
+   107                                                 # Step 2: FAISS search
+   108    414.2 MiB      0.0 MiB           1           faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
+   109    414.2 MiB      0.0 MiB           1           print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
+   110    414.2 MiB      0.0 MiB           2           response = requests.post(
+   111    414.2 MiB      0.0 MiB           1               f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
+   112                                                 )
+   113    414.2 MiB      0.0 MiB           1           response.raise_for_status()
+   114    414.2 MiB      0.0 MiB           1           doc_ids = response.json()["doc_ids"]
+   115                                         
+   116                                                 # Step 3: Fetch and rerank documents
+   117    414.2 MiB      0.0 MiB           1           documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
+   118    414.2 MiB      0.0 MiB           1           print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
+   119    414.2 MiB      0.0 MiB           2           response = requests.post(
+   120    414.2 MiB      0.0 MiB           1               f"{documents_url}/process",
+   121    414.2 MiB      0.0 MiB           1               json={"queries": queries, "doc_id_batches": doc_ids},
+   122    414.2 MiB      0.0 MiB           1               timeout=200,
+   123                                                 )
+   124    414.2 MiB      0.0 MiB           1           response.raise_for_status()
+   125    414.2 MiB      0.0 MiB           1           reranked_documents = response.json()["reranked_documents"]
+   126                                         
+   127                                                 # Step 4: Generate LLM response
+   128    414.2 MiB      0.0 MiB           1           llm_url = get_service_url("llm", LLM_SERVICE_URLS)
+   129    414.2 MiB      0.0 MiB           1           print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
+   130    414.2 MiB    -24.9 MiB           2           response = requests.post(
+   131    414.2 MiB      0.0 MiB           1               f"{llm_url}/process",
+   132    414.2 MiB      0.0 MiB           1               json={"queries": queries, "documents_batch": reranked_documents},
+   133    414.2 MiB      0.0 MiB           1               timeout=200,
+   134                                                 )
+   135    389.3 MiB    -24.9 MiB           1           response.raise_for_status()
+   136    389.3 MiB      0.0 MiB           1           llm_responses = response.json()["responses"]
+   137                                         
+   138                                                 # Step 5: Sentiment and safety analysis
+   139    389.3 MiB      0.0 MiB           2           sentiment_url = get_service_url(
+   140    389.3 MiB      0.0 MiB           1               "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
+   141                                                 )
+   142    389.3 MiB      0.0 MiB           2           print(
+   143    389.3 MiB      0.0 MiB           1               f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+   144    389.3 MiB      0.0 MiB           1               flush=True,
+   145                                                 )
+   146    389.3 MiB      0.0 MiB           2           response = requests.post(
+   147    389.3 MiB      0.0 MiB           1               f"{sentiment_url}/process",
+   148    389.3 MiB      0.0 MiB           1               json={"texts": llm_responses},
+   149    389.3 MiB      0.0 MiB           1               timeout=200,
+   150                                                 )
+   151    389.3 MiB      0.0 MiB           1           response.raise_for_status()
+   152    389.3 MiB      0.0 MiB           1           analysis = response.json()
+   153    389.3 MiB      0.0 MiB           1           sentiments = analysis["sentiments"]
+   154    389.3 MiB      0.0 MiB           1           toxicity_flags = analysis["toxicity_flags"]
+   155                                         
+   156    389.3 MiB      0.0 MiB           1           responses = []
+   157    389.3 MiB      0.0 MiB           5           for idx, req in enumerate(reqs):
+   158    389.3 MiB      0.0 MiB           4               processing_time = time.time() - start_times[idx]
+   159    389.3 MiB      0.0 MiB           8               print(
+   160    389.3 MiB      0.0 MiB           4                   f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+   161    389.3 MiB      0.0 MiB           4                   flush=True,
+   162                                                     )
+   163    389.3 MiB      0.0 MiB           4               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   164    389.3 MiB      0.0 MiB           8               responses.append(
+   165    389.3 MiB      0.0 MiB           8                   PipelineResponse(
+   166    389.3 MiB      0.0 MiB           4                       request_id=req.request_id,
+   167    389.3 MiB      0.0 MiB           4                       generated_response=llm_responses[idx],
+   168    389.3 MiB      0.0 MiB           4                       sentiment=sentiments[idx],
+   169    389.3 MiB      0.0 MiB           4                       is_toxic=sensitivity_result,
+   170    389.3 MiB      0.0 MiB           4                       processing_time=processing_time,
+   171                                                         )
+   172                                                     )
+   173                                         
+   174    389.3 MiB      0.0 MiB           1           return responses
+   175                                         
+   176                                             except requests.exceptions.RequestException as e:
+   177                                                 print(f"Batch processing failed: {e}", flush=True)
+   178                                                 raise
+   179                                             except Exception as e:
+   180                                                 print(f"Batch processing error: {e}", flush=True)
+   181                                                 raise
+
+
+[TIMING] process_pipeline - END (took 65.40s)
+Processing batch of 4 requests.
+
+[TIMING] process_pipeline - START
+
+============================================================
+Processing batch of 4 requests
+============================================================
+- req_1764985594_16: How do I return a defective product?...
+- req_1764985594_17: What is your refund policy?...
+- req_1764985594_18: My order hasn't arrived yet, tracking number is AB...
+132.236.91.187 - - [05/Dec/2025 20:49:01] "POST /query HTTP/1.1" 200 -
+- req_1764985594_19: How do I update my billing information?...132.236.91.187 - - [05/Dec/2025 20:49:01] "POST /query HTTP/1.1" 200 -
+
+132.236.91.187 - - [05/Dec/2025 20:49:01] "POST /query HTTP/1.1" 200 -
+[Step 1/5] Calling embedding service at http://132.236.91.187:9001...
+132.236.91.187 - - [05/Dec/2025 20:49:01] "POST /query HTTP/1.1" 200 -
+[Step 2/5] Calling FAISS service at http://132.236.91.183:8008...
+[Step 3/5] Calling documents service at http://132.236.91.187:9003...
+[Step 4/5] Calling LLM service at http://132.236.91.181:8009...
+[Step 5/5] Calling sentiment/safety service at http://132.236.91.187:9005...
+[Step 5/5] Calling sentiment/safety service at http://132.236.91.187:9006...
+Request req_1764985594_0 processed in 223.02 seconds
+Request req_1764985594_3 processed in 223.02 seconds
+Request req_1764985594_6 processed in 223.03 seconds
+Request req_1764985594_9 processed in 223.03 seconds
+Filename: /home/yy2394/cs5416-final-project/exp3/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    80    411.9 MiB    411.9 MiB           1   @profile_with_timing
+    81                                         @profile
+    82                                         def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
+    83                                             """
+    84                                             Orchestrate the full pipeline through microservices
+    85                                             """
+    86                                         
+    87    411.9 MiB      0.0 MiB           1       batch_size = len(reqs)
+    88    411.9 MiB      0.0 MiB           7       start_times = [time.time() for _ in reqs]
+    89    411.9 MiB      0.0 MiB           7       queries = [req.query for req in reqs]
+    90                                         
+    91    411.9 MiB      0.0 MiB           1       print("\n" + "=" * 60, flush=True)
+    92    411.9 MiB      0.0 MiB           1       print(f"Processing batch of {batch_size} requests", flush=True)
+    93    411.9 MiB      0.0 MiB           1       print("=" * 60, flush=True)
+    94    411.9 MiB      0.0 MiB           5       for req in reqs:
+    95    411.9 MiB      0.0 MiB           4           print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
+    96                                         
+    97    411.9 MiB      0.0 MiB           1       try:
+    98                                                 # Step 1: Generate embeddings
+    99    411.9 MiB      0.0 MiB           1           embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
+   100    411.9 MiB      0.0 MiB           1           print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
+   101    413.7 MiB      1.9 MiB           2           response = requests.post(
+   102    411.9 MiB      0.0 MiB           1               f"{embedding_url}/process", json={"texts": queries}, timeout=200
+   103                                                 )
+   104    413.7 MiB      0.0 MiB           1           response.raise_for_status()
+   105    413.7 MiB      0.0 MiB           1           embeddings = response.json()["embeddings"]
+   106                                         
+   107                                                 # Step 2: FAISS search
+   108    413.7 MiB      0.0 MiB           1           faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
+   109    413.7 MiB      0.0 MiB           1           print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
+   110    414.0 MiB      0.3 MiB           2           response = requests.post(
+   111    413.7 MiB      0.0 MiB           1               f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
+   112                                                 )
+   113    414.0 MiB      0.0 MiB           1           response.raise_for_status()
+   114    414.0 MiB      0.0 MiB           1           doc_ids = response.json()["doc_ids"]
+   115                                         
+   116                                                 # Step 3: Fetch and rerank documents
+   117    414.0 MiB      0.0 MiB           1           documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
+   118    414.0 MiB      0.0 MiB           1           print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
+   119    414.0 MiB      0.0 MiB           2           response = requests.post(
+   120    414.0 MiB      0.0 MiB           1               f"{documents_url}/process",
+   121    414.0 MiB      0.0 MiB           1               json={"queries": queries, "doc_id_batches": doc_ids},
+   122    414.0 MiB      0.0 MiB           1               timeout=200,
+   123                                                 )
+   124    414.0 MiB      0.0 MiB           1           response.raise_for_status()
+   125    414.0 MiB      0.0 MiB           1           reranked_documents = response.json()["reranked_documents"]
+   126                                         
+   127                                                 # Step 4: Generate LLM response
+   128    414.0 MiB      0.0 MiB           1           llm_url = get_service_url("llm", LLM_SERVICE_URLS)
+   129    414.0 MiB      0.0 MiB           1           print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
+   130    414.0 MiB    -24.5 MiB           2           response = requests.post(
+   131    414.0 MiB      0.0 MiB           1               f"{llm_url}/process",
+   132    414.0 MiB      0.0 MiB           1               json={"queries": queries, "documents_batch": reranked_documents},
+   133    414.0 MiB      0.0 MiB           1               timeout=200,
+   134                                                 )
+   135    389.4 MiB    -24.5 MiB           1           response.raise_for_status()
+   136    389.4 MiB      0.0 MiB           1           llm_responses = response.json()["responses"]
+   137                                         
+   138                                                 # Step 5: Sentiment and safety analysis
+   139    389.4 MiB      0.0 MiB           2           sentiment_url = get_service_url(
+   140    389.4 MiB      0.0 MiB           1               "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
+   141                                                 )
+   142    389.4 MiB      0.0 MiB           2           print(
+   143    389.4 MiB      0.0 MiB           1               f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+   144    389.4 MiB      0.0 MiB           1               flush=True,
+   145                                                 )
+   146    389.4 MiB      0.0 MiB           2           response = requests.post(
+   147    389.4 MiB      0.0 MiB           1               f"{sentiment_url}/process",
+   148    389.4 MiB      0.0 MiB           1               json={"texts": llm_responses},
+   149    389.4 MiB      0.0 MiB           1               timeout=200,
+   150                                                 )
+   151    389.4 MiB      0.0 MiB           1           response.raise_for_status()
+   152    389.4 MiB      0.0 MiB           1           analysis = response.json()
+   153    389.4 MiB      0.0 MiB           1           sentiments = analysis["sentiments"]
+   154    389.4 MiB      0.0 MiB           1           toxicity_flags = analysis["toxicity_flags"]
+   155                                         
+   156    389.4 MiB      0.0 MiB           1           responses = []
+   157    389.4 MiB      0.0 MiB           5           for idx, req in enumerate(reqs):
+   158    389.4 MiB      0.0 MiB           4               processing_time = time.time() - start_times[idx]
+   159    389.4 MiB      0.0 MiB           8               print(
+   160    389.4 MiB      0.0 MiB           4                   f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+   161    389.4 MiB      0.0 MiB           4                   flush=True,
+   162                                                     )
+   163    389.4 MiB      0.0 MiB           4               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   164    389.4 MiB      0.0 MiB           8               responses.append(
+   165    389.4 MiB      0.0 MiB           8                   PipelineResponse(
+   166    389.4 MiB      0.0 MiB           4                       request_id=req.request_id,
+   167    389.4 MiB      0.0 MiB           4                       generated_response=llm_responses[idx],
+   168    389.4 MiB      0.0 MiB           4                       sentiment=sentiments[idx],
+   169    389.4 MiB      0.0 MiB           4                       is_toxic=sensitivity_result,
+   170    389.4 MiB      0.0 MiB           4                       processing_time=processing_time,
+   171                                                         )
+   172                                                     )
+   173                                         
+   174    389.4 MiB      0.0 MiB           1           return responses
+   175                                         
+   176                                             except requests.exceptions.RequestException as e:
+   177                                                 print(f"Batch processing failed: {e}", flush=True)
+   178                                                 raise
+   179                                             except Exception as e:
+   180                                                 print(f"Batch processing error: {e}", flush=True)
+   181                                                 raise
+
+
+[TIMING] process_pipeline - END (took 223.05s)
+Processing batch of 4 requests.
+
+[TIMING] process_pipeline - START
+
+============================================================
+Processing batch of 4 requests
+============================================================
+- req_1764985594_20: Is there a warranty on electronic items?...
+- req_1764985594_21: Can I change my shipping address after placing an ...
+- req_1764985594_22: What payment methods do you accept?...
+- req_1764985594_23: How long does shipping typically take?...
+[Step 1/5] Calling embedding service at http://132.236.91.187:9002...
+132.236.91.187 - - [05/Dec/2025 20:50:17] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:50:17] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:50:17] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:50:17] "POST /query HTTP/1.1" 200 -
+[Step 2/5] Calling FAISS service at http://132.236.91.187:8011...
+Request req_1764985594_2 processed in 227.50 seconds
+Request req_1764985594_5 processed in 227.50 seconds
+Request req_1764985594_8 processed in 227.50 seconds
+Request req_1764985594_11 processed in 227.50 seconds
+Filename: /home/yy2394/cs5416-final-project/exp3/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    80    411.9 MiB    411.9 MiB           1   @profile_with_timing
+    81                                         @profile
+    82                                         def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
+    83                                             """
+    84                                             Orchestrate the full pipeline through microservices
+    85                                             """
+    86                                         
+    87    411.9 MiB      0.0 MiB           1       batch_size = len(reqs)
+    88    411.9 MiB      0.0 MiB           7       start_times = [time.time() for _ in reqs]
+    89    411.9 MiB      0.0 MiB           7       queries = [req.query for req in reqs]
+    90                                         
+    91    411.9 MiB      0.0 MiB           1       print("\n" + "=" * 60, flush=True)
+    92    411.9 MiB      0.0 MiB           1       print(f"Processing batch of {batch_size} requests", flush=True)
+    93    411.9 MiB      0.0 MiB           1       print("=" * 60, flush=True)
+    94    411.9 MiB      0.0 MiB           5       for req in reqs:
+    95    411.9 MiB      0.0 MiB           4           print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
+    96                                         
+    97    411.9 MiB      0.0 MiB           1       try:
+    98                                                 # Step 1: Generate embeddings
+    99    411.9 MiB      0.0 MiB           1           embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
+   100    411.9 MiB      0.0 MiB           1           print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
+   101    413.0 MiB      1.1 MiB           2           response = requests.post(
+   102    411.9 MiB      0.0 MiB           1               f"{embedding_url}/process", json={"texts": queries}, timeout=200
+   103                                                 )
+   104    413.0 MiB      0.0 MiB           1           response.raise_for_status()
+   105    413.2 MiB      0.3 MiB           1           embeddings = response.json()["embeddings"]
+   106                                         
+   107                                                 # Step 2: FAISS search
+   108    413.2 MiB      0.0 MiB           1           faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
+   109    413.2 MiB      0.0 MiB           1           print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
+   110    414.0 MiB      0.8 MiB           2           response = requests.post(
+   111    413.2 MiB      0.0 MiB           1               f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
+   112                                                 )
+   113    414.0 MiB      0.0 MiB           1           response.raise_for_status()
+   114    414.0 MiB      0.0 MiB           1           doc_ids = response.json()["doc_ids"]
+   115                                         
+   116                                                 # Step 3: Fetch and rerank documents
+   117    414.0 MiB      0.0 MiB           1           documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
+   118    414.0 MiB      0.0 MiB           1           print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
+   119    414.0 MiB      0.0 MiB           2           response = requests.post(
+   120    414.0 MiB      0.0 MiB           1               f"{documents_url}/process",
+   121    414.0 MiB      0.0 MiB           1               json={"queries": queries, "doc_id_batches": doc_ids},
+   122    414.0 MiB      0.0 MiB           1               timeout=200,
+   123                                                 )
+   124    414.0 MiB      0.0 MiB           1           response.raise_for_status()
+   125    414.0 MiB      0.0 MiB           1           reranked_documents = response.json()["reranked_documents"]
+   126                                         
+   127                                                 # Step 4: Generate LLM response
+   128    414.0 MiB      0.0 MiB           1           llm_url = get_service_url("llm", LLM_SERVICE_URLS)
+   129    414.0 MiB      0.0 MiB           1           print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
+   130    414.0 MiB    -24.5 MiB           2           response = requests.post(
+   131    414.0 MiB      0.0 MiB           1               f"{llm_url}/process",
+   132    414.0 MiB      0.0 MiB           1               json={"queries": queries, "documents_batch": reranked_documents},
+   133    414.0 MiB      0.0 MiB           1               timeout=200,
+   134                                                 )
+   135    389.4 MiB    -24.5 MiB           1           response.raise_for_status()
+   136    389.4 MiB      0.0 MiB           1           llm_responses = response.json()["responses"]
+   137                                         
+   138                                                 # Step 5: Sentiment and safety analysis
+   139    389.4 MiB      0.0 MiB           2           sentiment_url = get_service_url(
+   140    389.4 MiB      0.0 MiB           1               "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
+   141                                                 )
+   142    389.4 MiB      0.0 MiB           2           print(
+   143    389.4 MiB      0.0 MiB           1               f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+   144    389.4 MiB      0.0 MiB           1               flush=True,
+   145                                                 )
+   146    389.5 MiB      0.1 MiB           2           response = requests.post(
+   147    389.4 MiB      0.0 MiB           1               f"{sentiment_url}/process",
+   148    389.4 MiB      0.0 MiB           1               json={"texts": llm_responses},
+   149    389.4 MiB      0.0 MiB           1               timeout=200,
+   150                                                 )
+   151    389.5 MiB      0.0 MiB           1           response.raise_for_status()
+   152    389.5 MiB      0.0 MiB           1           analysis = response.json()
+   153    389.5 MiB      0.0 MiB           1           sentiments = analysis["sentiments"]
+   154    389.5 MiB      0.0 MiB           1           toxicity_flags = analysis["toxicity_flags"]
+   155                                         
+   156    389.5 MiB      0.0 MiB           1           responses = []
+   157    389.5 MiB      0.0 MiB           5           for idx, req in enumerate(reqs):
+   158    389.5 MiB      0.0 MiB           4               processing_time = time.time() - start_times[idx]
+   159    389.5 MiB      0.0 MiB           8               print(
+   160    389.5 MiB      0.0 MiB           4                   f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+   161    389.5 MiB      0.0 MiB           4                   flush=True,
+   162                                                     )
+   163    389.5 MiB      0.0 MiB           4               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   164    389.5 MiB      0.0 MiB           8               responses.append(
+   165    389.5 MiB      0.0 MiB           8                   PipelineResponse(
+   166    389.5 MiB      0.0 MiB           4                       request_id=req.request_id,
+   167    389.5 MiB      0.0 MiB           4                       generated_response=llm_responses[idx],
+   168    389.5 MiB      0.0 MiB           4                       sentiment=sentiments[idx],
+   169    389.5 MiB      0.0 MiB           4                       is_toxic=sensitivity_result,
+   170    389.5 MiB      0.0 MiB           4                       processing_time=processing_time,
+   171                                                         )
+   172                                                     )
+   173                                         
+   174    389.5 MiB      0.0 MiB           1           return responses
+   175                                         
+   176                                             except requests.exceptions.RequestException as e:
+   177                                                 print(f"Batch processing failed: {e}", flush=True)
+   178                                                 raise
+   179                                             except Exception as e:
+   180                                                 print(f"Batch processing error: {e}", flush=True)
+   181                                                 raise
+
+
+[TIMING] process_pipeline - END (took 227.52s)
+Processing batch of 4 requests.
+
+[TIMING] process_pipeline - START
+
+============================================================
+Processing batch of 4 requests
+============================================================
+- req_1764985594_24: How do I return a defective product?...
+- req_1764985594_26: My order hasn't arrived yet, tracking number is AB...
+- req_1764985594_25: What is your refund policy?...
+- req_1764985594_27: How do I update my billing information?...
+[Step 1/5] Calling embedding service at http://132.236.91.187:9001...
+132.236.91.187 - - [05/Dec/2025 20:50:22] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:50:22] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:50:22] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:50:22] "POST /query HTTP/1.1" 200 -
+[Step 3/5] Calling documents service at http://132.236.91.187:9004...
+[Step 2/5] Calling FAISS service at http://132.236.91.181:8007...
+[Step 4/5] Calling LLM service at http://132.236.91.183:8010...
+[Step 3/5] Calling documents service at http://132.236.91.187:9003...
+[Step 4/5] Calling LLM service at http://132.236.91.181:8009...
+[Step 5/5] Calling sentiment/safety service at http://132.236.91.187:9005...
+Request req_1764985594_20 processed in 66.15 seconds
+Request req_1764985594_21 processed in 66.15 seconds
+Request req_1764985594_22 processed in 66.15 seconds
+Request req_1764985594_23 processed in 66.15 seconds
+Filename: /home/yy2394/cs5416-final-project/exp3/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    80    389.4 MiB    389.4 MiB           1   @profile_with_timing
+    81                                         @profile
+    82                                         def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
+    83                                             """
+    84                                             Orchestrate the full pipeline through microservices
+    85                                             """
+    86                                         
+    87    389.4 MiB      0.0 MiB           1       batch_size = len(reqs)
+    88    389.4 MiB      0.0 MiB           7       start_times = [time.time() for _ in reqs]
+    89    389.4 MiB      0.0 MiB           7       queries = [req.query for req in reqs]
+    90                                         
+    91    389.4 MiB      0.0 MiB           1       print("\n" + "=" * 60, flush=True)
+    92    389.4 MiB      0.0 MiB           1       print(f"Processing batch of {batch_size} requests", flush=True)
+    93    389.4 MiB      0.0 MiB           1       print("=" * 60, flush=True)
+    94    389.4 MiB      0.0 MiB           5       for req in reqs:
+    95    389.4 MiB      0.0 MiB           4           print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
+    96                                         
+    97    389.4 MiB      0.0 MiB           1       try:
+    98                                                 # Step 1: Generate embeddings
+    99    389.4 MiB      0.0 MiB           1           embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
+   100    389.4 MiB      0.0 MiB           1           print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
+   101    389.5 MiB      0.1 MiB           2           response = requests.post(
+   102    389.4 MiB      0.0 MiB           1               f"{embedding_url}/process", json={"texts": queries}, timeout=200
+   103                                                 )
+   104    389.5 MiB      0.0 MiB           1           response.raise_for_status()
+   105    389.5 MiB      0.0 MiB           1           embeddings = response.json()["embeddings"]
+   106                                         
+   107                                                 # Step 2: FAISS search
+   108    389.5 MiB      0.0 MiB           1           faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
+   109    389.5 MiB      0.0 MiB           1           print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
+   110    389.7 MiB      0.1 MiB           2           response = requests.post(
+   111    389.5 MiB      0.0 MiB           1               f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
+   112                                                 )
+   113    389.7 MiB      0.0 MiB           1           response.raise_for_status()
+   114    389.7 MiB      0.0 MiB           1           doc_ids = response.json()["doc_ids"]
+   115                                         
+   116                                                 # Step 3: Fetch and rerank documents
+   117    389.7 MiB      0.0 MiB           1           documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
+   118    389.7 MiB      0.0 MiB           1           print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
+   119    389.7 MiB      0.0 MiB           2           response = requests.post(
+   120    389.7 MiB      0.0 MiB           1               f"{documents_url}/process",
+   121    389.7 MiB      0.0 MiB           1               json={"queries": queries, "doc_id_batches": doc_ids},
+   122    389.7 MiB      0.0 MiB           1               timeout=200,
+   123                                                 )
+   124    389.7 MiB      0.0 MiB           1           response.raise_for_status()
+   125    389.7 MiB      0.0 MiB           1           reranked_documents = response.json()["reranked_documents"]
+   126                                         
+   127                                                 # Step 4: Generate LLM response
+   128    389.7 MiB      0.0 MiB           1           llm_url = get_service_url("llm", LLM_SERVICE_URLS)
+   129    389.7 MiB      0.0 MiB           1           print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
+   130    389.7 MiB      0.0 MiB           2           response = requests.post(
+   131    389.7 MiB      0.0 MiB           1               f"{llm_url}/process",
+   132    389.7 MiB      0.0 MiB           1               json={"queries": queries, "documents_batch": reranked_documents},
+   133    389.7 MiB      0.0 MiB           1               timeout=200,
+   134                                                 )
+   135    389.7 MiB      0.0 MiB           1           response.raise_for_status()
+   136    389.7 MiB      0.0 MiB           1           llm_responses = response.json()["responses"]
+   137                                         
+   138                                                 # Step 5: Sentiment and safety analysis
+   139    389.7 MiB      0.0 MiB           2           sentiment_url = get_service_url(
+   140    389.7 MiB      0.0 MiB           1               "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
+   141                                                 )
+   142    389.7 MiB      0.0 MiB           2           print(
+   143    389.7 MiB      0.0 MiB           1               f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+   144    389.7 MiB      0.0 MiB           1               flush=True,
+   145                                                 )
+   146    389.7 MiB      0.0 MiB           2           response = requests.post(
+   147    389.7 MiB      0.0 MiB           1               f"{sentiment_url}/process",
+   148    389.7 MiB      0.0 MiB           1               json={"texts": llm_responses},
+   149    389.7 MiB      0.0 MiB           1               timeout=200,
+   150                                                 )
+   151    389.7 MiB      0.0 MiB           1           response.raise_for_status()
+   152    389.7 MiB      0.0 MiB           1           analysis = response.json()
+   153    389.7 MiB      0.0 MiB           1           sentiments = analysis["sentiments"]
+   154    389.7 MiB      0.0 MiB           1           toxicity_flags = analysis["toxicity_flags"]
+   155                                         
+   156    389.7 MiB      0.0 MiB           1           responses = []
+   157    389.7 MiB      0.0 MiB           5           for idx, req in enumerate(reqs):
+   158    389.7 MiB      0.0 MiB           4               processing_time = time.time() - start_times[idx]
+   159    389.7 MiB      0.0 MiB           8               print(
+   160    389.7 MiB      0.0 MiB           4                   f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+   161    389.7 MiB      0.0 MiB           4                   flush=True,
+   162                                                     )
+   163    389.7 MiB      0.0 MiB           4               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   164    389.7 MiB      0.0 MiB           8               responses.append(
+   165    389.7 MiB      0.0 MiB           8                   PipelineResponse(
+   166    389.7 MiB      0.0 MiB           4                       request_id=req.request_id,
+   167    389.7 MiB      0.0 MiB           4                       generated_response=llm_responses[idx],
+   168    389.7 MiB      0.0 MiB           4                       sentiment=sentiments[idx],
+   169    389.7 MiB      0.0 MiB           4                       is_toxic=sensitivity_result,
+   170    389.7 MiB      0.0 MiB           4                       processing_time=processing_time,
+   171                                                         )
+   172                                                     )
+   173                                         
+   174    389.7 MiB      0.0 MiB           1           return responses
+   175                                         
+   176                                             except requests.exceptions.RequestException as e:
+   177                                                 print(f"Batch processing failed: {e}", flush=True)
+   178                                                 raise
+   179                                             except Exception as e:
+   180                                                 print(f"Batch processing error: {e}", flush=True)
+   181                                                 raise
+
+
+[TIMING] process_pipeline - END (took 66.18s)
+132.236.91.187 - - [05/Dec/2025 20:51:23] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:51:23] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:51:23] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:51:23] "POST /query HTTP/1.1" 200 -
+Processing batch of 2 requests.
+
+[TIMING] process_pipeline - START
+
+============================================================
+Processing batch of 2 requests
+============================================================
+- req_1764985594_28: Is there a warranty on electronic items?...
+- req_1764985594_29: Can I change my shipping address after placing an ...
+[Step 1/5] Calling embedding service at http://132.236.91.187:9002...
+[Step 2/5] Calling FAISS service at http://132.236.91.183:8008...
+[Step 3/5] Calling documents service at http://132.236.91.187:9004...
+[Step 4/5] Calling LLM service at http://132.236.91.183:8010...
+[Step 5/5] Calling sentiment/safety service at http://132.236.91.187:9006...
+[Step 5/5] Calling sentiment/safety service at http://132.236.91.187:9005...
+Request req_1764985594_28 processed in 42.34 seconds
+Request req_1764985594_29 processed in 42.35 seconds
+Filename: /home/yy2394/cs5416-final-project/exp3/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    80    389.8 MiB    389.8 MiB           1   @profile_with_timing
+    81                                         @profile
+    82                                         def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
+    83                                             """
+    84                                             Orchestrate the full pipeline through microservices
+    85                                             """
+    86                                         
+    87    389.8 MiB      0.0 MiB           1       batch_size = len(reqs)
+    88    389.8 MiB      0.0 MiB           5       start_times = [time.time() for _ in reqs]
+    89    389.8 MiB      0.0 MiB           5       queries = [req.query for req in reqs]
+    90                                         
+    91    389.8 MiB      0.0 MiB           1       print("\n" + "=" * 60, flush=True)
+    92    389.8 MiB      0.0 MiB           1       print(f"Processing batch of {batch_size} requests", flush=True)
+    93    389.8 MiB      0.0 MiB           1       print("=" * 60, flush=True)
+    94    389.8 MiB      0.0 MiB           3       for req in reqs:
+    95    389.8 MiB      0.0 MiB           2           print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
+    96                                         
+    97    389.8 MiB      0.0 MiB           1       try:
+    98                                                 # Step 1: Generate embeddings
+    99    389.8 MiB      0.0 MiB           1           embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
+   100    389.8 MiB      0.0 MiB           1           print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
+   101    389.8 MiB      0.0 MiB           2           response = requests.post(
+   102    389.8 MiB      0.0 MiB           1               f"{embedding_url}/process", json={"texts": queries}, timeout=200
+   103                                                 )
+   104    389.8 MiB      0.0 MiB           1           response.raise_for_status()
+   105    389.8 MiB      0.0 MiB           1           embeddings = response.json()["embeddings"]
+   106                                         
+   107                                                 # Step 2: FAISS search
+   108    389.8 MiB      0.0 MiB           1           faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
+   109    389.8 MiB      0.0 MiB           1           print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
+   110    389.8 MiB      0.0 MiB           2           response = requests.post(
+   111    389.8 MiB      0.0 MiB           1               f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
+   112                                                 )
+   113    389.8 MiB      0.0 MiB           1           response.raise_for_status()
+   114    389.8 MiB      0.0 MiB           1           doc_ids = response.json()["doc_ids"]
+   115                                         
+   116                                                 # Step 3: Fetch and rerank documents
+   117    389.8 MiB      0.0 MiB           1           documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
+   118    389.8 MiB      0.0 MiB           1           print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
+   119    389.8 MiB      0.0 MiB           2           response = requests.post(
+   120    389.8 MiB      0.0 MiB           1               f"{documents_url}/process",
+   121    389.8 MiB      0.0 MiB           1               json={"queries": queries, "doc_id_batches": doc_ids},
+   122    389.8 MiB      0.0 MiB           1               timeout=200,
+   123                                                 )
+   124    389.8 MiB      0.0 MiB           1           response.raise_for_status()
+   125    389.8 MiB      0.0 MiB           1           reranked_documents = response.json()["reranked_documents"]
+   126                                         
+   127                                                 # Step 4: Generate LLM response
+   128    389.8 MiB      0.0 MiB           1           llm_url = get_service_url("llm", LLM_SERVICE_URLS)
+   129    389.8 MiB      0.0 MiB           1           print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
+   130    389.8 MiB      0.0 MiB           2           response = requests.post(
+   131    389.8 MiB      0.0 MiB           1               f"{llm_url}/process",
+   132    389.8 MiB      0.0 MiB           1               json={"queries": queries, "documents_batch": reranked_documents},
+   133    389.8 MiB      0.0 MiB           1               timeout=200,
+   134                                                 )
+   135    389.8 MiB      0.0 MiB           1           response.raise_for_status()
+   136    389.8 MiB      0.0 MiB           1           llm_responses = response.json()["responses"]
+   137                                         
+   138                                                 # Step 5: Sentiment and safety analysis
+   139    389.8 MiB      0.0 MiB           2           sentiment_url = get_service_url(
+   140    389.8 MiB      0.0 MiB           1               "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
+   141                                                 )
+   142    389.8 MiB      0.0 MiB           2           print(
+   143    389.8 MiB      0.0 MiB           1               f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+   144    389.8 MiB      0.0 MiB           1               flush=True,
+   145                                                 )
+   146    389.8 MiB      0.0 MiB           2           response = requests.post(
+   147    389.8 MiB      0.0 MiB           1               f"{sentiment_url}/process",
+   148    389.8 MiB      0.0 MiB           1               json={"texts": llm_responses},
+   149    389.8 MiB      0.0 MiB           1               timeout=200,
+   150                                                 )
+   151    389.8 MiB      0.0 MiB           1           response.raise_for_status()
+   152    389.8 MiB      0.0 MiB           1           analysis = response.json()
+   153    389.8 MiB      0.0 MiB           1           sentiments = analysis["sentiments"]
+   154    389.8 MiB      0.0 MiB           1           toxicity_flags = analysis["toxicity_flags"]
+   155                                         
+   156    389.8 MiB      0.0 MiB           1           responses = []
+   157    389.8 MiB      0.0 MiB           3           for idx, req in enumerate(reqs):
+   158    389.8 MiB      0.0 MiB           2               processing_time = time.time() - start_times[idx]
+   159    389.8 MiB      0.0 MiB           4               print(
+   160    389.8 MiB      0.0 MiB           2                   f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+   161    389.8 MiB      0.0 MiB           2                   flush=True,
+   162                                                     )
+   163    389.8 MiB      0.0 MiB           2               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   164    389.8 MiB      0.0 MiB           4               responses.append(
+   165    389.8 MiB      0.0 MiB           4                   PipelineResponse(
+   166    389.8 MiB      0.0 MiB           2                       request_id=req.request_id,
+   167    389.8 MiB      0.0 MiB           2                       generated_response=llm_responses[idx],
+   168    389.8 MiB      0.0 MiB           2                       sentiment=sentiments[idx],
+   169    389.8 MiB      0.0 MiB           2                       is_toxic=sensitivity_result,
+   170    389.8 MiB      0.0 MiB           2                       processing_time=processing_time,
+   171                                                         )
+   172                                                     )
+   173                                         
+   174    389.8 MiB      0.0 MiB           1           return responses
+   175                                         
+   176                                             except requests.exceptions.RequestException as e:
+   177                                                 print(f"Batch processing failed: {e}", flush=True)
+   178                                                 raise
+   179                                             except Exception as e:
+   180                                                 print(f"Batch processing error: {e}", flush=True)
+   181                                                 raise
+
+
+[TIMING] process_pipeline - END (took 42.35s)
+132.236.91.187 - - [05/Dec/2025 20:52:06] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:52:06] "POST /query HTTP/1.1" 200 -
+Request req_1764985594_16 processed in 186.29 seconds
+Request req_1764985594_17 processed in 186.29 seconds
+Request req_1764985594_18 processed in 186.29 seconds
+Request req_1764985594_19 processed in 186.29 seconds
+Filename: /home/yy2394/cs5416-final-project/exp3/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    80    389.3 MiB    389.3 MiB           1   @profile_with_timing
+    81                                         @profile
+    82                                         def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
+    83                                             """
+    84                                             Orchestrate the full pipeline through microservices
+    85                                             """
+    86                                         
+    87    389.3 MiB      0.0 MiB           1       batch_size = len(reqs)
+    88    389.3 MiB      0.0 MiB           7       start_times = [time.time() for _ in reqs]
+    89    389.3 MiB      0.0 MiB           7       queries = [req.query for req in reqs]
+    90                                         
+    91    389.3 MiB      0.0 MiB           1       print("\n" + "=" * 60, flush=True)
+    92    389.3 MiB      0.0 MiB           1       print(f"Processing batch of {batch_size} requests", flush=True)
+    93    389.3 MiB      0.0 MiB           1       print("=" * 60, flush=True)
+    94    389.4 MiB      0.0 MiB           5       for req in reqs:
+    95    389.4 MiB      0.1 MiB           4           print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
+    96                                         
+    97    389.4 MiB      0.0 MiB           1       try:
+    98                                                 # Step 1: Generate embeddings
+    99    389.4 MiB      0.0 MiB           1           embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
+   100    389.4 MiB      0.0 MiB           1           print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
+   101    389.4 MiB      0.0 MiB           2           response = requests.post(
+   102    389.4 MiB      0.0 MiB           1               f"{embedding_url}/process", json={"texts": queries}, timeout=200
+   103                                                 )
+   104    389.4 MiB      0.0 MiB           1           response.raise_for_status()
+   105    389.4 MiB      0.0 MiB           1           embeddings = response.json()["embeddings"]
+   106                                         
+   107                                                 # Step 2: FAISS search
+   108    389.4 MiB      0.0 MiB           1           faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
+   109    389.4 MiB      0.0 MiB           1           print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
+   110    389.4 MiB      0.0 MiB           2           response = requests.post(
+   111    389.4 MiB      0.0 MiB           1               f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
+   112                                                 )
+   113    389.4 MiB      0.0 MiB           1           response.raise_for_status()
+   114    389.4 MiB      0.0 MiB           1           doc_ids = response.json()["doc_ids"]
+   115                                         
+   116                                                 # Step 3: Fetch and rerank documents
+   117    389.4 MiB      0.0 MiB           1           documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
+   118    389.4 MiB      0.0 MiB           1           print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
+   119    389.4 MiB      0.0 MiB           2           response = requests.post(
+   120    389.4 MiB      0.0 MiB           1               f"{documents_url}/process",
+   121    389.4 MiB      0.0 MiB           1               json={"queries": queries, "doc_id_batches": doc_ids},
+   122    389.4 MiB      0.0 MiB           1               timeout=200,
+   123                                                 )
+   124    389.4 MiB      0.0 MiB           1           response.raise_for_status()
+   125    389.4 MiB      0.0 MiB           1           reranked_documents = response.json()["reranked_documents"]
+   126                                         
+   127                                                 # Step 4: Generate LLM response
+   128    389.4 MiB      0.0 MiB           1           llm_url = get_service_url("llm", LLM_SERVICE_URLS)
+   129    389.4 MiB      0.0 MiB           1           print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
+   130    389.8 MiB      0.4 MiB           2           response = requests.post(
+   131    389.4 MiB      0.0 MiB           1               f"{llm_url}/process",
+   132    389.4 MiB      0.0 MiB           1               json={"queries": queries, "documents_batch": reranked_documents},
+   133    389.4 MiB      0.0 MiB           1               timeout=200,
+   134                                                 )
+   135    389.8 MiB      0.0 MiB           1           response.raise_for_status()
+   136    389.8 MiB      0.0 MiB           1           llm_responses = response.json()["responses"]
+   137                                         
+   138                                                 # Step 5: Sentiment and safety analysis
+   139    389.8 MiB      0.0 MiB           2           sentiment_url = get_service_url(
+   140    389.8 MiB      0.0 MiB           1               "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
+   141                                                 )
+   142    389.8 MiB      0.0 MiB           2           print(
+   143    389.8 MiB      0.0 MiB           1               f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+   144    389.8 MiB      0.0 MiB           1               flush=True,
+   145                                                 )
+   146    389.9 MiB      0.1 MiB           2           response = requests.post(
+   147    389.8 MiB      0.0 MiB           1               f"{sentiment_url}/process",
+   148    389.8 MiB      0.0 MiB           1               json={"texts": llm_responses},
+   149    389.8 MiB      0.0 MiB           1               timeout=200,
+   150                                                 )
+   151    389.9 MiB      0.0 MiB           1           response.raise_for_status()
+   152    389.9 MiB      0.0 MiB           1           analysis = response.json()
+   153    389.9 MiB      0.0 MiB           1           sentiments = analysis["sentiments"]
+   154    389.9 MiB      0.0 MiB           1           toxicity_flags = analysis["toxicity_flags"]
+   155                                         
+   156    389.9 MiB      0.0 MiB           1           responses = []
+   157    389.9 MiB      0.0 MiB           5           for idx, req in enumerate(reqs):
+   158    389.9 MiB      0.0 MiB           4               processing_time = time.time() - start_times[idx]
+   159    389.9 MiB      0.0 MiB           8               print(
+   160    389.9 MiB      0.0 MiB           4                   f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+   161    389.9 MiB      0.0 MiB           4                   flush=True,
+   162                                                     )
+   163    389.9 MiB      0.0 MiB           4               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   164    389.9 MiB      0.0 MiB           8               responses.append(
+   165    389.9 MiB      0.0 MiB           8                   PipelineResponse(
+   166    389.9 MiB      0.0 MiB           4                       request_id=req.request_id,
+   167    389.9 MiB      0.0 MiB           4                       generated_response=llm_responses[idx],
+   168    389.9 MiB      0.0 MiB           4                       sentiment=sentiments[idx],
+   169    389.9 MiB      0.0 MiB           4                       is_toxic=sensitivity_result,
+   170    389.9 MiB      0.0 MiB           4                       processing_time=processing_time,
+   171                                                         )
+   172                                                     )
+   173                                         
+   174    389.9 MiB      0.0 MiB           1           return responses
+   175                                         
+   176                                             except requests.exceptions.RequestException as e:
+   177                                                 print(f"Batch processing failed: {e}", flush=True)
+   178                                                 raise
+   179                                             except Exception as e:
+   180                                                 print(f"Batch processing error: {e}", flush=True)
+   181                                                 raise
+
+
+[TIMING] process_pipeline - END (took 186.30s)
+132.236.91.187 - - [05/Dec/2025 20:52:07] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:52:07] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:52:07] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:52:07] "POST /query HTTP/1.1" 200 -
+[Step 5/5] Calling sentiment/safety service at http://132.236.91.187:9006...
+Request req_1764985594_24 processed in 145.56 seconds
+Request req_1764985594_26 processed in 145.56 seconds
+Request req_1764985594_25 processed in 145.56 seconds
+Request req_1764985594_27 processed in 145.56 seconds
+Filename: /home/yy2394/cs5416-final-project/exp3/pipeline.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    80    389.5 MiB    389.5 MiB           1   @profile_with_timing
+    81                                         @profile
+    82                                         def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
+    83                                             """
+    84                                             Orchestrate the full pipeline through microservices
+    85                                             """
+    86                                         
+    87    389.5 MiB      0.0 MiB           1       batch_size = len(reqs)
+    88    389.5 MiB      0.0 MiB           7       start_times = [time.time() for _ in reqs]
+    89    389.5 MiB      0.0 MiB           7       queries = [req.query for req in reqs]
+    90                                         
+    91    389.5 MiB      0.0 MiB           1       print("\n" + "=" * 60, flush=True)
+    92    389.5 MiB      0.0 MiB           1       print(f"Processing batch of {batch_size} requests", flush=True)
+    93    389.5 MiB      0.0 MiB           1       print("=" * 60, flush=True)
+    94    389.5 MiB      0.0 MiB           5       for req in reqs:
+    95    389.5 MiB      0.0 MiB           4           print(f"- {req.request_id}: {req.query[:50]}...", flush=True)
+    96                                         
+    97    389.5 MiB      0.0 MiB           1       try:
+    98                                                 # Step 1: Generate embeddings
+    99    389.5 MiB      0.0 MiB           1           embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
+   100    389.5 MiB      0.0 MiB           1           print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
+   101    389.7 MiB      0.1 MiB           2           response = requests.post(
+   102    389.5 MiB      0.0 MiB           1               f"{embedding_url}/process", json={"texts": queries}, timeout=200
+   103                                                 )
+   104    389.7 MiB      0.0 MiB           1           response.raise_for_status()
+   105    389.7 MiB      0.0 MiB           1           embeddings = response.json()["embeddings"]
+   106                                         
+   107                                                 # Step 2: FAISS search
+   108    389.7 MiB      0.0 MiB           1           faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
+   109    389.7 MiB      0.0 MiB           1           print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
+   110    389.7 MiB      0.0 MiB           2           response = requests.post(
+   111    389.7 MiB      0.0 MiB           1               f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
+   112                                                 )
+   113    389.7 MiB      0.0 MiB           1           response.raise_for_status()
+   114    389.7 MiB      0.0 MiB           1           doc_ids = response.json()["doc_ids"]
+   115                                         
+   116                                                 # Step 3: Fetch and rerank documents
+   117    389.7 MiB      0.0 MiB           1           documents_url = get_service_url("documents", DOCUMENTS_SERVICE_URLS)
+   118    389.7 MiB      0.0 MiB           1           print(f"[Step 3/5] Calling documents service at {documents_url}...", flush=True)
+   119    389.7 MiB      0.0 MiB           2           response = requests.post(
+   120    389.7 MiB      0.0 MiB           1               f"{documents_url}/process",
+   121    389.7 MiB      0.0 MiB           1               json={"queries": queries, "doc_id_batches": doc_ids},
+   122    389.7 MiB      0.0 MiB           1               timeout=200,
+   123                                                 )
+   124    389.7 MiB      0.0 MiB           1           response.raise_for_status()
+   125    389.7 MiB      0.0 MiB           1           reranked_documents = response.json()["reranked_documents"]
+   126                                         
+   127                                                 # Step 4: Generate LLM response
+   128    389.7 MiB      0.0 MiB           1           llm_url = get_service_url("llm", LLM_SERVICE_URLS)
+   129    389.7 MiB      0.0 MiB           1           print(f"[Step 4/5] Calling LLM service at {llm_url}...", flush=True)
+   130    390.0 MiB      0.4 MiB           2           response = requests.post(
+   131    389.7 MiB      0.0 MiB           1               f"{llm_url}/process",
+   132    389.7 MiB      0.0 MiB           1               json={"queries": queries, "documents_batch": reranked_documents},
+   133    389.7 MiB      0.0 MiB           1               timeout=200,
+   134                                                 )
+   135    390.0 MiB      0.0 MiB           1           response.raise_for_status()
+   136    390.0 MiB      0.0 MiB           1           llm_responses = response.json()["responses"]
+   137                                         
+   138                                                 # Step 5: Sentiment and safety analysis
+   139    390.0 MiB      0.0 MiB           2           sentiment_url = get_service_url(
+   140    390.0 MiB      0.0 MiB           1               "sentiment_safety", SENTIMENT_SAFETY_SERVICE_URLS
+   141                                                 )
+   142    390.0 MiB      0.0 MiB           2           print(
+   143    390.0 MiB      0.0 MiB           1               f"[Step 5/5] Calling sentiment/safety service at {sentiment_url}...",
+   144    390.0 MiB      0.0 MiB           1               flush=True,
+   145                                                 )
+   146    390.0 MiB      0.0 MiB           2           response = requests.post(
+   147    390.0 MiB      0.0 MiB           1               f"{sentiment_url}/process",
+   148    390.0 MiB      0.0 MiB           1               json={"texts": llm_responses},
+   149    390.0 MiB      0.0 MiB           1               timeout=200,
+   150                                                 )
+   151    390.0 MiB      0.0 MiB           1           response.raise_for_status()
+   152    390.0 MiB      0.0 MiB           1           analysis = response.json()
+   153    390.0 MiB      0.0 MiB           1           sentiments = analysis["sentiments"]
+   154    390.0 MiB      0.0 MiB           1           toxicity_flags = analysis["toxicity_flags"]
+   155                                         
+   156    390.0 MiB      0.0 MiB           1           responses = []
+   157    390.0 MiB      0.0 MiB           5           for idx, req in enumerate(reqs):
+   158    390.0 MiB      0.0 MiB           4               processing_time = time.time() - start_times[idx]
+   159    390.0 MiB      0.0 MiB           8               print(
+   160    390.0 MiB      0.0 MiB           4                   f"Request {req.request_id} processed in {processing_time:.2f} seconds",
+   161    390.0 MiB      0.0 MiB           4                   flush=True,
+   162                                                     )
+   163    390.0 MiB      0.0 MiB           4               sensitivity_result = "true" if toxicity_flags[idx] else "false"
+   164    390.0 MiB      0.0 MiB           8               responses.append(
+   165    390.0 MiB      0.0 MiB           8                   PipelineResponse(
+   166    390.0 MiB      0.0 MiB           4                       request_id=req.request_id,
+   167    390.0 MiB      0.0 MiB           4                       generated_response=llm_responses[idx],
+   168    390.0 MiB      0.0 MiB           4                       sentiment=sentiments[idx],
+   169    390.0 MiB      0.0 MiB           4                       is_toxic=sensitivity_result,
+   170    390.0 MiB      0.0 MiB           4                       processing_time=processing_time,
+   171                                                         )
+   172                                                     )
+   173                                         
+   174    390.0 MiB      0.0 MiB           1           return responses
+   175                                         
+   176                                             except requests.exceptions.RequestException as e:
+   177                                                 print(f"Batch processing failed: {e}", flush=True)
+   178                                                 raise
+   179                                             except Exception as e:
+   180                                                 print(f"Batch processing error: {e}", flush=True)
+   181                                                 raise
+
+
+[TIMING] process_pipeline - END (took 145.57s)
+132.236.91.187 - - [05/Dec/2025 20:52:47] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:52:47] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:52:47] "POST /query HTTP/1.1" 200 -
+132.236.91.187 - - [05/Dec/2025 20:52:47] "POST /query HTTP/1.1" 200 -
