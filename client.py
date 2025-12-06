@@ -48,7 +48,7 @@ def send_request_async(request_id: str, query: str, send_time: float):
         }
         
         start_time = time.time()
-        response = requests.post(SERVER_URL, json=payload, timeout=300)
+        response = requests.post(SERVER_URL, json=payload, timeout=1200)
         elapsed_time = time.time() - start_time
         
         if response.status_code == 200:
@@ -78,7 +78,7 @@ def send_request_async(request_id: str, query: str, send_time: float):
                 }
             
     except requests.exceptions.Timeout:
-        print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Request {request_id} timed out after 300s")
+        print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Request {request_id} timed out after 1200s")
         with results_lock:
             results[request_id] = {
                 'error': 'Timeout',
@@ -105,7 +105,7 @@ def send_request_async(request_id: str, query: str, send_time: float):
 
 def main():
     """
-    Main function: sends requests every 10 seconds for 1 minute
+    Main function: sends requests every 0.01 seconds for 0.3 seconds
     Requests are sent at fixed intervals regardless of response time
     """
     print("="*70)
@@ -160,9 +160,9 @@ def main():
         threads.append(thread)
     
     # Wait for all threads to complete (with a reasonable timeout)
-    print(f"\n\nWaiting for all responses (up to 10 minutes)...")
+    print(f"\n\nWaiting for all responses (up to 20 minutes)...")
     for thread in threads:
-        thread.join(timeout=620)  # 10 min 20 sec to allow for some buffer
+        thread.join(timeout=1220)  # 20 min 20 sec to allow for some buffer
     
     # Print summary
     total_time = time.time() - start_time

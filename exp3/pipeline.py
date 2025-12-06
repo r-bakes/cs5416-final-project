@@ -249,7 +249,7 @@ def handle_query():
         request_queue.put({"request_id": request_id, "query": query})
 
         # Wait for processing (with timeout)
-        timeout = 600  # 10 minutes
+        timeout = 1200  # 20 minutes
         start_wait = time.time()
         while True:
             with results_lock:
