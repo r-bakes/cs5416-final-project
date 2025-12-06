@@ -99,7 +99,7 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         embedding_url = get_service_url("embedding", EMBEDDING_SERVICE_URLS)
         print(f"[Step 1/5] Calling embedding service at {embedding_url}...", flush=True)
         response = requests.post(
-            f"{embedding_url}/process", json={"texts": queries}, timeout=120
+            f"{embedding_url}/process", json={"texts": queries}, timeout=200
         )
         response.raise_for_status()
         embeddings = response.json()["embeddings"]
@@ -108,7 +108,7 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         faiss_url = get_service_url("faiss", FAISS_SERVICE_URLS)
         print(f"[Step 2/5] Calling FAISS service at {faiss_url}...", flush=True)
         response = requests.post(
-            f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=120
+            f"{faiss_url}/process", json={"embeddings": embeddings}, timeout=200
         )
         response.raise_for_status()
         doc_ids = response.json()["doc_ids"]
@@ -119,7 +119,7 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         response = requests.post(
             f"{documents_url}/process",
             json={"queries": queries, "doc_id_batches": doc_ids},
-            timeout=120,
+            timeout=200,
         )
         response.raise_for_status()
         reranked_documents = response.json()["reranked_documents"]
@@ -130,7 +130,7 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         response = requests.post(
             f"{llm_url}/process",
             json={"queries": queries, "documents_batch": reranked_documents},
-            timeout=120,
+            timeout=200,
         )
         response.raise_for_status()
         llm_responses = response.json()["responses"]
@@ -146,7 +146,7 @@ def process_pipeline(reqs: list[PipelineRequest]) -> list[PipelineResponse]:
         response = requests.post(
             f"{sentiment_url}/process",
             json={"texts": llm_responses},
-            timeout=120,
+            timeout=200,
         )
         response.raise_for_status()
         analysis = response.json()
