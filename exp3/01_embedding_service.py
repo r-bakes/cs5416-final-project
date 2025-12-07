@@ -59,6 +59,7 @@ def main():
     print(f"Node: {NODE_NUMBER}", flush=True)
     print(f"Port: {SERVICE_PORT}", flush=True)
     print(f"Model: {EMBEDDING_MODEL_NAME}", flush=True)
+    print(f"Device: {DEVICE}", flush=True)
     print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)

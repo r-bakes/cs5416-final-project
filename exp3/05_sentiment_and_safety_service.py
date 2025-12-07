@@ -89,6 +89,7 @@ def main():
     print(f"Port: {SERVICE_PORT}", flush=True)
     print(f"Sentiment Model: {SENTIMENT_MODEL_NAME}", flush=True)
     print(f"Safety Model: {SAFETY_MODEL_NAME}", flush=True)
+    print(f"Device: {DEVICE}", flush=True)
     print("=" * 60, flush=True)
 
     app.run(host="0.0.0.0", port=SERVICE_PORT, threaded=True)
