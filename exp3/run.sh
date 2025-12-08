@@ -40,7 +40,7 @@ fi
 
 if [[ "$NODE_2_IP" == *:* ]]; then
   NODE_2_HOST="${NODE_2_IP%:*}"
-  NODE_2_BASE_PORT="${NODE_1_IP##*:}"
+  NODE_2_BASE_PORT="${NODE_2_IP##*:}"
 else
   NODE_2_HOST="$NODE_2_IP"
   NODE_2_BASE_PORT=8000
