@@ -186,9 +186,8 @@ def process_requests_worker():
     MAX_TIMEOUT = 0.1  # 100ms under high load
 
     while True:
+        batch = []
         try:
-            batch = []
-
             # Get first request
             first_request = request_queue.get()
             if first_request is None:
@@ -225,7 +224,14 @@ def process_requests_worker():
                         "is_toxic": response.is_toxic,
                     }
         except Exception as e:
-            print(f"Error processing request: {e}", flush=True)
+            print(f"Error processing batch: {e}", flush=True)
+            # Store error results for all requests in the failed batch
+            with results_lock:
+                for data in batch:
+                    results[data["request_id"]] = {
+                        "request_id": data["request_id"],
+                        "error": f"Batch processing failed: {str(e)}"
+                    }
 
 
 @app.route("/query", methods=["POST"])
