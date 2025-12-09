@@ -1,0 +1,44 @@
+[CONFIG] GPU not available, using CPU
+============================================================
+MICROSERVICES ORCHESTRATOR
+============================================================
+Orchestrator Node: 0
+Port: 8000
+
+Service URLs:
+	Embedding (2 instances): ['http://132.236.91.185:8001', 'http://132.236.91.185:8002']
+	FAISS (2 instances): ['http://132.236.91.186:8007', 'http://132.236.91.179:8008']
+	Documents (2 instances): ['http://132.236.91.185:8003', 'http://132.236.91.185:8004']
+	LLM (2 instances): ['http://132.236.91.186:8009', 'http://132.236.91.179:8010']
+	Sentiment/Safety (2 instances): ['http://132.236.91.185:8005', 'http://132.236.91.185:8006']
+============================================================
+Worker 0 started!
+Worker 1 started!
+
+Starting Flask orchestrator on 0.0.0.0:8000
+ * Serving Flask app 'pipeline'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+[CONFIG] GPU not available, using CPU
+============================================================
+MICROSERVICES ORCHESTRATOR
+============================================================
+Orchestrator Node: 0
+Port: 8000
+
+Service URLs:
+	Embedding (2 instances): ['http://132.236.91.186:8001', 'http://132.236.91.186:8002']
+	FAISS (2 instances): ['http://132.236.91.186:8007', 'http://132.236.91.179:8008']
+	Documents (2 instances): ['http://132.236.91.186:8003', 'http://132.236.91.186:8004']
+	LLM (2 instances): ['http://132.236.91.186:8009', 'http://132.236.91.179:8010']
+	Sentiment/Safety (2 instances): ['http://132.236.91.186:8005', 'http://132.236.91.186:8006']
+============================================================
+Worker 0 started!
+Worker 1 started!
+
+Starting Flask orchestrator on 0.0.0.0:8000
+ * Serving Flask app 'pipeline'
+ * Debug mode: off
+Address already in use
+Port 8000 is in use by another program. Either identify and stop that program, or start the server with a different port.

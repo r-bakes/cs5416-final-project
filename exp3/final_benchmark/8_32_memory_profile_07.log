@@ -1,0 +1,97 @@
+[CONFIG] GPU not available, using CPU
+============================================================
+FAISS SEARCH SERVICE
+============================================================
+Node: 1
+Port: 8007
+============================================================
+ * Serving Flask app '02_faiss_search_service'
+ * Debug mode: off
+
+[TIMING] _faiss_search_batch - START
+
+[TIMING] _faiss_search_batch - START
+[TIMING] _faiss_search_batch - START
+
+[TIMING] _faiss_search_batch - START
+
+Loading FAISS index
+Loading FAISS index
+Loading FAISS index
+Loading FAISS index
+Filename: /home/hy676/cs5416-final-project/exp3/02_faiss_search_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    23  11964.3 MiB  11964.3 MiB           1   @profile_with_timing
+    24                                         @profile
+    25                                         def _faiss_search_batch(query_embeddings: np.ndarray) -> list[list[int]]:
+    26                                             """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+    27  11964.3 MiB      0.0 MiB           1       if not os.path.exists(CONFIG["faiss_index_path"]):
+    28                                                 raise FileNotFoundError(
+    29                                                     "FAISS index not found. Please create the index before running the pipeline."
+    30                                                 )
+    31  11964.3 MiB      0.0 MiB           1       print("Loading FAISS index", flush=True)
+    32  11965.4 MiB      1.1 MiB           1       query_embeddings = query_embeddings.astype("float32")
+    33  13092.9 MiB   1127.5 MiB           1       _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+    34  13093.7 MiB      0.8 MiB          15       return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 192.15s)
+Filename: /home/hy676/cs5416-final-project/exp3/02_faiss_search_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    23  11964.3 MiB  11964.3 MiB           1   @profile_with_timing
+    24                                         @profile
+    25                                         def _faiss_search_batch(query_embeddings: np.ndarray) -> list[list[int]]:
+    26                                             """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+    27  11964.3 MiB      0.0 MiB           1       if not os.path.exists(CONFIG["faiss_index_path"]):
+    28                                                 raise FileNotFoundError(
+    29                                                     "FAISS index not found. Please create the index before running the pipeline."
+    30                                                 )
+    31  11964.6 MiB      0.3 MiB           1       print("Loading FAISS index", flush=True)
+    32  11965.4 MiB      0.8 MiB           1       query_embeddings = query_embeddings.astype("float32")
+    33  13094.5 MiB   1129.1 MiB           1       _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+    34  13094.5 MiB      0.0 MiB          15       return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 192.49s)
+Filename: /home/hy676/cs5416-final-project/exp3/02_faiss_search_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    23  11964.3 MiB  11964.3 MiB           1   @profile_with_timing
+    24                                         @profile
+    25                                         def _faiss_search_batch(query_embeddings: np.ndarray) -> list[list[int]]:
+    26                                             """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+    27  11964.3 MiB      0.0 MiB           1       if not os.path.exists(CONFIG["faiss_index_path"]):
+    28                                                 raise FileNotFoundError(
+    29                                                     "FAISS index not found. Please create the index before running the pipeline."
+    30                                                 )
+    31  11964.3 MiB      0.0 MiB           1       print("Loading FAISS index", flush=True)
+    32  11964.3 MiB      0.0 MiB           1       query_embeddings = query_embeddings.astype("float32")
+    33  13095.4 MiB   1131.1 MiB           1       _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+    34  13096.3 MiB      0.9 MiB          15       return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 193.10s)
+Filename: /home/hy676/cs5416-final-project/exp3/02_faiss_search_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    23  11964.3 MiB  11964.3 MiB           1   @profile_with_timing
+    24                                         @profile
+    25                                         def _faiss_search_batch(query_embeddings: np.ndarray) -> list[list[int]]:
+    26                                             """Step 3: Perform FAISS ANN search for a batch of embeddings"""
+    27  11964.3 MiB      0.0 MiB           1       if not os.path.exists(CONFIG["faiss_index_path"]):
+    28                                                 raise FileNotFoundError(
+    29                                                     "FAISS index not found. Please create the index before running the pipeline."
+    30                                                 )
+    31  11964.3 MiB      0.0 MiB           1       print("Loading FAISS index", flush=True)
+    32  11965.0 MiB      0.6 MiB           1       query_embeddings = query_embeddings.astype("float32")
+    33  13097.6 MiB   1132.6 MiB           1       _, indices = index.search(query_embeddings, CONFIG["retrieval_k"])
+    34  13097.6 MiB      0.0 MiB          16       return [row.tolist() for row in indices]
+
+
+[TIMING] _faiss_search_batch - END (took 194.57s)
