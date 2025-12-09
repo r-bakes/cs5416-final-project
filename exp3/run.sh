@@ -26,7 +26,7 @@ if [[ "$NODE_0_IP" == *:* ]]; then
   NODE_0_BASE_PORT="${NODE_0_IP##*:}"
 else
   NODE_0_HOST="$NODE_0_IP"
-  NODE_0_BASE_PORT=8000
+  NODE_0_BASE_PORT=9000
 fi
 
 # Parse NODE_1_IP and NODE_2_IP to extract just the host
@@ -35,7 +35,7 @@ if [[ "$NODE_1_IP" == *:* ]]; then
   NODE_1_BASE_PORT="${NODE_1_IP##*:}"
 else
   NODE_1_HOST="$NODE_1_IP"
-  NODE_1_BASE_PORT=8000
+  NODE_1_BASE_PORT=9100
 fi
 
 if [[ "$NODE_2_IP" == *:* ]]; then
@@ -43,7 +43,7 @@ if [[ "$NODE_2_IP" == *:* ]]; then
   NODE_2_BASE_PORT="${NODE_2_IP##*:}"
 else
   NODE_2_HOST="$NODE_2_IP"
-  NODE_2_BASE_PORT=8000
+  NODE_2_BASE_PORT=9100
 fi
 
 # Calculate port numbers based on NODE_0_BASE_PORT
