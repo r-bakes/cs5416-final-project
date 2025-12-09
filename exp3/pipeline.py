@@ -19,6 +19,7 @@ from utils import profile_with_timing
 # Read environment variables
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 ORCHESTRATOR_PORT = int(os.environ.get("ORCHESTRATOR_PORT", 8000))
+ORCHESTRATOR_NUM_WORKERS = int(os.environ.get("ORCHESTRATOR_NUM_WORKERS", 1))
 
 # Service URLs - comma-separated list for multiple instances
 EMBEDDING_SERVICE_URLS = os.environ.get(
@@ -230,7 +231,7 @@ def process_requests_worker():
                 for data in batch:
                     results[data["request_id"]] = {
                         "request_id": data["request_id"],
-                        "error": f"Batch processing failed: {str(e)}"
+                        "error": f"Batch processing failed: {str(e)}",
                     }
 
 
@@ -323,17 +324,10 @@ def main():
     print("=" * 60, flush=True)
 
     # Start worker thread
-    worker_thread_1 = threading.Thread(target=process_requests_worker, daemon=True)
-    worker_thread_1.start()
-    print("Worker thread started!", flush=True)
-
-    worker_thread_2 = threading.Thread(target=process_requests_worker, daemon=True)
-    worker_thread_2.start()
-    print("Worker thread started!", flush=True)
-    
-    worker_thread_3 = threading.Thread(target=process_requests_worker, daemon=True)
-    worker_thread_3.start()
-    print("Worker thread started!", flush=True)
+    for i in range(ORCHESTRATOR_NUM_WORKERS):
+        worker_thread = threading.Thread(target=process_requests_worker, daemon=True)
+        worker_thread.start()
+        print(f"Worker {i} started!", flush=True)
 
     # Start Flask server
     print(f"\nStarting Flask orchestrator on 0.0.0.0:{ORCHESTRATOR_PORT}", flush=True)

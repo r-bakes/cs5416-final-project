@@ -82,24 +82,24 @@ if [ "$NODE_NUMBER" -eq 0 ]; then
   echo "Starting Node 0 services..."
 
   # NOTE: Embedding service - 2 instances
-  EMBEDDING_SERVICE_PORT=$EMBEDDING_PORT_1 python3 01_embedding_service.py >>memory_profile_01.log &
+  EMBEDDING_SERVICE_PORT=$EMBEDDING_PORT_1 python3 01_embedding_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_01.log" &
   sleep 2
-  EMBEDDING_SERVICE_PORT=$EMBEDDING_PORT_2 python3 01_embedding_service.py >>memory_profile_02.log &
+  EMBEDDING_SERVICE_PORT=$EMBEDDING_PORT_2 python3 01_embedding_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_02.log" &
   sleep 2
 
   # NOTE: Documents service - 2 instances
-  DOCUMENTS_SERVICE_PORT=$DOCUMENTS_PORT_1 python3 03_documents_service.py >>memory_profile_03.log &
+  DOCUMENTS_SERVICE_PORT=$DOCUMENTS_PORT_1 python3 03_documents_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_03.log" &
   sleep 2
-  DOCUMENTS_SERVICE_PORT=$DOCUMENTS_PORT_2 python3 03_documents_service.py >>memory_profile_04.log &
+  DOCUMENTS_SERVICE_PORT=$DOCUMENTS_PORT_2 python3 03_documents_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_04.log" &
   sleep 2
 
   # NOTE: Sentiment/Safety service - 2 instances
-  SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_1 python3 05_sentiment_and_safety_service.py >>memory_profile_05.log &
+  SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_1 python3 05_sentiment_and_safety_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_05.log" &
   sleep 2
-  SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_2 python3 05_sentiment_and_safety_service.py >>memory_profile_06.log &
+  SENTIMENT_SAFETY_SERVICE_PORT=$SENTIMENT_PORT_2 python3 05_sentiment_and_safety_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_06.log" &
   sleep 2
 
-  FAISS_SERVICE_PORT=$FAISS_PORT_3 python3 02_faiss_search_service.py >>memory_profile_11.log &
+  FAISS_SERVICE_PORT=$FAISS_PORT_3 python3 02_faiss_search_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_11.log" &
   sleep 2
 
   # Orchestrator - points to all service instances
@@ -120,11 +120,11 @@ elif [ "$NODE_NUMBER" -eq 1 ]; then
   echo "Starting Node 1 services..."
 
   # NOTE: FAISS service - 1 instance
-  FAISS_SERVICE_PORT=$FAISS_PORT_1 python3 02_faiss_search_service.py >>memory_profile_07.log &
+  FAISS_SERVICE_PORT=$FAISS_PORT_1 python3 02_faiss_search_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_07.log" &
   sleep 2
 
   # NOTE: LLM service - 1 instance
-  LLM_SERVICE_PORT=$LLM_PORT_1 python3 04_llm_service.py >>memory_profile_09.log &
+  LLM_SERVICE_PORT=$LLM_PORT_1 python3 04_llm_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_09.log" &
   sleep 2
 
   echo "Node 1 services started."
@@ -133,11 +133,11 @@ elif [ "$NODE_NUMBER" -eq 2 ]; then
   echo "Starting Node 2 services..."
 
   # NOTE: FAISS service - 1 instance
-  FAISS_SERVICE_PORT=$FAISS_PORT_2 python3 02_faiss_search_service.py >>memory_profile_08.log &
+  FAISS_SERVICE_PORT=$FAISS_PORT_2 python3 02_faiss_search_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_08.log" &
   sleep 2
 
   # NOTE: LLM service - 1 instance
-  LLM_SERVICE_PORT=$LLM_PORT_2 python3 04_llm_service.py >>memory_profile_10.log &
+  LLM_SERVICE_PORT=$LLM_PORT_2 python3 04_llm_service.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile_10.log" &
   sleep 2
 
   echo "Node 2 services started."
