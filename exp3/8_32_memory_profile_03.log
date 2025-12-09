@@ -1,0 +1,316 @@
+[CONFIG] GPU not available, using CPU
+============================================================
+DOCUMENTS SERVICE (Fetch + Rerank)
+============================================================
+Node: 0
+Port: 9003
+DB: ../documents//documents.db
+Reranker: BAAI/bge-reranker-base
+Device: cpu
+============================================================
+ * Serving Flask app '03_documents_service'
+ * Debug mode: off
+
+[TIMING] _fetch_documents_batch - START
+Filename: /home/rb972/cs5416-final-project/exp3/03_documents_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    32   1062.7 MiB   1062.7 MiB           1   @profile_with_timing
+    33                                         @profile
+    34                                         def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
+    35                                             """Step 4: Fetch documents for each query in the batch using SQLite"""
+    36   1062.7 MiB      0.0 MiB           1       conn = sqlite3.connect(db_path)
+    37   1062.7 MiB      0.0 MiB           1       cursor = conn.cursor()
+    38   1062.7 MiB      0.0 MiB           1       documents_batch = []
+    39   1062.7 MiB      0.0 MiB          13       for doc_ids in doc_id_batches:
+    40   1062.7 MiB      0.0 MiB          12           documents = []
+    41   1062.7 MiB      0.0 MiB         132           for doc_id in doc_ids:
+    42   1062.7 MiB      0.0 MiB         240               cursor.execute(
+    43   1062.7 MiB      0.0 MiB         120                   "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+    44   1062.7 MiB      0.0 MiB         120                   (doc_id,),
+    45                                                     )
+    46   1062.7 MiB      0.0 MiB         120               result = cursor.fetchone()
+    47   1062.7 MiB      0.0 MiB         120               if result:
+    48   1062.7 MiB      0.0 MiB         240                   documents.append(
+    49   1062.7 MiB      0.0 MiB         120                       {
+    50   1062.7 MiB      0.0 MiB         120                           "doc_id": result[0],
+    51   1062.7 MiB      0.0 MiB         120                           "title": result[1],
+    52   1062.7 MiB      0.0 MiB         120                           "content": result[2],
+    53   1062.7 MiB      0.0 MiB         120                           "category": result[3],
+    54                                                             }
+    55                                                         )
+    56   1062.7 MiB      0.0 MiB          12           documents_batch.append(documents)
+    57   1062.7 MiB      0.0 MiB           1       conn.close()
+    58   1062.7 MiB      0.0 MiB           1       return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.51s)
+
+[TIMING] _rerank_documents_batch - START
+
+[TIMING] _fetch_documents_batch - START
+Filename: /home/rb972/cs5416-final-project/exp3/03_documents_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    32   1430.1 MiB   1430.1 MiB           1   @profile_with_timing
+    33                                         @profile
+    34                                         def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
+    35                                             """Step 4: Fetch documents for each query in the batch using SQLite"""
+    36   1430.1 MiB      0.0 MiB           1       conn = sqlite3.connect(db_path)
+    37   1430.1 MiB      0.0 MiB           1       cursor = conn.cursor()
+    38   1430.1 MiB      0.0 MiB           1       documents_batch = []
+    39   1430.4 MiB      0.0 MiB          14       for doc_ids in doc_id_batches:
+    40   1430.1 MiB      0.0 MiB          13           documents = []
+    41   1430.4 MiB      0.0 MiB         143           for doc_id in doc_ids:
+    42   1430.4 MiB      0.0 MiB         260               cursor.execute(
+    43   1430.4 MiB      0.0 MiB         130                   "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+    44   1430.4 MiB      0.0 MiB         130                   (doc_id,),
+    45                                                     )
+    46   1430.4 MiB      0.0 MiB         130               result = cursor.fetchone()
+    47   1430.4 MiB      0.0 MiB         130               if result:
+    48   1430.4 MiB      0.0 MiB         260                   documents.append(
+    49   1430.4 MiB      0.0 MiB         130                       {
+    50   1430.4 MiB      0.0 MiB         130                           "doc_id": result[0],
+    51   1430.4 MiB      0.3 MiB         130                           "title": result[1],
+    52   1430.4 MiB      0.0 MiB         130                           "content": result[2],
+    53   1430.4 MiB      0.0 MiB         130                           "category": result[3],
+    54                                                             }
+    55                                                         )
+    56   1430.4 MiB      0.0 MiB          13           documents_batch.append(documents)
+    57   1430.4 MiB      0.0 MiB           1       conn.close()
+    58   1430.4 MiB      0.0 MiB           1       return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.50s)
+
+[TIMING] _rerank_documents_batch - START
+Filename: /home/rb972/cs5416-final-project/exp3/03_documents_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    61   1062.7 MiB   1062.7 MiB           1   @profile_with_timing
+    62                                         @profile
+    63                                         def _rerank_documents_batch(
+    64                                             queries: list[str], documents_batch: list[list[dict]]
+    65                                         ) -> list[list[dict]]:
+    66                                             """Step 5: Rerank retrieved documents for each query in the batch"""
+    67   1062.7 MiB      0.0 MiB           1       reranked_batches = []
+    68   1478.6 MiB      0.0 MiB          13       for query, documents in zip(queries, documents_batch):
+    69   1478.6 MiB      0.0 MiB          12           if not documents:
+    70                                                     reranked_batches.append([])
+    71                                                     continue
+    72   1478.6 MiB      0.0 MiB         156           pairs = [[query, doc["content"]] for doc in documents]
+    73   1478.6 MiB      0.0 MiB          24           with torch.no_grad():
+    74   1478.6 MiB      0.6 MiB          36               inputs = tokenizer(
+    75   1478.6 MiB      0.0 MiB          12                   pairs,
+    76   1478.6 MiB      0.0 MiB          12                   padding=True,
+    77   1478.6 MiB      0.0 MiB          12                   truncation=True,
+    78   1478.6 MiB      0.0 MiB          12                   return_tensors="pt",
+    79   1478.6 MiB      0.0 MiB          12                   max_length=CONFIG["truncate_length"],
+    80   1478.6 MiB      0.0 MiB          12               ).to(DEVICE)
+    81   1478.6 MiB      0.0 MiB          12               scores = (
+    82   1478.6 MiB    415.3 MiB          12                   model(**inputs, return_dict=True)
+    83   1478.6 MiB      0.0 MiB          24                   .logits.view(
+    84   1478.6 MiB      0.0 MiB          12                       -1,
+    85                                                         )
+    86   1478.6 MiB      0.0 MiB          12                   .float()
+    87                                                     )
+    88   1478.6 MiB      0.0 MiB          12           doc_scores = list(zip(documents, scores))
+    89   1478.6 MiB      0.0 MiB         252           doc_scores.sort(key=lambda x: x[1], reverse=True)
+    90   1478.6 MiB      0.0 MiB         156           reranked_batches.append([doc for doc, _ in doc_scores])
+    91   1478.6 MiB      0.0 MiB           1       return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 16.18s)
+Filename: /home/rb972/cs5416-final-project/exp3/03_documents_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    61   1430.4 MiB   1430.4 MiB           1   @profile_with_timing
+    62                                         @profile
+    63                                         def _rerank_documents_batch(
+    64                                             queries: list[str], documents_batch: list[list[dict]]
+    65                                         ) -> list[list[dict]]:
+    66                                             """Step 5: Rerank retrieved documents for each query in the batch"""
+    67   1430.4 MiB      0.0 MiB           1       reranked_batches = []
+    68   1480.9 MiB      0.0 MiB          14       for query, documents in zip(queries, documents_batch):
+    69   1480.9 MiB      0.0 MiB          13           if not documents:
+    70                                                     reranked_batches.append([])
+    71                                                     continue
+    72   1480.9 MiB      0.0 MiB         169           pairs = [[query, doc["content"]] for doc in documents]
+    73   1480.9 MiB      0.0 MiB          26           with torch.no_grad():
+    74   1480.9 MiB      0.0 MiB          39               inputs = tokenizer(
+    75   1480.9 MiB      0.0 MiB          13                   pairs,
+    76   1480.9 MiB      0.0 MiB          13                   padding=True,
+    77   1480.9 MiB      0.0 MiB          13                   truncation=True,
+    78   1480.9 MiB      0.0 MiB          13                   return_tensors="pt",
+    79   1480.9 MiB      0.0 MiB          13                   max_length=CONFIG["truncate_length"],
+    80   1480.9 MiB      0.0 MiB          13               ).to(DEVICE)
+    81   1480.9 MiB      0.0 MiB          13               scores = (
+    82   1480.9 MiB     50.6 MiB          13                   model(**inputs, return_dict=True)
+    83   1480.9 MiB      0.0 MiB          26                   .logits.view(
+    84   1480.9 MiB      0.0 MiB          13                       -1,
+    85                                                         )
+    86   1480.9 MiB      0.0 MiB          13                   .float()
+    87                                                     )
+    88   1480.9 MiB      0.0 MiB          13           doc_scores = list(zip(documents, scores))
+    89   1480.9 MiB      0.0 MiB         273           doc_scores.sort(key=lambda x: x[1], reverse=True)
+    90   1480.9 MiB      0.0 MiB         169           reranked_batches.append([doc for doc, _ in doc_scores])
+    91   1480.9 MiB      0.0 MiB           1       return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 27.46s)
+
+[TIMING] _fetch_documents_batch - START
+
+[TIMING] _fetch_documents_batch - START
+Filename: /home/rb972/cs5416-final-project/exp3/03_documents_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    32   1481.4 MiB   1481.4 MiB           1   @profile_with_timing
+    33                                         @profile
+    34                                         def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
+    35                                             """Step 4: Fetch documents for each query in the batch using SQLite"""
+    36   1481.4 MiB      0.0 MiB           1       conn = sqlite3.connect(db_path)
+    37   1481.4 MiB      0.0 MiB           1       cursor = conn.cursor()
+    38   1481.4 MiB      0.0 MiB           1       documents_batch = []
+    39   1481.4 MiB      0.0 MiB          13       for doc_ids in doc_id_batches:
+    40   1481.4 MiB      0.0 MiB          12           documents = []
+    41   1481.4 MiB      0.0 MiB         132           for doc_id in doc_ids:
+    42   1481.4 MiB      0.0 MiB         240               cursor.execute(
+    43   1481.4 MiB      0.0 MiB         120                   "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+    44   1481.4 MiB      0.0 MiB         120                   (doc_id,),
+    45                                                     )
+    46   1481.4 MiB      0.0 MiB         120               result = cursor.fetchone()
+    47   1481.4 MiB      0.0 MiB         120               if result:
+    48   1481.4 MiB      0.0 MiB         240                   documents.append(
+    49   1481.4 MiB      0.0 MiB         120                       {
+    50   1481.4 MiB      0.0 MiB         120                           "doc_id": result[0],
+    51   1481.4 MiB      0.0 MiB         120                           "title": result[1],
+    52   1481.4 MiB      0.0 MiB         120                           "content": result[2],
+    53   1481.4 MiB      0.0 MiB         120                           "category": result[3],
+    54                                                             }
+    55                                                         )
+    56   1481.4 MiB      0.0 MiB          12           documents_batch.append(documents)
+    57   1481.4 MiB      0.0 MiB           1       conn.close()
+    58   1481.4 MiB      0.0 MiB           1       return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.48s)
+
+[TIMING] _rerank_documents_batch - START
+Filename: /home/rb972/cs5416-final-project/exp3/03_documents_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    32   1481.4 MiB   1481.4 MiB           1   @profile_with_timing
+    33                                         @profile
+    34                                         def _fetch_documents_batch(doc_id_batches: list[list[int]]) -> list[list[dict]]:
+    35                                             """Step 4: Fetch documents for each query in the batch using SQLite"""
+    36   1481.4 MiB      0.0 MiB           1       conn = sqlite3.connect(db_path)
+    37   1481.4 MiB      0.0 MiB           1       cursor = conn.cursor()
+    38   1481.4 MiB      0.0 MiB           1       documents_batch = []
+    39   1481.6 MiB      0.0 MiB          13       for doc_ids in doc_id_batches:
+    40   1481.4 MiB      0.0 MiB          12           documents = []
+    41   1481.6 MiB      0.0 MiB         132           for doc_id in doc_ids:
+    42   1481.6 MiB      0.0 MiB         240               cursor.execute(
+    43   1481.6 MiB      0.0 MiB         120                   "SELECT doc_id, title, content, category FROM documents WHERE doc_id = ?",
+    44   1481.6 MiB      0.0 MiB         120                   (doc_id,),
+    45                                                     )
+    46   1481.6 MiB      0.3 MiB         120               result = cursor.fetchone()
+    47   1481.6 MiB      0.0 MiB         120               if result:
+    48   1481.6 MiB      0.0 MiB         240                   documents.append(
+    49   1481.6 MiB      0.0 MiB         120                       {
+    50   1481.6 MiB      0.0 MiB         120                           "doc_id": result[0],
+    51   1481.6 MiB      0.0 MiB         120                           "title": result[1],
+    52   1481.6 MiB      0.0 MiB         120                           "content": result[2],
+    53   1481.6 MiB      0.0 MiB         120                           "category": result[3],
+    54                                                             }
+    55                                                         )
+    56   1481.6 MiB      0.0 MiB          12           documents_batch.append(documents)
+    57   1481.6 MiB      0.0 MiB           1       conn.close()
+    58   1481.6 MiB      0.0 MiB           1       return documents_batch
+
+
+[TIMING] _fetch_documents_batch - END (took 0.45s)
+
+[TIMING] _rerank_documents_batch - START
+Filename: /home/rb972/cs5416-final-project/exp3/03_documents_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    61   1481.4 MiB   1481.4 MiB           1   @profile_with_timing
+    62                                         @profile
+    63                                         def _rerank_documents_batch(
+    64                                             queries: list[str], documents_batch: list[list[dict]]
+    65                                         ) -> list[list[dict]]:
+    66                                             """Step 5: Rerank retrieved documents for each query in the batch"""
+    67   1481.4 MiB      0.0 MiB           1       reranked_batches = []
+    68   1513.6 MiB      0.0 MiB          13       for query, documents in zip(queries, documents_batch):
+    69   1513.6 MiB      0.0 MiB          12           if not documents:
+    70                                                     reranked_batches.append([])
+    71                                                     continue
+    72   1513.6 MiB      0.0 MiB         156           pairs = [[query, doc["content"]] for doc in documents]
+    73   1513.6 MiB      0.0 MiB          24           with torch.no_grad():
+    74   1513.6 MiB      0.3 MiB          36               inputs = tokenizer(
+    75   1513.6 MiB      0.0 MiB          12                   pairs,
+    76   1513.6 MiB      0.0 MiB          12                   padding=True,
+    77   1513.6 MiB      0.0 MiB          12                   truncation=True,
+    78   1513.6 MiB      0.0 MiB          12                   return_tensors="pt",
+    79   1513.6 MiB      0.0 MiB          12                   max_length=CONFIG["truncate_length"],
+    80   1513.6 MiB      0.0 MiB          12               ).to(DEVICE)
+    81   1513.6 MiB      0.0 MiB          12               scores = (
+    82   1513.6 MiB     31.9 MiB          12                   model(**inputs, return_dict=True)
+    83   1513.6 MiB      0.0 MiB          24                   .logits.view(
+    84   1513.6 MiB      0.0 MiB          12                       -1,
+    85                                                         )
+    86   1513.6 MiB      0.0 MiB          12                   .float()
+    87                                                     )
+    88   1513.6 MiB      0.0 MiB          12           doc_scores = list(zip(documents, scores))
+    89   1513.6 MiB      0.0 MiB         252           doc_scores.sort(key=lambda x: x[1], reverse=True)
+    90   1513.6 MiB      0.0 MiB         156           reranked_batches.append([doc for doc, _ in doc_scores])
+    91   1513.6 MiB      0.0 MiB           1       return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 21.15s)
+Filename: /home/rb972/cs5416-final-project/exp3/03_documents_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    61   1481.6 MiB   1481.6 MiB           1   @profile_with_timing
+    62                                         @profile
+    63                                         def _rerank_documents_batch(
+    64                                             queries: list[str], documents_batch: list[list[dict]]
+    65                                         ) -> list[list[dict]]:
+    66                                             """Step 5: Rerank retrieved documents for each query in the batch"""
+    67   1481.6 MiB      0.0 MiB           1       reranked_batches = []
+    68   1515.7 MiB      0.0 MiB          13       for query, documents in zip(queries, documents_batch):
+    69   1513.6 MiB      0.0 MiB          12           if not documents:
+    70                                                     reranked_batches.append([])
+    71                                                     continue
+    72   1513.6 MiB      0.0 MiB         156           pairs = [[query, doc["content"]] for doc in documents]
+    73   1515.7 MiB      0.0 MiB          24           with torch.no_grad():
+    74   1513.6 MiB      0.6 MiB          36               inputs = tokenizer(
+    75   1513.6 MiB      0.0 MiB          12                   pairs,
+    76   1513.6 MiB      0.0 MiB          12                   padding=True,
+    77   1513.6 MiB      0.0 MiB          12                   truncation=True,
+    78   1513.6 MiB      0.0 MiB          12                   return_tensors="pt",
+    79   1513.6 MiB      0.0 MiB          12                   max_length=CONFIG["truncate_length"],
+    80   1513.6 MiB      0.0 MiB          12               ).to(DEVICE)
+    81   1515.7 MiB      0.0 MiB          12               scores = (
+    82   1515.7 MiB     33.4 MiB          12                   model(**inputs, return_dict=True)
+    83   1515.7 MiB      0.0 MiB          24                   .logits.view(
+    84   1515.7 MiB      0.0 MiB          12                       -1,
+    85                                                         )
+    86   1515.7 MiB      0.0 MiB          12                   .float()
+    87                                                     )
+    88   1515.7 MiB      0.0 MiB          12           doc_scores = list(zip(documents, scores))
+    89   1515.7 MiB      0.0 MiB         252           doc_scores.sort(key=lambda x: x[1], reverse=True)
+    90   1515.7 MiB      0.0 MiB         156           reranked_batches.append([doc for doc, _ in doc_scores])
+    91   1515.7 MiB      0.0 MiB           1       return reranked_batches
+
+
+[TIMING] _rerank_documents_batch - END (took 23.65s)

@@ -129,7 +129,7 @@ def main():
     threads = []
     
     # Send 30 requests at 0.01-second intervals
-    for i in range(30):
+    for i in range(100):
         # Calculate when this request should be sent
         target_send_time = start_time + (i * 0.01)
         
@@ -169,12 +169,12 @@ def main():
     print("\n" + "="*70)
     print("SUMMARY")
     print("="*70)
-    print(f"Total requests sent: 30")
+    print(f"Total requests sent: 20")
     
     with results_lock:
         successful = sum(1 for r in results.values() if r.get('success', False))
         print(f"Successful responses: {successful}")
-        print(f"Failed requests: {30 - successful}")
+        print(f"Failed requests: {20 - successful}")
     
     print(f"Total elapsed time: {total_time:.2f}s")
     
