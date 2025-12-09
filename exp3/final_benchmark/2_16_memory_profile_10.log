@@ -1,0 +1,60 @@
+[CONFIG] GPU not available, using CPU
+Loading LLM model...
+LLM model loaded on cpu with dtype torch.float32!
+============================================================
+LLM SERVICE
+============================================================
+Node: 2
+Port: 8010
+Model: Qwen/Qwen2.5-0.5B-Instruct
+Device: cpu
+============================================================
+ * Serving Flask app '04_llm_service'
+ * Debug mode: off
+
+[TIMING] _generate_responses_batch - START
+Filename: /home/ca542/cs5416-final-project/exp3/04_llm_service.py
+
+Line #    Mem usage    Increment  Occurrences   Line Contents
+=============================================================
+    33   2693.2 MiB   2693.2 MiB           1   @profile_with_timing
+    34                                         @profile
+    35                                         def _generate_responses_batch(
+    36                                             queries: list[str], documents_batch: list[list[dict]]
+    37                                         ) -> list[str]:
+    38                                             """Step 6: Generate LLM responses for each query in the batch"""
+    39   2693.2 MiB      0.0 MiB           1       responses = []
+    40   2746.9 MiB   -146.8 MiB          11       for query, documents in zip(queries, documents_batch):
+    41   2746.9 MiB   -220.6 MiB          20           context = "\n".join(
+    42   2746.9 MiB   -661.9 MiB          60               [f"- {doc['title']}: {doc['content'][:200]}" for doc in documents[:3]]
+    43                                                 )
+    44   2746.9 MiB   -110.3 MiB          10           messages = [
+    45   2746.9 MiB   -110.3 MiB          10               {
+    46   2746.9 MiB   -110.3 MiB          10                   "role": "system",
+    47   2746.9 MiB   -110.3 MiB          10                   "content": "When given Context and Question, reply as 'Answer: <final answer>' only.",
+    48                                                     },
+    49   2746.9 MiB   -110.3 MiB          10               {
+    50   2746.9 MiB   -110.3 MiB          10                   "role": "user",
+    51   2746.9 MiB   -110.3 MiB          10                   "content": f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:",
+    52                                                     },
+    53                                                 ]
+    54   2746.9 MiB   -219.9 MiB          20           text = tokenizer.apply_chat_template(
+    55   2746.9 MiB   -110.3 MiB          10               messages, tokenize=False, add_generation_prompt=True
+    56                                                 )
+    57   2746.9 MiB   -110.3 MiB          10           model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+    58   2746.9 MiB   -314.4 MiB          30           generated_ids = model.generate(
+    59   2746.9 MiB   -110.3 MiB          10               **model_inputs,
+    60   2746.9 MiB   -110.3 MiB          10               max_new_tokens=CONFIG["max_tokens"],
+    61   2746.9 MiB   -110.3 MiB          10               temperature=0.01,
+    62   2746.9 MiB   -110.3 MiB          10               pad_token_id=tokenizer.eos_token_id,
+    63                                                 )
+    64   2746.9 MiB   -880.5 MiB          60           generated_ids = [
+    65   2746.9 MiB   -146.8 MiB          10               output_ids[len(input_ids) :]
+    66   2746.9 MiB   -293.5 MiB          20               for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+    67                                                 ]
+    68   2746.9 MiB   -146.8 MiB          10           response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+    69   2746.9 MiB   -146.8 MiB          10           responses.append(response)
+    70   2710.5 MiB    -36.4 MiB           1       return responses
+
+
+[TIMING] _generate_responses_batch - END (took 59.90s)
