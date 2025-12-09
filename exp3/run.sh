@@ -107,7 +107,7 @@ if [ "$NODE_NUMBER" -eq 0 ]; then
   export LLM_SERVICE_URL="http://$NODE_1_IP:$LLM_PORT_1,http://$NODE_2_IP:$LLM_PORT_2"
   export SENTIMENT_SAFETY_SERVICE_URL="http://$NODE_0_IP:$SENTIMENT_PORT_1,http://$NODE_0_IP:$SENTIMENT_PORT_2"
 
-  python3 -u pipeline.py >>memory_profile.log 2>&1 &
+  python3 -u pipeline.py >>"${ORCHESTRATOR_NUM_WORKERS}_${MAX_BATCH_SIZE}_memory_profile.log" &
   sleep 5
 
   echo "Node 0 services started. Orchestrator available at http://$NODE_0_IP:$NODE_0_BASE_PORT"
