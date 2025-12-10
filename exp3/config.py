@@ -2,7 +2,7 @@ import os
 import torch
 
 
-MAX_BATCH_SIZE = int(os.environ.get("MAX_BATCH_SIZE", 1))
+MAX_BATCH_SIZE = int(os.environ.get("MAX_BATCH_SIZE", 4)) #choice of batch size: 4
 FAISS_INDEX_PATH = os.environ.get("FAISS_INDEX_PATH", "faiss_index.bin")
 DOCUMENTS_DIR = os.environ.get("DOCUMENTS_DIR", "documents/")
 

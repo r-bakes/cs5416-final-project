@@ -19,7 +19,7 @@ from utils import profile_with_timing
 # Read environment variables
 NODE_NUMBER = int(os.environ.get("NODE_NUMBER", 0))
 ORCHESTRATOR_PORT = int(os.environ.get("ORCHESTRATOR_PORT", 8000))
-ORCHESTRATOR_NUM_WORKERS = int(os.environ.get("ORCHESTRATOR_NUM_WORKERS", 1))
+ORCHESTRATOR_NUM_WORKERS = int(os.environ.get("ORCHESTRATOR_NUM_WORKERS", 2))
 
 # Service URLs - comma-separated list for multiple instances
 EMBEDDING_SERVICE_URLS = os.environ.get(
