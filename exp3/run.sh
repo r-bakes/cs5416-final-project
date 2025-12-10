@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Distribution plan:
-# node 0 -> pipeline.py entrypoint + 2 instances of 01, 2 instances of 03, 2 instances of 05, 1 instance of 02
+# node 0 -> pipeline.py entrypoint + 2 instances of 01, 2 instances of 03, 2 instances of 05
 # node 1 -> 1 instance of 02, 1 instance of 04
 # node 2 -> 1 instance of 02, 1 instance of 04
 
